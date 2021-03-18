@@ -20,7 +20,8 @@ const Layout: React.FunctionComponent = ({ children }) => {
 
   useEffect(() => {
     if (session?.error === "RefreshAccessTokenError") {
-      signIn(); // Force sign in to hopefully resolve error
+      {/* TODO Instead of the provider id `metabase` use a global constant. It must match the one set in `[...nextauth].ts` */}
+      signIn("metabase"); // Force sign in to hopefully resolve error
     }
   }, [session]);
 
