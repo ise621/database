@@ -28,9 +28,9 @@
    by running `make ssl`.
 8. Start all services and follow their logs by running `make up logs`.
 9. To see the web frontend navigate to
-   `https://local.testlab-solar-facades.de:4041` in your web browser and to see
+   `https://local.testlab-solar-facades.de:5051` in your web browser and to see
    the GraphQL API navigate to
-   `https://local.testlab-solar-facades.de:4041/graphql/`.
+   `https://local.testlab-solar-facades.de:5051/graphql/`.
 
 In another shell
 1. Drop into `ash` with the working directory `/app`, which is mounted to the
