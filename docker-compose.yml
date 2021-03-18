@@ -1,0 +1,49 @@
+version: '3.3'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile
+      args:
+        - CERTIFICATE_AUTHORITY_BASE_FILE_NAME=${CERTIFICATE_AUTHORITY_BASE_FILE_NAME}
+    # user: 1000:1000
+    command: [
+      "yarn", "dev"
+      ]
+    volumes:
+      - ./frontend:/app
+      - frontend_node_modules:/app/node_modules
+    extra_hosts:
+      - ${HOST}:${DOCKER_IP}
+      - ${METABASE_HOST}:${DOCKER_IP}
+    environment:
+      - NODE_ENV=development
+    # depends_on:
+    #   - backend
+
+  nginx: # https://hub.docker.com/_/nginx
+    image: nginx:1.19.4-alpine
+    command: [
+      "nginx-debug",
+      "-g", "daemon off;"
+      ] # run in debug mode
+    volumes:
+      - ./ssl:/etc/nginx/ssl:ro
+      - ./nginx/templates/development:/etc/nginx/templates:ro
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      # - /etc/nginx/conf.d # run in read-only mode ...
+      # - /var/cache/nginx # ...
+      # - /var/run # ...
+    ports:
+      - ${HTTP_PORT}:80
+      - ${HTTPS_PORT}:443
+    environment:
+      - SERVER_NAME=${HOST}
+      - SSL_CERTIFICATE_BASE_FILE_NAME=${SSL_CERTIFICATE_BASE_FILE_NAME}
+    depends_on:
+      - frontend
+      # - backend
+
+volumes:
+  frontend_node_modules:

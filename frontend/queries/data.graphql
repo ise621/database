@@ -1,0 +1,13 @@
+query AllOpticalData(
+  $componentId: Uuid!
+) {
+  allOpticalData(
+    where: {
+      componentId: $componentId
+    }
+  ) {
+    nodes {
+      uuid
+    }
+  }
+}
