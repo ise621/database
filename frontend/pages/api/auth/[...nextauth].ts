@@ -56,6 +56,7 @@ interface ProviderAccount {
 interface ProviderProfile {
   sub: string;
   name: string;
+  email: string;
   oi_au_id: string;
   azp: string;
   at_hash: string;
@@ -70,7 +71,6 @@ interface User {
   id: string;
   name: string;
   email: string;
-  image: string | null;
 }
 
 /**
@@ -173,9 +173,8 @@ const options = {
         // Depending on your provider, will have tokens like `access_token`, `id_token` and or `refresh_token`
         return {
           id: profile.sub,
-          name: profile.name, // TODO Include `name` in token?
-          email: profile.name,
-          image: null, // TODO Include `image` in token?
+          name: profile.name,
+          email: profile.email,
         };
       },
       clientId: process.env.AUTH_CLIENT_ID,
@@ -268,7 +267,7 @@ const options = {
      */
     async session(
       _session: {
-        user: { name?: string; email?: string; image?: string };
+        user: { name?: string; email?: string; };
         accessToken?: string;
         expires: number;
       },
