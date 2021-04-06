@@ -49,6 +49,10 @@ interface ProviderAccount {
   refresh_token: string;
 }
 
+// For the list of registered claim names like `sub`, `exp`, `aud`, `iss`, and
+// `iat`, see https://tools.ietf.org/html/rfc7519#section-4.1
+// For the list of public claim names like `name`, `azp`, and `at_hash`
+// see https://www.iana.org/assignments/jwt/jwt.xhtml
 interface ProviderProfile {
   sub: string;
   name: string;
