@@ -30,8 +30,8 @@ function createIsomorphLink(
       // `${process.env.NEXT_PUBLIC_DATABASE_URL}/graphql/` as on the client
       // side.
       typeof window === "undefined"
-        ? `${process.env.NEXT_PUBLIC_DATABASE_URL}/graphql/`
-        : `${process.env.NEXT_PUBLIC_DATABASE_URL}/graphql/`,
+        ? `${process.env.NEXT_PUBLIC_METABASE_URL}/graphql/`
+        : `${process.env.NEXT_PUBLIC_METABASE_URL}/graphql/`,
     useGETForQueries: true,
     credentials: "same-origin",
     headers: {
