@@ -43,3 +43,8 @@ In another shell
 4. Drop out of the container by running `exit` or pressing `Ctrl-D`.
 
 The same works for backend containers by running `make shellb`.
+
+## Useful Resources
+- [Fullstack Authentication Example with Next.js and NextAuth.js](https://github.com/prisma/prisma-examples/tree/latest/typescript/rest-nextjs-api-routes-auth)
+- [NextAuth.js Example App](https://github.com/nextauthjs/next-auth-example)
+- [Set up a GraphQL client with Apollo](https://hasura.io/learn/graphql/typescript-react-apollo/apollo-client/)
