@@ -3,15 +3,10 @@
 
 include .env
 
-name = database
-
-# Inspired by https://docs.docker.com/engine/reference/commandline/run/#add-entries-to-container-hosts-file---add-host
-docker_ip = $(shell ip -4 addr show scope global dev docker0 | grep inet | awk '{print $$2}' | cut -d / -f 1)
-
 docker_compose = \
 	docker-compose \
 		--file docker-compose.yml \
-		--project-name ${name}
+		--project-name ${NAME}
 
 # Taken from https://www.client9.com/self-documenting-makefiles/
 help : ## Print this help
@@ -21,8 +16,8 @@ help : ## Print this help
 .PHONY : help
 .DEFAULT_GOAL := help
 
-name : ## Print value of variable `name`
-	@echo ${name}
+name : ## Print value of variable `${NAME}`
+	@echo ${NAME}
 .PHONY : name
 
 # ----------------------------- #
@@ -37,55 +32,55 @@ name : ## Print value of variable `name`
 # See https://docs.docker.com/develop/develop-images/build_enhancements/
 # and https://www.docker.com/blog/faster-builds-in-compose-thanks-to-buildkit-support/
 build : ## Build images
-	DOCKER_IP=${docker_ip} \
-		${docker_compose} build \
+	${docker_compose} build \
 		--build-arg GROUP_ID=$(shell id --group) \
 		--build-arg USER_ID=$(shell id --user)
 .PHONY : build
 
-show-build-context : ## Show the build context configured by `.dockerignore`
-	docker build \
+show-backend-build-context : ## Show the build context configured by `./backend/.dockerignore`
+	docker build --no-cache \
 		--file Dockerfile-show-build-context \
-		.
-.PHONY : show-build-context
+		./backend
+.PHONY : show-backend-build-context
+
+show-frontend-build-context : ## Show the build context configured by `./frontend/.dockerignore`
+	docker build --no-cache \
+		--file Dockerfile-show-build-context \
+		./frontend
+.PHONY : show-frontend-build-context
 
 remove : ## Remove stopped containers
-	DOCKER_IP=${docker_ip} \
-		${docker_compose} rm
+	${docker_compose} rm
 .PHONY : remove
 
 remove-data : ## Remove data volumes
 	docker volume rm \
-		${name}_data
+		${NAME}_data
 .PHONY : remove-data
 
 # TODO `docker-compose up` does not support `--user`, see https://github.com/docker/compose/issues/1532
 up : build ## (Re)create, and start containers (after building images if necessary)
-	DOCKER_IP=${docker_ip} \
-		${docker_compose} up \
+	${docker_compose} up \
 		--remove-orphans \
 		--detach
 .PHONY : up
 
 down : ## Stop containers and remove containers, networks, volumes, and images created by `up`
-	DOCKER_IP=${docker_ip} \
-		${docker_compose} down
+	${docker_compose} down \
+		--remove-orphans
 .PHONY : down
 
 restart : ## Restart all stopped and running containers
-	DOCKER_IP=${docker_ip} \
-		${docker_compose} restart
+	${docker_compose} restart
 .PHONY : restart
 
 logs : ## Follow logs
-	DOCKER_IP=${docker_ip} \
-		${docker_compose} logs \
+	${docker_compose} logs \
 		--follow
 .PHONY : logs
 
 exec : up ## Execute the one-time command `${COMMAND}` against an existing `${CONTAINER}` container (after starting all containers if necessary)
-	DOCKER_IP=${docker_ip} \
-		${docker_compose} exec \
+	${docker_compose} exec \
 		--user $(shell id --user):$(shell id --group) \
 		${CONTAINER} \
 		${COMMAND}
@@ -99,32 +94,46 @@ execb : CONTAINER = backend
 execb : exec ## Execute the one-time command `${COMMAND}` against an existing `backend` container (after starting all containers if necessary)
 .PHONY : execb
 
-shellf : COMMAND = ash -c "make install && exec ash"
+run : up ## Run the one-time command `${COMMAND}` against a fresh `${CONTAINER}` container (after starting all containers if necessary)
+	${docker_compose} run \
+		--rm \
+		--user $(shell id --user):$(shell id --group) \
+		${CONTAINER} \
+		${COMMAND}
+.PHONY : run
+
+runf : CONTAINER = frontend
+runf : run ## Run the one-time command `${COMMAND}` against a fresh `frontend` container (after starting all containers if necessary)
+.PHONY : runf
+
+runb : CONTAINER = backend
+runb : run ## runute the one-time command `${COMMAND}` against a fresh `backend` container (after starting all containers if necessary)
+.PHONY : runb
+
+shellf : COMMAND = bash -c "make install && exec bash"
 shellf : execf ## Enter shell in an existing `frontend` container (after starting all containers if necessary)
 .PHONY : shellf
 
-shellb : COMMAND = ash
-shellb : execb ## Enter shell in an existing `backend` container (after starting all containers if necessary)
+shellb : COMMAND = bash
+shellb : runb ## Enter shell in a fresh `backend` container (after starting all containers if necessary)
 .PHONY : shellb
 
 shellb-examples : COMMAND = bash -c "cd ./examples && bash"
-shellb-examples : execb-metabase ## Enter Bourne-again shell, aka, bash, in an existing `backend` container (after starting all containers if necessary)
+shellb-examples : runb ## Enter Bourne-again shell, aka, bash, in an existing `backend` container (after starting all containers if necessary)
 .PHONY : shellb-examples
 
 # Executing with `--privileged` is necessary according to https://github.com/dotnet/diagnostics/blob/master/documentation/FAQ.md
 traceb : ## Trace backend container with identifier `${CONTAINER_ID}`, for example, `make CONTAINER_ID=c1b82eb6e03c trace-backend`
-	DOCKER_IP=${docker_ip} \
-		${docker_compose} exec \
+	${docker_compose} exec \
 			--privileged \
 			backend \
-			ash -c " \
+			bash -c " \
 				make trace \
 				"
 .PHONY : traceb
 
 psql : ## Enter PostgreSQL interactive terminal in the running `database` container
-	DOCKER_IP=${docker_ip} \
-		${docker_compose} exec \
+	${docker_compose} exec \
 		database \
 		psql \
 		--username postgres \
@@ -132,143 +141,35 @@ psql : ## Enter PostgreSQL interactive terminal in the running `database` contai
 .PHONY : psql
 
 shelld : up ## Enter shell in an existing `database` container (after starting all containers if necessary)
-	DOCKER_IP=${docker_ip} \
-		${docker_compose} exec \
+	${docker_compose} exec \
 		database \
-		ash
+		bash
 .PHONY : shelld
 
 createdb : ## Create databases
-	DOCKER_IP=${docker_ip} \
-		${docker_compose} exec \
+	${docker_compose} exec \
 		database \
 		bash -c " \
 			createdb --username postgres xbase_development ; \
 		"
 .PHONY : createdb
 
-# ------ #
-# Deploy #
-# ------ #
-# 1. Run `make register-*` to build (and register) the images.
-# 2. Update the image names in `docker-compose.production.yml`.
-# 3. Run `make deploy` to upload the images, Makefile,
-#    docker-compose.production.yml files, and NGINX files to the server, and
-#    to restart the services with the new configuration.
+begin-maintenance : ## Begin maintenance
+	cp \
+		./nginx/html/maintenance.off.html \
+		./nginx/html/maintenance.html
+.PHONY : begin-maintenance
 
-jump_host = sg.ise.fhg.de
-remote_user="root"
-remote_host="sx14666"
+end-maintenance : ## End maintenance
+	rm ./nginx/html/maintenance.html
+.PHONY : begin-maintenance
 
-production_docker_compose = \
-	docker-compose \
-		--file docker-compose.production.yml \
-		--project-name ${name}
-
-# TODO Keep access token somewhere safe for example in an SSH vault.
-login : ## Login as `${USER_NAME}` to the Fraunhofer registry with the access token in the file with path `${ACCESS_TOKEN}`, for example, `make USER_NAME=sim69815 ACCESS_TOKEN=./registry-access-token.txt login`
-	cat ${ACCESS_TOKEN} | \
-		docker login registry.gitlab.cc-asp.fraunhofer.de:4567 \
-			--username ${USER_NAME} \
-			--password-stdin
-.PHONY : login
-
-register : VERSION = $(shell git describe --tags | head --lines=1)
-register : LOWER_PROJECT_NAME = $(shell echo ${PROJECT_NAME} | tr '[:upper:]' '[:lower:]')
-register : REGISTRY_URL = registry.gitlab.cc-asp.fraunhofer.de:4567/ise621/icon
-register : IMAGE = ${LOWER_PROJECT_NAME}-${END}-production
-register : ## Build and register the production `${END}` image for project `${PROJECT_NAME}`
-	docker build \
-		--build-arg PROJECT_NAME=${PROJECT_NAME} \
-		--tag ${REGISTRY_URL}/${IMAGE}:${VERSION} \
-		--file Dockerfile-${END}-production .
-	docker push ${REGISTRY_URL}/${IMAGE}:${VERSION}
-.PHONY : register
-
-register-metabase-backend : END = backend
-register-metabase-backend : PROJECT_NAME = Metabase
-register-metabase-backend : register ## Build and register metabase backend image
-.PHONY : register-metabase-backend
-
-register-metabase-frontend : END = frontend
-register-metabase-frontend : PROJECT_NAME = Metabase
-register-metabase-frontend : register ## Build and register metabase frontend image
-.PHONY : register-metabase-frontend
-
-deploy : upload down-and-up-server ## Deploy, for example, `make JUMP_USER=swacker deploy`
-.PHONY : deploy
-
-deploy-metabase : deploy ## Deploy metabase, for example, `make JUMP_USER=swacker deploy`
-.PHONY : deploy-metabase
-
-upload : upload-images upload-files ## Upload images and files
-.PHONY : upload
-
-upload-images : ## Upload images
-	for image in $(shell make --silent images-production | tr '\n' ' '); do \
-		make \
-			IMAGE=$${image} \
-			JUMP_USER=${JUMP_USER} \
-			upload-image-if-needed ; \
-	done
-.PHONY : upload-images
-
-# Inspired by https://advancedweb.hu/deploying-docker-images-via-ssh/
-upload-image-if-needed : REMOTE_IMAGE_ID = $(shell ssh -J ${JUMP_USER}@${jump_host} ${remote_user}@${remote_host} "docker images --format '{{.Repository}}:{{.Tag}} {{.ID}}' | grep ${IMAGE} | cut --delimiter ' ' --fields 2")
-upload-image-if-needed : LOCAL_IMAGE_ID = $(shell docker images --format '{{.Repository}}:{{.Tag}} {{.ID}}' | grep ${IMAGE} | cut --delimiter ' ' --fields 2)
-upload-image-if-needed : ## Upload image if needed
-	if [ \
-		"${REMOTE_IMAGE_ID}" \
-		!= "${LOCAL_IMAGE_ID}" \
-		] ; \
-	then \
-		make \
-			IMAGE=${IMAGE} \
-			JUMP_USER=${JUMP_USER} \
-			upload-image ; \
-  else \
-		echo "Remote image ${IMAGE} is up-to-date" ; \
-	fi
-.PHONY : upload-image-if-needed
-
-upload-image : ## Upload image
-	docker save ${IMAGE} \
-		| bzip2 \
-		| pv \
-		| ssh \
-			-J ${JUMP_USER}@${jump_host} \
-			${remote_user}@${remote_host} \
-			'bunzip2 | docker load'
-.PHONY : upload-image
-
-images-production : ## Image names
-	${production_docker_compose} config \
-		| yq r - "services.*.image"
-.PHONY : images-production
-
-upload-files : ## Upload files
-	scp \
-		-r \
-		-o "ProxyJump ${JUMP_USER}@${jump_host}" \
-		./Makefile.production \
-		./docker-compose.production.yml \
-		./nginx \
-		${remote_user}@${remote_host}:'~/app'
-.PHONY : upload-files
-
-down-and-up-server : ## Down and up server (note that a restart would not reflect configuration changes)
-	ssh -t \
-		-J ${JUMP_USER}@${jump_host} \
-		${remote_user}@${remote_host} \
-		" \
-			cd ~/app && \
-			make \
-				--file Makefile.production \
-				down \
-				up && \
-			exit \
-		"
-.PHONY : down-and-up-server
+prepare-release : ## Prepare release
+	${docker_compose} run \
+		--user $(shell id --user):$(shell id --group) \
+		backend \
+		make prepare-release
+.PHONY : prepare-release
 
 # --------------------- #
 # Generate Certificates #
@@ -287,11 +188,10 @@ ssl : ## Generate and trust certificate authority, and generate SSL certificates
 # X509v3 Extensions: See `man x509v3_config` and https://superuser.com/questions/738612/openssl-ca-keyusage-extension/1248085#1248085 and https://access.redhat.com/solutions/28965
 generate-certificate-authority : ## Generate certificate authority ECDSA private key and self-signed certificate
 	mkdir --parents ./ssl/
-	DOCKER_IP=${docker_ip} \
 		docker run \
 		--user $(shell id --user):$(shell id --group) \
 		--mount type=bind,source="$(shell pwd)/ssl",target=/ssl \
-		nginx:1.19.0 \
+		nginx:1.19.9 \
 		bash -cx " \
 			echo \"# Generate the elliptic curve (EC) private key '/ssl/${CERTIFICATE_AUTHORITY_BASE_FILE_NAME}.key' with parameters 'secp384r1', that is, a NIST/SECG curve over a 384 bit prime field as said in the output of the command 'openssl ecparam -list_curves'\" && \
 			openssl ecparam \
@@ -395,11 +295,10 @@ trust-certificate-authority : ## Trust the authority's SSL certificate
 # Note that extensions are not transferred to certificate requests and vice versa as said on https://www.openssl.org/docs/man1.1.0/man1/x509.html#BUGS
 generate-ssl-certificate : ## Generate ECDSA private key and SSL certificate signed by our certificate authority
 	mkdir --parents ./ssl/
-	DOCKER_IP=${docker_ip} \
-		docker run \
+	docker run \
 		--user $(shell id --user):$(shell id --group) \
 		--mount type=bind,source="$(shell pwd)/ssl",target=/ssl \
-		nginx:1.19.0 \
+		nginx:1.19.9 \
 		bash -cx " \
 			echo \"# Generate the elliptic curve (EC) private key '/ssl/${SSL_CERTIFICATE_BASE_FILE_NAME}.key' with parameters 'secp384r1', that is, a NIST/SECG curve over a 384 bit prime field as said in the output of the command 'openssl ecparam -list_curves'\" && \
 			openssl ecparam \

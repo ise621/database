@@ -2,11 +2,13 @@ import { IncomingMessage, ServerResponse } from "http";
 import { useMemo } from "react";
 import {
   ApolloClient,
+  ApolloError,
   createHttpLink,
   InMemoryCache,
   NormalizedCacheObject,
 } from "@apollo/client";
 import merge from "deepmerge";
+import { message } from "antd";
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
 
@@ -15,10 +17,7 @@ export type ResolverContext = {
   res?: ServerResponse;
 };
 
-function createIsomorphLink(
-  context: ResolverContext = {},
-  accessToken?: string
-) {
+function createIsomorphLink(context: ResolverContext = {}, accessToken?: string) {
   return createHttpLink({
     uri:
       // In the case `typeof window === "undefined"`, that is on the server
@@ -27,15 +26,16 @@ function createIsomorphLink(
       // proxy NGINX serves the certificate like in development we could use
       // "https://nginx:443/graphql/" to make local requests, which this does
       // however not work in production. Thus, on the server side we also use
-      // `${process.env.NEXT_PUBLIC_DATABASE_URL}/graphql/` as on the client
+      // `${process.env.NEXT_PUBLIC_METABASE_URL}/graphql/` as on the client
       // side.
       typeof window === "undefined"
         ? `${process.env.NEXT_PUBLIC_METABASE_URL}/graphql/`
         : `${process.env.NEXT_PUBLIC_METABASE_URL}/graphql/`,
-    useGETForQueries: true,
+    useGETForQueries: false, // Use `POST` for queries to avoid "414 Request-URI Too Large" errors
     credentials: "same-origin",
     headers: {
       authorization: accessToken ? `Bearer ${accessToken}` : "",
+      cookie: context.req ? context.req.headers.cookie : null,
     },
   });
 }
@@ -55,8 +55,7 @@ export function initializeApollo(
   // a custom context which will be used by `SchemaLink` to server render pages
   context?: ResolverContext
 ) {
-  const _apolloClient =
-    apolloClient ?? createApolloClient(context, accessToken);
+  const _apolloClient = apolloClient ?? createApolloClient(context, accessToken);
 
   // If your page has Next.js data fetching methods that use Apollo Client, the initial state
   // get hydrated here
@@ -76,10 +75,19 @@ export function initializeApollo(
   return _apolloClient;
 }
 
+export function messageApolloError(error: ApolloError) {
+  message.error(
+    `Name(${error.name}); Message(${
+      error.message
+    }); GraphQL Errors(${error.graphQLErrors
+      .map((e) => `[Name(${e.name}); Message(${e.message})]`)
+      .join(", ")}); Network Error(Name(${error.networkError?.name}); Message(${
+      error.networkError?.message
+    }))`
+  );
+}
+
 export function useApollo(initialState: any, accessToken?: string) {
-  const store = useMemo(() => initializeApollo(initialState, accessToken), [
-    initialState,
-    accessToken,
-  ]);
+  const store = useMemo(() => initializeApollo(initialState, accessToken), [initialState]);
   return store;
 }

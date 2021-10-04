@@ -1,6 +1,16 @@
-schema {
+﻿schema {
   query: Query
   mutation: Mutation
+}
+
+interface Data {
+  appliedMethod: AppliedMethod!
+  componentId: Uuid!
+  description: String
+  name: String
+  resourceTree: GetHttpsResourceTree!
+  timestamp: DateTime!
+  uuid: Uuid!
 }
 
 "The node interface is implemented by entities that have a global unique identifier."
@@ -27,7 +37,48 @@ type AddInstitutionRepresentativeError {
 type AddInstitutionRepresentativePayload {
   errors: [AddInstitutionRepresentativeError!]
   institutionRepresentativeEdge: InstitutionRepresentativeEdge
-  representedInstitutionEdge: RepresentedInstitutionEdge
+  representedInstitutionEdge: UserRepresentedInstitutionEdge
+}
+
+type AddUserRoleError {
+  code: AddUserRoleErrorCode!
+  message: String!
+  path: [String!]!
+}
+
+type AddUserRolePayload {
+  errors: [AddUserRoleError!]
+  user: User
+}
+
+type AppliedMethod {
+  method: Method
+  methodId: Uuid!
+}
+
+type CalorimetricData implements Data {
+  appliedMethod: AppliedMethod!
+  component: Component
+  componentId: Uuid!
+  description: String
+  gValues: [Float!]!
+  name: String
+  resourceTree: GetHttpsResourceTree!
+  timestamp: DateTime!
+  uuid: Uuid!
+  uValues: [Float!]!
+}
+
+type CalorimetricDataConnection {
+  edges: [CalorimetricDataEdge!]!
+  nodes: [CalorimetricData!]!
+  timestamp: DateTime!
+  totalCount: NonNegativeInt
+}
+
+type CalorimetricDataEdge {
+  cursor: String!
+  node: CalorimetricData!
 }
 
 type ChangeInstitutionRepresentativeRoleError {
@@ -39,7 +90,7 @@ type ChangeInstitutionRepresentativeRoleError {
 type ChangeInstitutionRepresentativeRolePayload {
   errors: [ChangeInstitutionRepresentativeRoleError!]
   institutionRepresentativeEdge: InstitutionRepresentativeEdge
-  representedInstitutionEdge: RepresentedInstitutionEdge
+  representedInstitutionEdge: UserRepresentedInstitutionEdge
 }
 
 type ChangeUserEmailError {
@@ -70,7 +121,7 @@ type Component implements Node {
   categories: [ComponentCategory!]!
   description: String!
   id: ID!
-  manufacturers: ComponentManufacturerConnection!
+  manufacturers(pending: Boolean! = false): ComponentManufacturerConnection!
   name: String!
   uuid: Uuid!
 }
@@ -102,6 +153,42 @@ type ComponentManufacturerEdge {
   node: Institution!
 }
 
+type ConfirmComponentManufacturerError {
+  code: ConfirmComponentManufacturerErrorCode!
+  message: String!
+  path: [String!]!
+}
+
+type ConfirmComponentManufacturerPayload {
+  componentManufacturerEdge: ComponentManufacturerEdge
+  errors: [ConfirmComponentManufacturerError!]
+  manufacturedComponentEdge: InstitutionManufacturedComponentEdge
+}
+
+type ConfirmInstitutionMethodDeveloperError {
+  code: ConfirmInstitutionMethodDeveloperErrorCode!
+  message: String!
+  path: [String!]!
+}
+
+type ConfirmInstitutionMethodDeveloperPayload {
+  developedMethodEdge: InstitutionDevelopedMethodEdge
+  errors: [ConfirmInstitutionMethodDeveloperError!]
+  methodDeveloperEdge: InstitutionMethodDeveloperEdge
+}
+
+type ConfirmInstitutionRepresentativeError {
+  code: ConfirmInstitutionRepresentativeErrorCode!
+  message: String!
+  path: [String!]!
+}
+
+type ConfirmInstitutionRepresentativePayload {
+  errors: [ConfirmInstitutionRepresentativeError!]
+  institutionRepresentativeEdge: InstitutionRepresentativeEdge
+  representedInstitutionEdge: UserRepresentedInstitutionEdge
+}
+
 type ConfirmUserEmailChangeError {
   code: ConfirmUserEmailChangeErrorCode!
   message: String!
@@ -122,6 +209,18 @@ type ConfirmUserEmailError {
 type ConfirmUserEmailPayload {
   errors: [ConfirmUserEmailError!]
   user: User
+}
+
+type ConfirmUserMethodDeveloperError {
+  code: ConfirmUserMethodDeveloperErrorCode!
+  message: String!
+  path: [String!]!
+}
+
+type ConfirmUserMethodDeveloperPayload {
+  developedMethodEdge: UserDevelopedMethodEdge
+  errors: [ConfirmUserMethodDeveloperError!]
+  methodDeveloperEdge: UserMethodDeveloperEdge
 }
 
 type CreateComponentError {
@@ -179,6 +278,28 @@ type CreateMethodPayload {
   method: Method
 }
 
+type DataApproval {
+  approver: Institution
+  approverId: Uuid!
+  keyFingerprint: String!
+  query: String!
+  response: String!
+  signature: String!
+  timestamp: DateTime!
+}
+
+type DataConnection {
+  edges: [DataEdge!]!
+  nodes: [Data!]!
+  timestamp: DateTime!
+  totalCount: NonNegativeInt
+}
+
+type DataEdge {
+  cursor: String!
+  node: Data!
+}
+
 type DataFormat implements Node {
   description: String!
   extension: String
@@ -215,11 +336,26 @@ type DataFormatManagerEdge {
 }
 
 type Database implements Node {
+  allCalorimetricData(after: String before: String first: NonNegativeInt last: NonNegativeInt locale: String timestamp: DateTime where: CalorimetricDataPropositionInput!): CalorimetricDataConnection
+  allData(after: String before: String first: NonNegativeInt last: NonNegativeInt locale: String timestamp: DateTime where: DataPropositionInput!): DataConnection
+  allHygrothermalData(after: String before: String first: NonNegativeInt last: NonNegativeInt locale: String timestamp: DateTime where: HygrothermalDataPropositionInput!): HygrothermalDataConnection
+  allOpticalData(after: String before: String first: NonNegativeInt last: NonNegativeInt locale: String timestamp: DateTime where: OpticalDataPropositionInput!): OpticalDataConnection
+  allPhotovoltaicData(after: String before: String first: NonNegativeInt last: NonNegativeInt locale: String timestamp: DateTime where: PhotovoltaicDataPropositionInput!): PhotovoltaicDataConnection
+  calorimetricData(id: Uuid! locale: String timestamp: DateTime): CalorimetricData
+  data(id: Uuid! locale: String timestamp: DateTime): Data
   description: String!
+  hasCalorimetricData(locale: String timestamp: DateTime where: CalorimetricDataPropositionInput!): Boolean
+  hasData(locale: String timestamp: DateTime where: DataPropositionInput!): Boolean
+  hasHygrothermalData(locale: String timestamp: DateTime where: HygrothermalDataPropositionInput!): Boolean
+  hasOpticalData(locale: String timestamp: DateTime where: OpticalDataPropositionInput!): Boolean
+  hasPhotovoltaicData(locale: String timestamp: DateTime where: PhotovoltaicDataPropositionInput!): Boolean
+  hygrothermalData(id: Uuid! locale: String timestamp: DateTime): HygrothermalData
   id: ID!
   locator: Url!
   name: String!
   operator: DatabaseOperatorEdge!
+  opticalData(id: Uuid! locale: String timestamp: DateTime): OpticalData
+  photovoltaicData(id: Uuid! locale: String timestamp: DateTime): PhotovoltaicData
   uuid: Uuid!
 }
 
@@ -264,6 +400,17 @@ type DeletePersonalUserDataError {
 
 type DeletePersonalUserDataPayload {
   errors: [DeletePersonalUserDataError!]
+  user: User
+}
+
+type DeleteUserError {
+  code: DeleteUserErrorCode!
+  message: String!
+  path: [String!]!
+}
+
+type DeleteUserPayload {
+  errors: [DeleteUserError!]
   user: User
 }
 
@@ -328,17 +475,66 @@ type GenerateUserTwoFactorRecoveryCodesPayload {
   user: User
 }
 
+type GetHttpsResource {
+  dataFormat: DataFormat
+  description: String!
+  formatId: Uuid!
+  hashValue: String!
+  locator: Url!
+}
+
+type GetHttpsResourceTree {
+  root: GetHttpsResourceTreeRoot!
+}
+
+type GetHttpsResourceTreeNonRootVertex {
+  appliedConversionMethod: ToTreeVertexAppliedConversionMethod!
+  parentId: String!
+  value: GetHttpsResource!
+  vertexId: String!
+}
+
+type GetHttpsResourceTreeRoot {
+  value: GetHttpsResource!
+}
+
+type HygrothermalData implements Data {
+  appliedMethod: AppliedMethod!
+  component: Component
+  componentId: Uuid!
+  description: String
+  name: String
+  resourceTree: GetHttpsResourceTree!
+  timestamp: DateTime!
+  uuid: Uuid!
+}
+
+type HygrothermalDataConnection {
+  edges: [HygrothermalDataEdge!]!
+  nodes: [HygrothermalData!]!
+  timestamp: DateTime!
+  totalCount: NonNegativeInt
+}
+
+type HygrothermalDataEdge {
+  cursor: String!
+  node: HygrothermalData!
+}
+
 type Institution implements Node & Stakeholder {
   abbreviation: String
   description: String!
-  developedMethods: InstitutionDevelopedMethodConnection!
+  developedMethods(pending: Boolean! = false): InstitutionDevelopedMethodConnection!
   id: ID!
   managedDataFormats: InstitutionManagedDataFormatConnection!
-  manufacturedComponents: InstitutionManufacturedComponentConnection!
+  managedInstitutions: InstitutionManagedInstitutionConnection!
+  managedMethods: InstitutionManagedMethodConnection!
+  manager: InstitutionManagerEdge
+  manufacturedComponents(pending: Boolean! = false): InstitutionManufacturedComponentConnection!
   name: String!
   operatedDatabases: InstitutionOperatedDatabaseConnection!
   publicKey: String
-  representatives: InstitutionRepresentativeConnection!
+  representatives(pending: Boolean! = false): InstitutionRepresentativeConnection!
   state: InstitutionState!
   uuid: Uuid!
   websiteLocator: Url
@@ -356,7 +552,7 @@ type InstitutionConnection {
 }
 
 type InstitutionDevelopedMethodConnection {
-  canCurrentUserAddEdge: Boolean!
+  canCurrentUserConfirmEdge: Boolean!
   edges: [InstitutionDevelopedMethodEdge!]!
 }
 
@@ -381,13 +577,40 @@ type InstitutionManagedDataFormatEdge {
   node: DataFormat!
 }
 
+type InstitutionManagedInstitutionConnection {
+  canCurrentUserAddEdge: Boolean!
+  edges: [InstitutionManagedInstitutionEdge!]!
+}
+
+type InstitutionManagedInstitutionEdge {
+  node: Institution!
+}
+
+type InstitutionManagedMethodConnection {
+  canCurrentUserAddEdge: Boolean!
+  edges: [InstitutionManagedMethodEdge!]!
+}
+
+type InstitutionManagedMethodEdge {
+  node: Method!
+}
+
+type InstitutionManagerEdge {
+  node: Institution!
+}
+
 type InstitutionManufacturedComponentConnection {
   canCurrentUserAddEdge: Boolean!
+  canCurrentUserConfirmEdge: Boolean!
   edges: [InstitutionManufacturedComponentEdge!]!
 }
 
 type InstitutionManufacturedComponentEdge {
   node: Component!
+}
+
+type InstitutionMethodDeveloperEdge {
+  node: Institution!
 }
 
 type InstitutionOperatedDatabaseConnection {
@@ -459,8 +682,9 @@ type Method implements Node {
   calculationLocator: Url
   categories: [MethodCategory!]!
   description: String!
-  developers: MethodDeveloperConnection!
+  developers(pending: Boolean! = false): MethodDeveloperConnection!
   id: ID!
+  manager: MethodManagerEdge!
   name: String!
   reference: Reference
   uuid: Uuid!
@@ -494,86 +718,55 @@ type MethodEdge {
   node: Method!
 }
 
+type MethodManagerEdge {
+  node: Institution!
+}
+
 type Mutation {
-  addInstitutionRepresentative(
-    input: AddInstitutionRepresentativeInput!
-  ): AddInstitutionRepresentativePayload!
-    @authorize(apply: BEFORE_RESOLVER, policy: "Write")
-  changeInstitutionRepresentativeRole(
-    input: ChangeInstitutionRepresentativeRoleInput!
-  ): ChangeInstitutionRepresentativeRolePayload!
-    @authorize(apply: BEFORE_RESOLVER, policy: "Write")
-  changeUserEmail(input: ChangeUserEmailInput!): ChangeUserEmailPayload!
-    @authorize(apply: BEFORE_RESOLVER, policy: "ManageUser")
-  changeUserPassword(
-    input: ChangeUserPasswordInput!
-  ): ChangeUserPasswordPayload!
-    @authorize(apply: BEFORE_RESOLVER, policy: "ManageUser")
+  addInstitutionRepresentative(input: AddInstitutionRepresentativeInput!): AddInstitutionRepresentativePayload! @authorize(apply: BEFORE_RESOLVER, policy: "Write")
+  addUserRole(input: AddUserRoleInput!): AddUserRolePayload!
+  changeInstitutionRepresentativeRole(input: ChangeInstitutionRepresentativeRoleInput!): ChangeInstitutionRepresentativeRolePayload! @authorize(apply: BEFORE_RESOLVER, policy: "Write")
+  changeUserEmail(input: ChangeUserEmailInput!): ChangeUserEmailPayload! @authorize(apply: BEFORE_RESOLVER, policy: "ManageUser")
+  changeUserPassword(input: ChangeUserPasswordInput!): ChangeUserPasswordPayload! @authorize(apply: BEFORE_RESOLVER, policy: "ManageUser")
+  confirmComponentManufacturer(input: ConfirmComponentManufacturerInput!): ConfirmComponentManufacturerPayload! @authorize(apply: BEFORE_RESOLVER, policy: "Write")
+  confirmInstitutionMethodDeveloper(input: ConfirmInstitutionMethodDeveloperInput!): ConfirmInstitutionMethodDeveloperPayload! @authorize(apply: BEFORE_RESOLVER, policy: "Write")
+  confirmInstitutionRepresentative(input: ConfirmInstitutionRepresentativeInput!): ConfirmInstitutionRepresentativePayload! @authorize(apply: BEFORE_RESOLVER, policy: "Write")
   confirmUserEmail(input: ConfirmUserEmailInput!): ConfirmUserEmailPayload!
-  confirmUserEmailChange(
-    input: ConfirmUserEmailChangeInput!
-  ): ConfirmUserEmailChangePayload!
-  createComponent(input: CreateComponentInput!): CreateComponentPayload!
-    @authorize(apply: BEFORE_RESOLVER, policy: "Write")
-  createDatabase(input: CreateDatabaseInput!): CreateDatabasePayload!
-    @authorize(apply: BEFORE_RESOLVER, policy: "Write")
-  createDataFormat(input: CreateDataFormatInput!): CreateDataFormatPayload!
-    @authorize(apply: BEFORE_RESOLVER, policy: "Write")
-  createInstitution(input: CreateInstitutionInput!): CreateInstitutionPayload!
-    @authorize(apply: BEFORE_RESOLVER, policy: "Write")
-  createMethod(input: CreateMethodInput!): CreateMethodPayload!
-    @authorize(apply: BEFORE_RESOLVER, policy: "Write")
-  deleteInstitution(input: DeleteInstitutionInput!): DeleteInstitutionPayload!
-    @authorize(apply: BEFORE_RESOLVER, policy: "Write")
-  deletePersonalUserData(
-    input: DeletePersonalUserDataInput!
-  ): DeletePersonalUserDataPayload!
-    @authorize(apply: BEFORE_RESOLVER, policy: "ManageUser")
-  disableUserTwoFactorAuthentication: DisableUserTwoFactorAuthenticationPayload!
-    @authorize(apply: BEFORE_RESOLVER, policy: "ManageUser")
-  enableUserTwoFactorAuthenticator(
-    input: EnableUserTwoFactorAuthenticatorInput!
-  ): EnableUserTwoFactorAuthenticatorPayload!
-    @authorize(apply: BEFORE_RESOLVER, policy: "ManageUser")
-  forgetUserTwoFactorAuthenticationClient: ForgetUserTwoFactorAuthenticationClientPayload!
-    @authorize(apply: BEFORE_RESOLVER, policy: "ManageUser")
-  generateUserTwoFactorAuthenticatorSharedKeyAndQrCodeUri: GenerateUserTwoFactorAuthenticatorSharedKeyAndQrCodeUriPayload!
-    @authorize(apply: BEFORE_RESOLVER, policy: "ManageUser")
-  generateUserTwoFactorRecoveryCodes: GenerateUserTwoFactorRecoveryCodesPayload!
-    @authorize(apply: BEFORE_RESOLVER, policy: "ManageUser")
+  confirmUserEmailChange(input: ConfirmUserEmailChangeInput!): ConfirmUserEmailChangePayload!
+  confirmUserMethodDeveloper(input: ConfirmUserMethodDeveloperInput!): ConfirmUserMethodDeveloperPayload! @authorize(apply: BEFORE_RESOLVER, policy: "Write")
+  createComponent(input: CreateComponentInput!): CreateComponentPayload! @authorize(apply: BEFORE_RESOLVER, policy: "Write")
+  createDatabase(input: CreateDatabaseInput!): CreateDatabasePayload! @authorize(apply: BEFORE_RESOLVER, policy: "Write")
+  createDataFormat(input: CreateDataFormatInput!): CreateDataFormatPayload! @authorize(apply: BEFORE_RESOLVER, policy: "Write")
+  createInstitution(input: CreateInstitutionInput!): CreateInstitutionPayload! @authorize(apply: BEFORE_RESOLVER, policy: "Write")
+  createMethod(input: CreateMethodInput!): CreateMethodPayload! @authorize(apply: BEFORE_RESOLVER, policy: "Write")
+  deleteInstitution(input: DeleteInstitutionInput!): DeleteInstitutionPayload! @authorize(apply: BEFORE_RESOLVER, policy: "Write")
+  deletePersonalUserData(input: DeletePersonalUserDataInput!): DeletePersonalUserDataPayload! @authorize(apply: BEFORE_RESOLVER, policy: "ManageUser")
+  deleteUser(input: DeleteUserInput!): DeleteUserPayload! @authorize(apply: BEFORE_RESOLVER, policy: "ManageUser")
+  disableUserTwoFactorAuthentication: DisableUserTwoFactorAuthenticationPayload! @authorize(apply: BEFORE_RESOLVER, policy: "ManageUser")
+  enableUserTwoFactorAuthenticator(input: EnableUserTwoFactorAuthenticatorInput!): EnableUserTwoFactorAuthenticatorPayload! @authorize(apply: BEFORE_RESOLVER, policy: "ManageUser")
+  forgetUserTwoFactorAuthenticationClient: ForgetUserTwoFactorAuthenticationClientPayload! @authorize(apply: BEFORE_RESOLVER, policy: "ManageUser")
+  generateUserTwoFactorAuthenticatorSharedKeyAndQrCodeUri: GenerateUserTwoFactorAuthenticatorSharedKeyAndQrCodeUriPayload! @authorize(apply: BEFORE_RESOLVER, policy: "ManageUser")
+  generateUserTwoFactorRecoveryCodes: GenerateUserTwoFactorRecoveryCodesPayload! @authorize(apply: BEFORE_RESOLVER, policy: "ManageUser")
   loginUser(input: LoginUserInput!): LoginUserPayload!
-  loginUserWithRecoveryCode(
-    input: LoginUserWithRecoveryCodeInput!
-  ): LoginUserWithRecoveryCodePayload!
-  loginUserWithTwoFactorCode(
-    input: LoginUserWithTwoFactorCodeInput!
-  ): LoginUserWithTwoFactorCodePayload!
-  logoutUser: LogoutUserPayload!
-    @authorize(apply: BEFORE_RESOLVER, policy: "ManageUser")
+  loginUserWithRecoveryCode(input: LoginUserWithRecoveryCodeInput!): LoginUserWithRecoveryCodePayload!
+  loginUserWithTwoFactorCode(input: LoginUserWithTwoFactorCodeInput!): LoginUserWithTwoFactorCodePayload!
+  logoutUser: LogoutUserPayload! @authorize(apply: BEFORE_RESOLVER, policy: "ManageUser")
   registerUser(input: RegisterUserInput!): RegisterUserPayload!
-  removeInstitutionRepresentative(
-    input: RemoveInstitutionRepresentativeInput!
-  ): RemoveInstitutionRepresentativePayload!
-    @authorize(apply: BEFORE_RESOLVER, policy: "Write")
-  requestUserPasswordReset(
-    input: RequestUserPasswordResetInput!
-  ): RequestUserPasswordResetPayload!
-  resendUserEmailConfirmation(
-    input: ResendUserEmailConfirmationInput!
-  ): ResendUserEmailConfirmationPayload!
-  resendUserEmailVerification: ResendUserEmailVerificationPayload!
-    @authorize(apply: BEFORE_RESOLVER, policy: "ManageUser")
+  removeInstitutionRepresentative(input: RemoveInstitutionRepresentativeInput!): RemoveInstitutionRepresentativePayload! @authorize(apply: BEFORE_RESOLVER, policy: "Write")
+  removeUserRole(input: RemoveUserRoleInput!): RemoveUserRolePayload!
+  requestUserPasswordReset(input: RequestUserPasswordResetInput!): RequestUserPasswordResetPayload!
+  resendUserEmailConfirmation(input: ResendUserEmailConfirmationInput!): ResendUserEmailConfirmationPayload!
+  resendUserEmailVerification: ResendUserEmailVerificationPayload! @authorize(apply: BEFORE_RESOLVER, policy: "ManageUser")
   resetUserPassword(input: ResetUserPasswordInput!): ResetUserPasswordPayload!
-  resetUserTwoFactorAuthenticator: ResetUserTwoFactorAuthenticatorPayload!
-    @authorize(apply: BEFORE_RESOLVER, policy: "ManageUser")
-  setUserPassword(input: SetUserPasswordInput!): SetUserPasswordPayload!
-    @authorize(apply: BEFORE_RESOLVER, policy: "ManageUser")
-  setUserPhoneNumber(
-    input: SetUserPhoneNumberInput!
-  ): SetUserPhoneNumberPayload!
-    @authorize(apply: BEFORE_RESOLVER, policy: "ManageUser")
-  updateInstitution(input: UpdateInstitutionInput!): UpdateInstitutionPayload!
-    @authorize(apply: BEFORE_RESOLVER, policy: "Write")
+  resetUserTwoFactorAuthenticator: ResetUserTwoFactorAuthenticatorPayload! @authorize(apply: BEFORE_RESOLVER, policy: "ManageUser")
+  setUserPassword(input: SetUserPasswordInput!): SetUserPasswordPayload! @authorize(apply: BEFORE_RESOLVER, policy: "ManageUser")
+  setUserPhoneNumber(input: SetUserPhoneNumberInput!): SetUserPhoneNumberPayload! @authorize(apply: BEFORE_RESOLVER, policy: "ManageUser")
+  updateInstitution(input: UpdateInstitutionInput!): UpdateInstitutionPayload! @authorize(apply: BEFORE_RESOLVER, policy: "Write")
+  verifyInstitution(input: VerifyInstitutionInput!): VerifyInstitutionPayload! @authorize(apply: BEFORE_RESOLVER, policy: "Write")
+}
+
+type NamedMethodArgument {
+  name: String!
 }
 
 type Numeration {
@@ -646,6 +839,34 @@ type OpenIdConnectToken {
   type: String
 }
 
+type OpticalData implements Data {
+  appliedMethod: AppliedMethod!
+  component: Component
+  componentId: Uuid!
+  description: String
+  infraredEmittances: [Float!]!
+  name: String
+  nearnormalHemisphericalSolarReflectances: [Float!]!
+  nearnormalHemisphericalSolarTransmittances: [Float!]!
+  nearnormalHemisphericalVisibleReflectances: [Float!]!
+  nearnormalHemisphericalVisibleTransmittances: [Float!]!
+  resourceTree: GetHttpsResourceTree!
+  timestamp: DateTime!
+  uuid: Uuid!
+}
+
+type OpticalDataConnection {
+  edges: [OpticalDataEdge!]!
+  nodes: [OpticalData!]!
+  timestamp: DateTime!
+  totalCount: NonNegativeInt
+}
+
+type OpticalDataEdge {
+  cursor: String!
+  node: OpticalData!
+}
+
 "Information about pagination in a connection."
 type PageInfo {
   "When paginating forwards, the cursor to continue."
@@ -656,6 +877,29 @@ type PageInfo {
   hasPreviousPage: Boolean!
   "When paginating backwards, the cursor to continue."
   startCursor: String
+}
+
+type PhotovoltaicData implements Data {
+  appliedMethod: AppliedMethod!
+  component: Component
+  componentId: Uuid!
+  description: String
+  name: String
+  resourceTree: GetHttpsResourceTree!
+  timestamp: DateTime!
+  uuid: Uuid!
+}
+
+type PhotovoltaicDataConnection {
+  edges: [PhotovoltaicDataEdge!]!
+  nodes: [PhotovoltaicData!]!
+  timestamp: DateTime!
+  totalCount: NonNegativeInt
+}
+
+type PhotovoltaicDataEdge {
+  cursor: String!
+  node: PhotovoltaicData!
 }
 
 type Publication implements Reference {
@@ -676,68 +920,23 @@ type Publication implements Reference {
 
 type Query {
   component(uuid: Uuid!): Component
-  components(
-    after: String
-    before: String
-    first: Int
-    last: Int
-    order: [ComponentSortInput!]
-    where: ComponentFilterInput
-  ): ComponentConnection
+  components(after: String before: String first: Int last: Int order: [ComponentSortInput!] where: ComponentFilterInput): ComponentConnection
   currentUser: User
   database(uuid: Uuid!): Database
-  databases(
-    after: String
-    before: String
-    first: Int
-    last: Int
-    order: [DatabaseSortInput!]
-    where: DatabaseFilterInput
-  ): DatabaseConnection
+  databases(after: String before: String first: Int last: Int order: [DatabaseSortInput!] where: DatabaseFilterInput): DatabaseConnection
   dataFormat(uuid: Uuid!): DataFormat
-  dataFormats(
-    after: String
-    before: String
-    first: Int
-    last: Int
-    order: [DataFormatSortInput!]
-    where: DataFormatFilterInput
-  ): DataFormatConnection
+  dataFormats(after: String before: String first: Int last: Int order: [DataFormatSortInput!] where: DataFormatFilterInput): DataFormatConnection
   institution(uuid: Uuid!): Institution
-  institutions(
-    after: String
-    before: String
-    first: Int
-    last: Int
-    order: [InstitutionSortInput!]
-    where: InstitutionFilterInput
-  ): InstitutionConnection
+  institutions(after: String before: String first: Int last: Int order: [InstitutionSortInput!] where: InstitutionFilterInput): InstitutionConnection
   method(uuid: Uuid!): Method
-  methods(
-    after: String
-    before: String
-    first: Int
-    last: Int
-    order: [MethodSortInput!]
-    where: MethodFilterInput
-  ): MethodConnection
+  methods(after: String before: String first: Int last: Int order: [MethodSortInput!] where: MethodFilterInput): MethodConnection
   node(id: ID!): Node
   openIdConnectApplications: [OpenIdConnectApplication!]!
-    @authorize(apply: BEFORE_RESOLVER, roles: ["Administrator"])
   openIdConnectAuthorizations: [OpenIdConnectAuthorization!]!
-    @authorize(apply: BEFORE_RESOLVER, roles: ["Administrator"])
   openIdConnectScopes: [OpenIdConnectScope!]!
-    @authorize(apply: BEFORE_RESOLVER, roles: ["Administrator"])
   openIdConnectTokens: [OpenIdConnectToken!]!
-    @authorize(apply: BEFORE_RESOLVER, roles: ["Administrator"])
   user(uuid: Uuid!): User
-  users(
-    after: String
-    before: String
-    first: Int
-    last: Int
-    order: [UserSortInput!]
-  ): UserConnection
+  users(after: String before: String first: Int last: Int order: [UserSortInput!]): UserConnection
 }
 
 type RegisterUserError {
@@ -763,9 +962,15 @@ type RemoveInstitutionRepresentativePayload {
   user: User!
 }
 
-type RepresentedInstitutionEdge {
-  node: Institution!
-  role: InstitutionRepresentativeRole!
+type RemoveUserRoleError {
+  code: RemoveUserRoleErrorCode!
+  message: String!
+  path: [String!]!
+}
+
+type RemoveUserRolePayload {
+  errors: [RemoveUserRoleError!]
+  user: User
 }
 
 type RequestUserPasswordResetError {
@@ -820,6 +1025,14 @@ type ResetUserTwoFactorAuthenticatorPayload {
   user: User
 }
 
+type ResponseApproval {
+  keyFingerprint: String!
+  query: String!
+  response: String!
+  signature: String!
+  timestamp: DateTime!
+}
+
 type SetUserPasswordError {
   code: SetUserPasswordErrorCode!
   message: String!
@@ -850,9 +1063,16 @@ type Standard implements Reference {
   "The section of the standard to which the reference refers to."
   section: String
   standardizers: [Standardizer!]!
-  title: String!
+  title: String
   "It is important to define the year in which the standard was issued because there can be relevant updates of one standard."
   year: Int
+}
+
+type ToTreeVertexAppliedConversionMethod {
+  arguments: [NamedMethodArgument!]!
+  method: Method
+  methodId: Uuid!
+  sourceName: String!
 }
 
 type TwoFactorAuthentication {
@@ -874,7 +1094,8 @@ type UpdateInstitutionPayload {
 }
 
 type User implements Node & Stakeholder {
-  developedMethods: UserDevelopedMethodConnection!
+  canCurrentUserDeleteUser: Boolean!
+  developedMethods(pending: Boolean! = false): UserDevelopedMethodConnection!
   email: String
   hasPassword: Boolean
   id: ID!
@@ -883,8 +1104,10 @@ type User implements Node & Stakeholder {
   "Full name"
   name: String!
   phoneNumber: String
-  representedInstitutions: UserRepresentedInstitutionConnection!
-  roles: [String]
+  representedInstitutions(pending: Boolean! = false): UserRepresentedInstitutionConnection!
+  roles: [UserRole!]
+  rolesCurrentUserCanAdd: [UserRole!]
+  rolesCurrentUserCanRemove: [UserRole!]
   twoFactorAuthentication: TwoFactorAuthentication
   uuid: Uuid!
   websiteLocator: Url
@@ -902,6 +1125,7 @@ type UserConnection {
 }
 
 type UserDevelopedMethodConnection {
+  canCurrentUserConfirmEdge: Boolean!
   edges: [UserDevelopedMethodEdge!]!
 }
 
@@ -917,7 +1141,12 @@ type UserEdge {
   node: User!
 }
 
+type UserMethodDeveloperEdge {
+  node: User!
+}
+
 type UserRepresentedInstitutionConnection {
+  canCurrentUserConfirmEdge: Boolean!
   edges: [UserRepresentedInstitutionEdge!]!
 }
 
@@ -926,15 +1155,41 @@ type UserRepresentedInstitutionEdge {
   role: InstitutionRepresentativeRole!
 }
 
+type VerifyInstitutionError {
+  code: VerifyInstitutionErrorCode!
+  message: String!
+  path: [String!]!
+}
+
+type VerifyInstitutionPayload {
+  errors: [VerifyInstitutionError!]
+  institution: Institution
+}
+
 input AddInstitutionRepresentativeInput {
   institutionId: Uuid!
   role: InstitutionRepresentativeRole!
   userId: Uuid!
 }
 
+input AddUserRoleInput {
+  role: UserRole!
+  userId: Uuid!
+}
+
 input BooleanOperationFilterInput {
   eq: Boolean
   neq: Boolean
+}
+
+input CalorimetricDataPropositionInput {
+  and: [CalorimetricDataPropositionInput!]
+  componentId: UuidPropositionInput
+  dataFormatId: UuidPropositionInput
+  gValue: FloatPropositionInput
+  not: CalorimetricDataPropositionInput
+  or: [CalorimetricDataPropositionInput!]
+  uValue: FloatPropositionInput
 }
 
 input ChangeInstitutionRepresentativeRoleInput {
@@ -951,6 +1206,11 @@ input ChangeUserPasswordInput {
   currentPassword: String!
   newPassword: String!
   newPasswordConfirmation: String!
+}
+
+input ClosedIntervalInput {
+  lowerBound: Float!
+  upperBound: Float!
 }
 
 input ComparableGuidOperationFilterInput {
@@ -1009,6 +1269,21 @@ input ComponentSortInput {
   xmin: SortEnumType
 }
 
+input ConfirmComponentManufacturerInput {
+  componentId: Uuid!
+  institutionId: Uuid!
+}
+
+input ConfirmInstitutionMethodDeveloperInput {
+  institutionId: Uuid!
+  methodId: Uuid!
+}
+
+input ConfirmInstitutionRepresentativeInput {
+  institutionId: Uuid!
+  userId: Uuid!
+}
+
 input ConfirmUserEmailChangeInput {
   confirmationCode: String!
   currentEmail: String!
@@ -1020,11 +1295,17 @@ input ConfirmUserEmailInput {
   email: String!
 }
 
+input ConfirmUserMethodDeveloperInput {
+  methodId: Uuid!
+  userId: Uuid!
+}
+
 input CreateComponentInput {
   abbreviation: String
   availability: OpenEndedDateTimeRangeInput
   categories: [ComponentCategory!]!
   description: String!
+  furtherManufacturerIds: [Uuid!]!
   manufacturerId: Uuid!
   name: String!
 }
@@ -1050,10 +1331,10 @@ input CreateDatabaseInput {
 input CreateInstitutionInput {
   abbreviation: String
   description: String!
+  managerId: Uuid
   name: String!
   ownerIds: [Uuid!]!
   publicKey: String
-  state: InstitutionState!
   websiteLocator: Url
 }
 
@@ -1063,6 +1344,7 @@ input CreateMethodInput {
   categories: [MethodCategory!]!
   description: String!
   institutionDeveloperIds: [Uuid!]!
+  managerId: Uuid!
   name: String!
   publication: CreatePublicationInput
   standard: CreateStandardInput
@@ -1121,6 +1403,20 @@ input DataFormatSortInput {
   xmin: SortEnumType
 }
 
+input DataPropositionInput {
+  and: [DataPropositionInput!]
+  componentId: UuidPropositionInput
+  gValue: FloatPropositionInput
+  infraredEmittance: FloatPropositionInput
+  nearnormalHemisphericalSolarReflectance: FloatPropositionInput
+  nearnormalHemisphericalSolarTransmittance: FloatPropositionInput
+  nearnormalHemisphericalVisibleReflectance: FloatPropositionInput
+  nearnormalHemisphericalVisibleTransmittance: FloatPropositionInput
+  not: DataPropositionInput
+  or: [DataPropositionInput!]
+  uValue: FloatPropositionInput
+}
+
 input DatabaseFilterInput {
   and: [DatabaseFilterInput!]
   description: StringOperationFilterInput
@@ -1148,8 +1444,27 @@ input DeletePersonalUserDataInput {
   password: String
 }
 
+input DeleteUserInput {
+  userId: Uuid!
+}
+
 input EnableUserTwoFactorAuthenticatorInput {
   verificationCode: String!
+}
+
+input FloatPropositionInput {
+  equalTo: Float
+  greaterThanOrEqualTo: Float
+  inClosedInterval: ClosedIntervalInput
+  lessThanOrEqualTo: Float
+}
+
+input HygrothermalDataPropositionInput {
+  and: [HygrothermalDataPropositionInput!]
+  componentId: UuidPropositionInput
+  dataFormatId: UuidPropositionInput
+  not: HygrothermalDataPropositionInput
+  or: [HygrothermalDataPropositionInput!]
 }
 
 input IReferenceSortInput {
@@ -1165,6 +1480,7 @@ input InstitutionFilterInput {
   id: ComparableGuidOperationFilterInput
   name: StringOperationFilterInput
   or: [InstitutionFilterInput!]
+  state: InstitutionStateOperationFilterInput
   websiteLocator: UriFilterInput
 }
 
@@ -1172,11 +1488,20 @@ input InstitutionSortInput {
   abbreviation: SortEnumType
   description: SortEnumType
   id: SortEnumType
+  manager: InstitutionSortInput
+  managerId: SortEnumType
   name: SortEnumType
   publicKey: SortEnumType
   state: SortEnumType
   websiteLocator: UriSortInput
   xmin: SortEnumType
+}
+
+input InstitutionStateOperationFilterInput {
+  eq: InstitutionState
+  in: [InstitutionState!]
+  neq: InstitutionState
+  nin: [InstitutionState!]
 }
 
 input ListComponentCategoryOperationFilterInput {
@@ -1237,6 +1562,8 @@ input MethodSortInput {
   calculationLocator: UriSortInput
   description: SortEnumType
   id: SortEnumType
+  manager: InstitutionSortInput
+  managerId: SortEnumType
   name: SortEnumType
   publication: PublicationSortInput
   reference: IReferenceSortInput
@@ -1254,6 +1581,26 @@ input NumerationSortInput {
 input OpenEndedDateTimeRangeInput {
   from: DateTime
   to: DateTime
+}
+
+input OpticalDataPropositionInput {
+  and: [OpticalDataPropositionInput!]
+  componentId: UuidPropositionInput
+  infraredEmittance: FloatPropositionInput
+  nearnormalHemisphericalSolarReflectance: FloatPropositionInput
+  nearnormalHemisphericalSolarTransmittance: FloatPropositionInput
+  nearnormalHemisphericalVisibleReflectance: FloatPropositionInput
+  nearnormalHemisphericalVisibleTransmittance: FloatPropositionInput
+  not: OpticalDataPropositionInput
+  or: [OpticalDataPropositionInput!]
+}
+
+input PhotovoltaicDataPropositionInput {
+  and: [PhotovoltaicDataPropositionInput!]
+  componentId: UuidPropositionInput
+  dataFormatId: UuidPropositionInput
+  not: PhotovoltaicDataPropositionInput
+  or: [PhotovoltaicDataPropositionInput!]
 }
 
 input PublicationSortInput {
@@ -1280,6 +1627,11 @@ input RegisterUserInput {
 
 input RemoveInstitutionRepresentativeInput {
   institutionId: Uuid!
+  userId: Uuid!
+}
+
+input RemoveUserRoleInput {
+  role: UserRole!
   userId: Uuid!
 }
 
@@ -1340,7 +1692,6 @@ input UpdateInstitutionInput {
   institutionId: Uuid!
   name: String!
   publicKey: String
-  state: InstitutionState!
   websiteLocator: Url
 }
 
@@ -1425,11 +1776,25 @@ input UserSortInput {
   xmin: SortEnumType
 }
 
+input UuidPropositionInput {
+  equalTo: Uuid
+}
+
+input VerifyInstitutionInput {
+  institutionId: Uuid!
+}
+
 enum AddInstitutionRepresentativeErrorCode {
   UNKNOWN
   UNKNOWN_INSTITUTION
   UNKNOWN_USER
   DUPLICATE
+  UNAUTHORIZED
+}
+
+enum AddUserRoleErrorCode {
+  UNKNOWN
+  UNKNOWN_USER
   UNAUTHORIZED
 }
 
@@ -1472,6 +1837,30 @@ enum ComponentCategory {
   UNIT
 }
 
+enum ConfirmComponentManufacturerErrorCode {
+  UNKNOWN
+  UNKNOWN_COMPONENT
+  UNKNOWN_INSTITUTION
+  UNAUTHORIZED
+  UNKNOWN_MANUFACTURER
+}
+
+enum ConfirmInstitutionMethodDeveloperErrorCode {
+  UNKNOWN
+  UNKNOWN_METHOD
+  UNKNOWN_INSTITUTION
+  UNAUTHORIZED
+  UNKNOWN_DEVELOPER
+}
+
+enum ConfirmInstitutionRepresentativeErrorCode {
+  UNKNOWN
+  UNKNOWN_INSTITUTION
+  UNKNOWN_USER
+  UNAUTHORIZED
+  UNKNOWN_REPRESENTATIVE
+}
+
 enum ConfirmUserEmailChangeErrorCode {
   UNKNOWN
   DUPLICATE_EMAIL
@@ -1485,9 +1874,18 @@ enum ConfirmUserEmailErrorCode {
   INVALID_CONFIRMATION_CODE
 }
 
+enum ConfirmUserMethodDeveloperErrorCode {
+  UNKNOWN
+  UNKNOWN_METHOD
+  UNKNOWN_USER
+  UNAUTHORIZED
+  UNKNOWN_DEVELOPER
+}
+
 enum CreateComponentErrorCode {
   UNKNOWN
   UNKNOWN_MANUFACTURER
+  UNKNOWN_FURTHER_MANUFACTURERS
   UNAUTHORIZED
 }
 
@@ -1506,13 +1904,16 @@ enum CreateDatabaseErrorCode {
 
 enum CreateInstitutionErrorCode {
   UNKNOWN
-  NO_OWNER
+  NEITHER_OWNER_NOR_MANAGER
   UNKNOWN_OWNERS
+  UNKNOWN_MANAGER
+  UNAUTHORIZED
 }
 
 enum CreateMethodErrorCode {
   UNKNOWN
   TWO_REFERENCES
+  UNKNOWN_MANAGER
   UNKNOWN_INSTITUTION_DEVELOPERS
   UNKNOWN_USER_DEVELOPERS
   UNAUTHORIZED
@@ -1529,6 +1930,12 @@ enum DeletePersonalUserDataErrorCode {
   UNKNOWN_USER
   MISSING_PASSWORD
   INCORRECT_PASSWORD
+}
+
+enum DeleteUserErrorCode {
+  UNKNOWN
+  UNKNOWN_USER
+  UNAUTHORIZED
 }
 
 enum DisableUserTwoFactorAuthenticationErrorCode {
@@ -1561,14 +1968,12 @@ enum GenerateUserTwoFactorRecoveryCodesErrorCode {
 
 enum InstitutionRepresentativeRole {
   OWNER
-  MAINTAINER
   ASSISTANT
 }
 
 enum InstitutionState {
-  UNKNOWN
-  OPERATIVE
-  INOPERATIVE
+  PENDING
+  VERIFIED
 }
 
 enum LoginUserErrorCode {
@@ -1623,6 +2028,12 @@ enum RemoveInstitutionRepresentativeErrorCode {
   UNKNOWN_INSTITUTION
   UNKNOWN_REPRESENTATIVE
   UNKNOWN_USER
+}
+
+enum RemoveUserRoleErrorCode {
+  UNKNOWN
+  UNKNOWN_USER
+  UNAUTHORIZED
 }
 
 enum RequestUserPasswordResetErrorCode {
@@ -1720,41 +2131,33 @@ enum UriHostNameType {
   I_PV6
 }
 
-directive @authorize(
-  "Defines when when the resolver shall be executed.By default the resolver is executed after the policy has determined that the current user is allowed to access the field."
-  apply: ApplyPolicy! = BEFORE_RESOLVER
-  "The name of the authorization policy that determines access to the annotated resource."
-  policy: String
-  "Roles that are allowed to access the annotated resource."
-  roles: [String!]
-) repeatable on SCHEMA | OBJECT | FIELD_DEFINITION
+enum UserRole {
+  ADMINISTRATOR
+  VERIFIER
+}
+
+enum VerifyInstitutionErrorCode {
+  UNKNOWN
+  UNKNOWN_INSTITUTION
+  UNAUTHORIZED
+}
+
+directive @authorize("Defines when when the resolver shall be executed.By default the resolver is executed after the policy has determined that the current user is allowed to access the field." apply: ApplyPolicy! = BEFORE_RESOLVER "The name of the authorization policy that determines access to the annotated resource." policy: String "Roles that are allowed to access the annotated resource." roles: [String!]) repeatable on SCHEMA | OBJECT | FIELD_DEFINITION
 
 "The `@defer` directive may be provided for fragment spreads and inline fragments to inform the executor to delay the execution of the current fragment to indicate deprioritization of the current fragment. A query with `@defer` directive will cause the request to potentially return multiple responses, where non-deferred data is delivered in the initial response and data deferred is delivered in a subsequent response. `@include` and `@skip` take precedence over `@defer`."
-directive @defer(
-  "Deferred when true."
-  if: Boolean
-  "If this argument label has a value other than null, it will be passed on to the result of this defer directive. This label is intended to give client applications a way to identify to which fragment a deferred result belongs to."
-  label: String
-) on FRAGMENT_SPREAD | INLINE_FRAGMENT
+directive @defer("Deferred when true." if: Boolean "If this argument label has a value other than null, it will be passed on to the result of this defer directive. This label is intended to give client applications a way to identify to which fragment a deferred result belongs to." label: String) on FRAGMENT_SPREAD | INLINE_FRAGMENT
 
 "The `@specifiedBy` directive is used within the type system definition language to provide a URL for specifying the behavior of custom scalar definitions."
-directive @specifiedBy(
-  "The specifiedBy URL points to a human-readable specification. This field will only read a result for scalar types."
-  url: String!
-) on SCALAR
+directive @specifiedBy("The specifiedBy URL points to a human-readable specification. This field will only read a result for scalar types." url: String!) on SCALAR
 
 "The `@stream` directive may be provided for a field of `List` type so that the backend can leverage technology such as asynchronous iterators to provide a partial list in the initial response, and additional list items in subsequent responses. `@include` and `@skip` take precedence over `@stream`."
-directive @stream(
-  "Streamed when true."
-  if: Boolean!
-  "The initial elements that shall be send down to the consumer."
-  initialCount: Int!
-  "If this argument label has a value other than null, it will be passed on to the result of this stream directive. This label is intended to give client applications a way to identify to which fragment a streamed result belongs to."
-  label: String
-) on FIELD
+directive @stream("Streamed when true." if: Boolean! "The initial elements that shall be send down to the consumer." initialCount: Int! "If this argument label has a value other than null, it will be passed on to the result of this stream directive. This label is intended to give client applications a way to identify to which fragment a streamed result belongs to." label: String) on FIELD
 
 "The `DateTime` scalar represents an ISO-8601 compliant date time type."
-scalar DateTime @specifiedBy(url: "https://www.graphql-scalars.com/date-time")
+scalar DateTime @specifiedBy(url: "https:\/\/www.graphql-scalars.com\/date-time")
+
+"The NonNegativeInt scalar type represents a unsigned 32-bit numeric non-fractional value equal to or greater than 0."
+scalar NonNegativeInt
 
 scalar Url
 
