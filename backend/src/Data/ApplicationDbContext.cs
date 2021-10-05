@@ -9,8 +9,9 @@ namespace Database.Data
     // Inspired by
     // [Authentication and authorization for SPAs](https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity-api-authorization?view=aspnetcore-3.0)
     // [Customize Identity Model](https://docs.microsoft.com/en-us/aspnet/core/security/authentication/customize-identity-model?view=aspnetcore-3.0)
+    [Owned]
     public sealed class ApplicationDbContext
-      : DbContext
+          : DbContext
     {
         static ApplicationDbContext()
         {
@@ -75,10 +76,14 @@ namespace Database.Data
             builder.HasPostgresExtension("pgcrypto"); // https://www.npgsql.org/efcore/modeling/generated-properties.html#guiduuid-generation
             CreateEnumerations(builder);
             ConfigureIdentityEntities(builder);
-            // ConfigureEntity(
-            //     builder.Entity<Component>()
-            //     )
-            //   .ToTable("component");
+            ConfigureEntity(
+                builder.Entity<GetHttpsResource>()
+                )
+              .ToTable("get_https_resource");
+            ConfigureEntity(
+                builder.Entity<OpticalData>()
+                )
+              .ToTable("optical_data");
         }
     }
 }

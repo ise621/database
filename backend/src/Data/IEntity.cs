@@ -4,8 +4,8 @@ namespace Database.Data
 {
     public interface IEntity
     {
-        public Guid Id { get; }
+        Guid Id { get; }
 
-        public uint xmin { get; } // https://www.npgsql.org/efcore/modeling/concurrency.html
+        uint xmin { get; } // https://www.npgsql.org/efcore/modeling/concurrency.html
     }
 }
