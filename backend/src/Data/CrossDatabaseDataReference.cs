@@ -1,5 +1,6 @@
 using System;
 using Microsoft.EntityFrameworkCore;
+using Database.Enumerations;
 
 namespace Database.Data
 {
