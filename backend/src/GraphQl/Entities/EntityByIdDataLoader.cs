@@ -8,7 +8,7 @@ using HotChocolate.DataLoader;
 using Microsoft.EntityFrameworkCore;
 using Guid = System.Guid;
 
-namespace Database.GraphQl.Entitys
+namespace Database.GraphQl.Entities
 {
     public abstract class EntityByIdDataLoader<TEntity>
       : BatchDataLoader<Guid, TEntity?>
