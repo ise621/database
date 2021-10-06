@@ -58,7 +58,8 @@ namespace Database.Data
         private readonly string _schemaName;
 
         // https://docs.microsoft.com/en-us/ef/core/miscellaneous/nullable-reference-types#dbcontext-and-dbset
-        /* public DbSet<Component> Components { get; private set; } = default!; */
+        public DbSet<GetHttpsResource> GetHttpsResources { get; private set; } = default!;
+        public DbSet<OpticalData> OpticalData { get; private set; } = default!;
 
         public ApplicationDbContext(
             DbContextOptions<ApplicationDbContext> options
