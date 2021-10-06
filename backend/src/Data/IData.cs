@@ -14,8 +14,7 @@ namespace Database.Data
         DateTime CreatedAt { get; }
         AppliedMethod AppliedMethod { get; }
         ICollection<DataApproval> Approvals { get; }
-        Guid? ResourceId { get; }
-        GetHttpsResource? Resource { get; }
+        ICollection<GetHttpsResource> Resources { get; }
         // ResponseApproval Approval { get; }
         string Locale { get; }
     }

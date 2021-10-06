@@ -15,17 +15,18 @@ namespace Database.Data
 
         public Guid DataId { get; private set; }
 
-        [InverseProperty(nameof(DataX.Resource))]
+        [InverseProperty(nameof(DataX.Resources))]
         public DataX? Data { get; set; }
 
         public Guid? ParentId { get; private set; }
         // TODO Require the conversion method to be given whenever there is a parent. In other words, either both are `null` or both are non-`null`.
         public ToTreeVertexAppliedConversionMethod? AppliedConversionMethod { get; private set; }
 
-        [InverseProperty(nameof(GetHttpsResource.Children))]
+        // TODO The parent's `Data` must be the same as this resource's `Data`.
+        [InverseProperty(nameof(Children))]
         public GetHttpsResource? Parent { get; set; }
 
-        [InverseProperty(nameof(GetHttpsResource.Parent))]
+        [InverseProperty(nameof(Parent))]
         public ICollection<GetHttpsResource> Children { get; } = new List<GetHttpsResource>();
 
         public GetHttpsResource(
