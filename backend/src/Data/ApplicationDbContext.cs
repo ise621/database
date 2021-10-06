@@ -21,14 +21,14 @@ namespace Database.Data
         private static void RegisterEnumerations()
         {
             // https://www.npgsql.org/efcore/mapping/enum.html#mapping-your-enum
-            /* NpgsqlConnection.GlobalTypeMapper.MapEnum<Enumerations.ComponentCategory>(); */
+            NpgsqlConnection.GlobalTypeMapper.MapEnum<Enumerations.DataKind>();
         }
 
         private static void CreateEnumerations(ModelBuilder builder)
         {
             // https://www.npgsql.org/efcore/mapping/enum.html#creating-your-database-enum
             // Create enumerations in public schema because that is where `NpgsqlConnection.GlobalTypeMapper.MapEnum` expects them to be by default.
-            /* builder.HasPostgresEnum<Enumerations.ComponentCategory>("public"); */
+            builder.HasPostgresEnum<Enumerations.DataKind>("public");
         }
 
         private static
