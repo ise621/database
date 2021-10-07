@@ -92,6 +92,7 @@ namespace Database.Configuration
                                               // Object Types
                     .AddType<GraphQl.GetHttpsResources.GetHttpsResourceType>()
                     .AddType<GraphQl.OpticalDataX.OpticalDataType>()
+                    .AddType<GraphQl.NamedMethodArgumentType>()
                   /* .AddType<GraphQl.DataX.DataApproval>() */
                   /* .AddType<GraphQl.DataX.GetHttpsResourceTreeNonRootVertex>() */
                   /* .AddType<GraphQl.DataX.GetHttpsResourceTreeRoot>() */

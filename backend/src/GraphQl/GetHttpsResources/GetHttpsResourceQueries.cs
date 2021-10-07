@@ -23,16 +23,16 @@ namespace Database.GraphQl.GetHttpsResources
         //     return context.GetHttpsResources;
         // }
 
-        // public Task<Data.GetHttpsResource?> GetGetHttpsResourceAsync(
-        //     Guid uuid,
-        //     GetHttpsResourceByIdDataLoader byId,
-        //     CancellationToken cancellationToken
-        //     )
-        // {
-        //     return byId.LoadAsync(
-        //         uuid,
-        //         cancellationToken
-        //         );
-        // }
+        public Task<Data.GetHttpsResource?> GetGetHttpsResourceAsync(
+            Guid uuid,
+            GetHttpsResourceByIdDataLoader byId,
+            CancellationToken cancellationToken
+            )
+        {
+            return byId.LoadAsync(
+                uuid,
+                cancellationToken
+                );
+        }
     }
 }

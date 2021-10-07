@@ -5,7 +5,6 @@ namespace Database.Data
 {
     public interface IData
     {
-        DateTime Timestamp { get; }
         Guid ComponentId { get; }
         string? Name { get; }
         string? Description { get; }

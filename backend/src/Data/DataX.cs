@@ -7,9 +7,7 @@ namespace Database.Data
     public abstract class DataX
     : Data.Entity, IData
     {
-        public DateTime Timestamp { get; private set; }
         public string Locale { get; private set; }
-        public Guid DatabaseId { get; private set; }
         public Guid ComponentId { get; private set; }
         public string? Name { get; private set; }
         public string? Description { get; private set; }
@@ -25,9 +23,7 @@ namespace Database.Data
         public ICollection<GetHttpsResource> Resources { get; } = new List<GetHttpsResource>();
 
         protected DataX(
-          DateTime timestamp,
           string locale,
-          Guid databaseId,
           Guid componentId,
           string? name,
           string? description,
@@ -39,9 +35,7 @@ namespace Database.Data
         // ResponseApproval approval
         )
         : this(
-          timestamp: timestamp,
           locale: locale,
-          databaseId: databaseId,
           componentId: componentId,
           name: name,
           description: description,
@@ -57,9 +51,7 @@ namespace Database.Data
 
         // `DbContext` needs this constructor without owned entities.
         protected DataX(
-          DateTime timestamp,
           string locale,
-          Guid databaseId,
           Guid componentId,
           string? name,
           string? description,
@@ -68,9 +60,7 @@ namespace Database.Data
           DateTime createdAt
         )
         {
-            Timestamp = timestamp;
             Locale = locale;
-            DatabaseId = databaseId;
             ComponentId = componentId;
             Name = name;
             Description = description;

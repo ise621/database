@@ -15,9 +15,7 @@ namespace Database.Data
         public ICollection<CielabColor> CielabColors { get; private set; } = new List<CielabColor>();
 
         public OpticalData(
-          DateTime timestamp,
           string locale,
-          Guid databaseId,
           Guid componentId,
           string? name,
           string? description,
@@ -35,9 +33,7 @@ namespace Database.Data
           double[] colorRenderingIndices,
           ICollection<CielabColor> cielabColors
         ) : base(
-          timestamp: timestamp,
           locale: locale,
-          databaseId: databaseId,
           componentId: componentId,
           name: name,
           description: description,
@@ -59,9 +55,7 @@ namespace Database.Data
 
         // `DbContext` needs this constructor without owned entities.
         public OpticalData(
-          DateTime timestamp,
           string locale,
-          Guid databaseId,
           Guid componentId,
           string? name,
           string? description,
@@ -76,9 +70,7 @@ namespace Database.Data
           double[] infraredEmittances,
           double[] colorRenderingIndices
         ) : base(
-          timestamp: timestamp,
           locale: locale,
-          databaseId: databaseId,
           componentId: componentId,
           name: name,
           description: description,

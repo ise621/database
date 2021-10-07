@@ -23,16 +23,16 @@ namespace Database.GraphQl.OpticalDataX
         //     return context.OpticalData;
         // }
 
-        // public Task<Data.OpticalData?> GetOpticalDataAsync(
-        //     Guid uuid,
-        //     OpticalDataByIdDataLoader byId,
-        //     CancellationToken cancellationToken
-        //     )
-        // {
-        //     return byId.LoadAsync(
-        //         uuid,
-        //         cancellationToken
-        //         );
-        // }
+        public Task<Data.OpticalData?> GetOpticalDataAsync(
+            Guid uuid,
+            OpticalDataByIdDataLoader byId,
+            CancellationToken cancellationToken
+            )
+        {
+            return byId.LoadAsync(
+                uuid,
+                cancellationToken
+                );
+        }
     }
 }
