@@ -11,7 +11,7 @@ namespace Database.Data
         public string HashValue { get; private set; }
         public Uri Locator { get; private set; }
         public Guid FormatId { get; private set; }
-        public ICollection<FileMetaInformation> ArchivedFilesMetaInformation { get; private set; }
+        public ICollection<FileMetaInformation> ArchivedFilesMetaInformation { get; private set; } = new List<FileMetaInformation>();
 
         public Guid DataId { get; private set; }
 
@@ -34,20 +34,40 @@ namespace Database.Data
           string hashValue,
           Uri locator,
           Guid formatId,
-          ICollection<FileMetaInformation> archivedFilesMetaInformation,
           Guid dataId,
           Guid? parentId,
+          ICollection<FileMetaInformation> archivedFilesMetaInformation,
           ToTreeVertexAppliedConversionMethod? appliedConversionMethod
+        )
+        : this(
+            description: description,
+            hashValue: hashValue,
+            locator: locator,
+            formatId: formatId,
+            dataId: dataId,
+            parentId: parentId
+        )
+        {
+            ArchivedFilesMetaInformation = archivedFilesMetaInformation;
+            AppliedConversionMethod = appliedConversionMethod;
+        }
+
+        // `DbContext` needs this constructor without owned entities.
+        public GetHttpsResource(
+          string description,
+          string hashValue,
+          Uri locator,
+          Guid formatId,
+          Guid dataId,
+          Guid? parentId
         )
         {
             Description = description;
             HashValue = hashValue;
             Locator = locator;
             FormatId = formatId;
-            ArchivedFilesMetaInformation = archivedFilesMetaInformation;
             DataId = dataId;
             ParentId = parentId;
-            AppliedConversionMethod = appliedConversionMethod;
         }
     }
 }
