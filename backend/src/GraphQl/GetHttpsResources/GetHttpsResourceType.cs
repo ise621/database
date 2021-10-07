@@ -10,7 +10,6 @@ namespace Database.GraphQl.GetHttpsResources
             )
         {
             base.Configure(descriptor);
-            descriptor.BindFieldsExplicitly();
         }
     }
 }

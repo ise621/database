@@ -9,10 +9,12 @@ namespace Database.GraphQl.OpticalDataX
     {
         public OpticalDataByIdDataLoader(
             IBatchScheduler batchScheduler,
+            DataLoaderOptions options,
             IDbContextFactory<Data.ApplicationDbContext> dbContextFactory
             )
             : base(
                 batchScheduler,
+                options,
                 dbContextFactory,
                 dbContext => dbContext.OpticalData
                 )
