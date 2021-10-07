@@ -8,6 +8,9 @@ namespace Database.Data
     public sealed class NamedMethodArgument
         : IDisposable
     {
+        public string Name { get; private set; }
+        public JsonDocument Value { get; private set; }
+
         public NamedMethodArgument(
             string name,
             JsonDocument value
@@ -16,9 +19,6 @@ namespace Database.Data
             Name = name;
             Value = value;
         }
-
-        public string Name { get; private set; }
-        public JsonDocument Value { get; private set; }
 
         public void Dispose() => Value.Dispose();
     }

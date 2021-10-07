@@ -67,7 +67,7 @@ namespace Database
                 .Enrich.FromLogContext()
                 .Enrich.WithMachineName()
                 .Enrich.WithProperty("Environment", environment)
-                .WriteTo.Console(new RenderedCompactJsonFormatter())
+                .WriteTo.Console()
                 .WriteTo.File(
                     formatter: new CompactJsonFormatter(),
                     path: "./logs/serilog.json",

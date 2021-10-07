@@ -1,3 +1,4 @@
+using System;
 using HotChocolate;
 using HotChocolate.Types;
 using HotChocolate.Data.Filters;
@@ -79,15 +80,19 @@ namespace Database.Configuration
                       )
                   )
                   .AddQueryType(d => d.Name(nameof(GraphQl.Query)))
-                      /* .AddType<GraphQl.Components.ComponentQueries>() */
+                      .AddType<GraphQl.GetHttpsResources.GetHttpsResourceQueries>()
+                      .AddType<GraphQl.OpticalDataX.OpticalDataQueries>()
                   .AddMutationType(d => d.Name(nameof(GraphQl.Mutation)))
-                      /* .AddType<GraphQl.Components.ComponentMutations>() */
+                      .AddType<GraphQl.GetHttpsResources.GetHttpsResourceMutations>()
+                      .AddType<GraphQl.OpticalDataX.OpticalDataMutations>()
                   /* .AddSubscriptionType(d => d.Name(nameof(GraphQl.Subscription))) */
                   /*     .AddType<ComponentSubscriptions>() */
                   // Scalar Types
                   .AddType(new UuidType('D')) // https://chillicream.com/docs/hotchocolate/defining-a-schema/scalars#uuid-type
                                               // Object Types
-                  /* .AddType<GraphQl.DataX.CalorimetricData>() */
+                    .AddType<GraphQl.GetHttpsResources.GetHttpsResourceType>()
+                    .AddType<GraphQl.OpticalDataX.OpticalDataType>()
+                    .AddType<GraphQl.NamedMethodArgumentType>()
                   /* .AddType<GraphQl.DataX.DataApproval>() */
                   /* .AddType<GraphQl.DataX.GetHttpsResourceTreeNonRootVertex>() */
                   /* .AddType<GraphQl.DataX.GetHttpsResourceTreeRoot>() */
@@ -101,7 +106,21 @@ namespace Database.Configuration
                   .AddConvention<IFilterConvention>(
                    new FilterConventionExtension(descriptor =>
                      {
-                         /* descriptor.BindRuntimeType<Data.Component, GraphQl.Components.ComponentFilterType>(); */
+                         descriptor.Operation(DefaultFilterOperations.Equals).Name("equalTo");
+                         descriptor.Operation(DefaultFilterOperations.NotEquals).Name("notEqualTo");
+                         descriptor.Operation(DefaultFilterOperations.GreaterThan).Name("greaterThan");
+                         descriptor.Operation(DefaultFilterOperations.NotGreaterThan).Name("notGreaterThan");
+                         descriptor.Operation(DefaultFilterOperations.GreaterThanOrEquals).Name("greaterThanOrEqualTo");
+                         descriptor.Operation(DefaultFilterOperations.NotGreaterThanOrEquals).Name("notGreaterThanOrEqualTo");
+                         descriptor.Operation(DefaultFilterOperations.LowerThan).Name("lessThan");
+                         descriptor.Operation(DefaultFilterOperations.NotLowerThan).Name("lessThan");
+                         descriptor.Operation(DefaultFilterOperations.LowerThanOrEquals).Name("notLessThanOrEqualTo");
+                         descriptor.Operation(DefaultFilterOperations.NotLowerThanOrEquals).Name("notLessThanOrEqualTo");
+                         // TODO `inClosedInterval`
+                         descriptor.Configure<ComparableOperationFilterInputType<double>>(x => x.Name("FloatPropositionInput"));
+                         descriptor.Configure<ComparableOperationFilterInputType<Guid>>(x => x.Name("UuidPropositionInput"));
+                         descriptor.BindRuntimeType<Data.GetHttpsResource, GraphQl.GetHttpsResources.GetHttpsResourceFilterType>();
+                         descriptor.BindRuntimeType<Data.OpticalData, GraphQl.OpticalDataX.OpticalDataFilterType>();
                      }
                      )
                    )
