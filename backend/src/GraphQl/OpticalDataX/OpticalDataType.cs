@@ -13,6 +13,9 @@ namespace Database.GraphQl.OpticalDataX
             descriptor
                 .Field(x => x.Resources)
                 .ResolveWith<OpticalDataResolvers>(t => t.GetGetHttpsResources(default!, default!, default!));
+            descriptor
+                .Field("resourceTree")
+                .ResolveWith<OpticalDataResolvers>(t => t.GetGetHttpsResourceTree(default!));
         }
     }
 }

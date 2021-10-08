@@ -3,12 +3,12 @@ using System.Linq;
 using GreenDonut;
 using Microsoft.EntityFrameworkCore;
 
-namespace Database.GraphQl.OpticalDataX
+namespace Database.GraphQl.DataX
 {
-    public sealed class GetHttpsResourcesByOpticalDataIdDataLoader
+    public sealed class GetHttpsResourceTreeNonRootVerticesByDataIdDataLoader
       : Entities.AssociationsByAssociateIdDataLoader<Data.GetHttpsResource>
     {
-        public GetHttpsResourcesByOpticalDataIdDataLoader(
+        public GetHttpsResourceTreeNonRootVerticesByDataIdDataLoader(
             IBatchScheduler batchScheduler,
             DataLoaderOptions options,
             IDbContextFactory<Data.ApplicationDbContext> dbContextFactory
@@ -19,7 +19,7 @@ namespace Database.GraphQl.OpticalDataX
                 dbContextFactory,
                 (dbContext, ids) =>
                     dbContext.GetHttpsResources.AsQueryable().Where(x =>
-                        ids.Contains(x.DataId)
+                        x.ParentId != null && ids.Contains(x.DataId)
                     ),
                 x => x.DataId
                 )
