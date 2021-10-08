@@ -10,6 +10,21 @@ namespace Database.GraphQl.GetHttpsResources
             )
         {
             base.Configure(descriptor);
+            descriptor
+                .Field(x => x.ParentId)
+                .Ignore();
+            descriptor
+                .Field(x => x.Parent)
+                .ResolveWith<GetHttpsResourceResolvers>(t => t.GetParent(default!, default!, default!));
+            descriptor
+                .Field(x => x.Children)
+                .ResolveWith<GetHttpsResourceResolvers>(t => t.GetChildren(default!, default!, default!));
+            descriptor
+                .Field(x => x.DataId)
+                .Ignore();
+            descriptor
+                .Field(x => x.Data)
+                .ResolveWith<GetHttpsResourceResolvers>(t => t.GetData(default!, default!, default!));
         }
     }
 }
