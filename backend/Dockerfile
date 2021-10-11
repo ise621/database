@@ -190,7 +190,7 @@ RUN \
 # var response =
 #    await client
 #    .PostAsync(
-#    "https://local.testlab-solar-facades.de:5051/graphql/",
+#    "https://local.solarbuildingenvelopes.com:5051/graphql/",
 #    content
 #    );
 # ```

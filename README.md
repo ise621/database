@@ -21,7 +21,7 @@
    into the new directory `database` by running `cd database`.
 1. Prepare your environment by running `cp .env.sample .env`,
    `cp frontend/.env.local.sample frontend/.env.local`, and adding the line
-   `127.0.0.1 local.testlab-solar-facades.de` to your `/etc/hosts` file.
+   `127.0.0.1 local.solarbuildingenvelopes.com` to your `/etc/hosts` file.
 1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop), and
    [GNU Make](https://www.gnu.org/software/make/).
 1. List all GNU Make targets by running `make help`.
@@ -29,11 +29,11 @@
    by running `make ssl`.
 1. Start all services and follow their logs by running `make up logs`.
 1. To see the web frontend navigate to
-   `https://local.testlab-solar-facades.de:5051` in your web browser, to see
+   `https://local.solarbuildingenvelopes.com:5051` in your web browser, to see
    the GraphQL API navigate to
-   `https://local.testlab-solar-facades.de:5051/graphql/`, and to see sent
+   `https://local.solarbuildingenvelopes.com:5051/graphql/`, and to see sent
    emails navigate to
-   `https://local.testlab-solar-facades.de:5051/email/`.
+   `https://local.solarbuildingenvelopes.com:5051/email/`.
 
 In another shell
 1. Drop into `ash` with the working directory `/app`, which is mounted to the
@@ -104,7 +104,7 @@ The same works for frontend containers by running `make shellf`.
    works as expected and if that is the case, repeat all stages but this one in
    the directory `/app/production` (instead of `/app/staging`). Note that in
    the staging environment sent emails can be viewed in the web browser under
-   `https://staging.testlab-solar-facades.de/email/` and emails to addresses in
+   `https://staging.solarbuildingenvelopes.com/email/` and emails to addresses in
    the variable `RELAY_ALLOWED_EMAILS` in the `.env` file are delivered to the
    respective inboxes (the variable's value is a comma separated list of email
    addresses).
