@@ -44,7 +44,28 @@ namespace Database.Data
             hashValue: hashValue,
             locator: locator,
             formatId: formatId,
-            dataId: dataId,
+            parentId: parentId,
+            archivedFilesMetaInformation: archivedFilesMetaInformation,
+            appliedConversionMethod: appliedConversionMethod
+        )
+        {
+            DataId = dataId;
+        }
+
+        public GetHttpsResource(
+          string description,
+          string hashValue,
+          Uri locator,
+          Guid formatId,
+          Guid? parentId,
+          ICollection<FileMetaInformation> archivedFilesMetaInformation,
+          ToTreeVertexAppliedConversionMethod? appliedConversionMethod
+        )
+        : this(
+            description: description,
+            hashValue: hashValue,
+            locator: locator,
+            formatId: formatId,
             parentId: parentId
         )
         {
@@ -61,12 +82,29 @@ namespace Database.Data
           Guid dataId,
           Guid? parentId
         )
+        : this(
+            description: description,
+            hashValue: hashValue,
+            locator: locator,
+            formatId: formatId,
+            parentId: parentId
+        )
+        {
+            DataId = dataId;
+        }
+
+        public GetHttpsResource(
+          string description,
+          string hashValue,
+          Uri locator,
+          Guid formatId,
+          Guid? parentId
+        )
         {
             Description = description;
             HashValue = hashValue;
             Locator = locator;
             FormatId = formatId;
-            DataId = dataId;
             ParentId = parentId;
         }
     }

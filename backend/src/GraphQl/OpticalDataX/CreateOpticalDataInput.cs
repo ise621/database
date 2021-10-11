@@ -14,6 +14,7 @@ namespace Database.GraphQl.OpticalDataX
           AppliedMethodInput AppliedMethod,
           IReadOnlyList<DataApprovalInput> Approvals,
           // ResponseApproval Approval
+          RootGetHttpsResourceInput RootResource,
           double[] NearnormalHemisphericalVisibleTransmittances,
           double[] NearnormalHemisphericalVisibleReflectances,
           double[] NearnormalHemisphericalSolarTransmittances,

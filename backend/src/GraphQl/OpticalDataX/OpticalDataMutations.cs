@@ -101,6 +101,41 @@ namespace Database.GraphQl.OpticalDataX
                     )
                 ).ToList()
             );
+            var resource = new Data.GetHttpsResource(
+                    description: input.RootResource.Description,
+                    hashValue: input.RootResource.HashValue,
+                    locator: input.RootResource.Locator,
+                    formatId: input.RootResource.FormatId,
+                    parentId: null,
+                    archivedFilesMetaInformation: input.RootResource.ArchivedFilesMetaInformation.Select(i =>
+                        new Data.FileMetaInformation(
+                            path: i.Path,
+                            formatId: i.FormatId
+                        )
+                    ).ToList(),
+                    appliedConversionMethod:
+                        input.RootResource.AppliedConversionMethod is null
+                        ? null
+                        : new Data.ToTreeVertexAppliedConversionMethod(
+                            methodId: input.RootResource.AppliedConversionMethod.MethodId,
+                            arguments: input.RootResource.AppliedConversionMethod.Arguments.Select(a =>
+                                new Data.NamedMethodArgument(
+                                    name: a.Name,
+                                    // TODO Turn `a.Value` into `JsonDocument`. It comes
+                                    // as nested `IReadOnlyDictionary/-List` as said on
+                                    // https://chillicream.com/docs/hotchocolate/v11/defining-a-schema/scalars/#any-type
+                                    // Take inspiration from
+                                    // https://josef.codes/custom-dictionary-string-object-jsonconverter-for-system-text-json/
+                                    // and
+                                    // https://github.com/joseftw/JOS.SystemTextJsonDictionaryStringObjectJsonConverter/blob/develop/src/JOS.SystemTextJsonDictionaryObjectModelBinder/DictionaryStringObjectJsonConverter.cs
+                                    // This is also needed in `GetHttpsResourceMutations`.
+                                    value: JsonDocument.Parse(@"""TODO""")
+                                )
+                            ).ToList(),
+                            sourceName: input.RootResource.AppliedConversionMethod.SourceName
+                        )
+            );
+            opticalData.Resources.Add(resource);
             context.OpticalData.Add(opticalData);
             await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             return new CreateOpticalDataPayload(opticalData);
