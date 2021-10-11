@@ -107,19 +107,19 @@ namespace Database.Configuration
                   .AddConvention<IFilterConvention>(
                    new FilterConventionExtension(descriptor =>
                      {
-                         descriptor.Operation(DefaultFilterOperations.Equals).Name("equalTo");
-                         descriptor.Operation(DefaultFilterOperations.NotEquals).Name("notEqualTo");
-                         descriptor.Operation(DefaultFilterOperations.GreaterThan).Name("greaterThan");
-                         descriptor.Operation(DefaultFilterOperations.NotGreaterThan).Name("notGreaterThan");
-                         descriptor.Operation(DefaultFilterOperations.GreaterThanOrEquals).Name("greaterThanOrEqualTo");
-                         descriptor.Operation(DefaultFilterOperations.NotGreaterThanOrEquals).Name("notGreaterThanOrEqualTo");
-                         descriptor.Operation(DefaultFilterOperations.LowerThan).Name("lessThan");
-                         descriptor.Operation(DefaultFilterOperations.NotLowerThan).Name("lessThan");
-                         descriptor.Operation(DefaultFilterOperations.LowerThanOrEquals).Name("notLessThanOrEqualTo");
-                         descriptor.Operation(DefaultFilterOperations.NotLowerThanOrEquals).Name("notLessThanOrEqualTo");
+                         // descriptor.Operation(DefaultFilterOperations.Equals).Name("equalTo");
+                         //  descriptor.Operation(DefaultFilterOperations.NotEquals).Name("notEqualTo");
+                         //  descriptor.Operation(DefaultFilterOperations.GreaterThan).Name("greaterThan");
+                         //  descriptor.Operation(DefaultFilterOperations.NotGreaterThan).Name("notGreaterThan");
+                         //  descriptor.Operation(DefaultFilterOperations.GreaterThanOrEquals).Name("greaterThanOrEqualTo");
+                         //  descriptor.Operation(DefaultFilterOperations.NotGreaterThanOrEquals).Name("notGreaterThanOrEqualTo");
+                         //  descriptor.Operation(DefaultFilterOperations.LowerThan).Name("lessThan");
+                         //  descriptor.Operation(DefaultFilterOperations.NotLowerThan).Name("lessThan");
+                         //  descriptor.Operation(DefaultFilterOperations.LowerThanOrEquals).Name("notLessThanOrEqualTo");
+                         //  descriptor.Operation(DefaultFilterOperations.NotLowerThanOrEquals).Name("notLessThanOrEqualTo");
                          // TODO `inClosedInterval`
-                         descriptor.Configure<ComparableOperationFilterInputType<double>>(x => x.Name("FloatPropositionInput"));
-                         descriptor.Configure<ComparableOperationFilterInputType<Guid>>(x => x.Name("UuidPropositionInput"));
+                         //  descriptor.Configure<ComparableOperationFilterInputType<double>>(x => x.Name("FloatPropositionInput"));
+                         //  descriptor.Configure<ComparableOperationFilterInputType<Guid>>(x => x.Name("UuidPropositionInput"));
                          descriptor.BindRuntimeType<Data.GetHttpsResource, GraphQl.GetHttpsResources.GetHttpsResourceFilterType>();
                          descriptor.BindRuntimeType<Data.OpticalData, GraphQl.OpticalDataX.OpticalDataFilterType>();
                      }
