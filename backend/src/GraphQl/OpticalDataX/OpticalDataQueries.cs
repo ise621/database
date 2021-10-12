@@ -18,9 +18,12 @@ namespace Database.GraphQl.OpticalDataX
         [UseFiltering]
         [UseSorting]
         public IQueryable<Data.OpticalData> GetAllOpticalData(
+            DateTime? timestamp,
+            [GraphQLType(typeof(LocaleType))] string? locale,
             [ScopedService] Data.ApplicationDbContext context
             )
         {
+            // TODO Use `timestamp` and `locale`.
             return context.OpticalData;
         }
 
