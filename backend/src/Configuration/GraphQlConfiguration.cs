@@ -7,11 +7,11 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using OpenIddict.Validation.AspNetCore;
 using IServiceCollection = Microsoft.Extensions.DependencyInjection.IServiceCollection;
 using Microsoft.Extensions.Logging;
 using HotChocolate.Data;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Database.Configuration
 {
@@ -61,17 +61,12 @@ namespace Database.Configuration
                   // TODO Persisted queries
                   /* .AddFileSystemQueryStorage("./persisted_queries") */
                   /* .UsePersistedQueryPipeline(); */
-                  /* TODO services.AddDiagnosticObserver<GraphQl.DiagnosticObserver>(); */
                   .AddHttpRequestInterceptor(async (httpContext, requestExecutor, requestBuilder, cancellationToken) =>
                   {
                       // HotChocolate uses the default cookie authentication
                       // scheme `IdentityConstants.ApplicationScheme` by
-                      // default. We want it to use the JavaScript Web Token
-                      // (JWT), aka, Access Token, provided as `Authorization`
-                      // HTTP header with the prefix `Bearer` as issued by
-                      // OpenIddict though. This Access Token includes Scopes
-                      // and Claims.
-                      var authenticateResult = await httpContext.AuthenticateAsync(OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme).ConfigureAwait(false);
+                      // default.
+                      var authenticateResult = await httpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme).ConfigureAwait(false);
                       if (authenticateResult.Succeeded && authenticateResult.Principal is not null)
                       {
                           httpContext.User = authenticateResult.Principal;

@@ -15,8 +15,6 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 
-// TODO Certificate authentication: https://docs.microsoft.com/en-us/aspnet/core/security/authentication/certauth
-
 namespace Database
 {
     public sealed class Startup
@@ -35,7 +33,7 @@ namespace Database
 
         public void ConfigureServices(IServiceCollection services)
         {
-            AuthConfiguration.ConfigureServices(services, _environment, _appSettings);
+            AuthConfiguration.ConfigureServices(services, _appSettings);
             GraphQlConfiguration.ConfigureServices(services, _environment);
             ConfigureDatabaseServices(services);
             ConfigureMessageSenderServices(services);
@@ -102,8 +100,7 @@ namespace Database
                 {
                     options
                     .UseNpgsql(_appSettings.Database.ConnectionString)
-                    .UseSchemaName(_appSettings.Database.SchemaName)
-                    .UseOpenIddict();
+                    .UseSchemaName(_appSettings.Database.SchemaName);
                     /* .UseNodaTime() */ // https://www.npgsql.org/efcore/mapping/nodatime.html
                     if (!_environment.IsProduction())
                     {
@@ -113,7 +110,7 @@ namespace Database
                     }
                 }
                 );
-            // Database context as services are used by `Identity` and `OpenIddict`.
+            // Database context as services are used by `Identity`.
             services.AddDbContext<Data.ApplicationDbContext>(
                 (services, options) =>
                 {

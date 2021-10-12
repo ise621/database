@@ -7,6 +7,9 @@ namespace Database
         public string Host { get; set; }
         = "";
 
+        public string MetabaseHost { get; set; }
+        = "";
+
         public LoggingSettings Logging { get; set; }
         = new LoggingSettings();
 
@@ -14,18 +17,6 @@ namespace Database
         {
             public bool EnableSensitiveDataLogging { get; set; }
             = false;
-        }
-
-        public JsonWebTokenSettings JsonWebToken { get; set; }
-        = new JsonWebTokenSettings();
-
-        public sealed class JsonWebTokenSettings
-        {
-            public string EncryptionCertificatePassword { get; set; }
-            = "";
-
-            public string SigningCertificatePassword { get; set; }
-            = "";
         }
 
         public EmailSettings Email { get; set; }
@@ -40,7 +31,7 @@ namespace Database
             = 0;
         }
 
-        public string TestlabSolarFacadesOpenIdConnectClientSecret { get; set; }
+        public string OpenIdConnectClientSecret { get; set; }
         = "";
 
         public DatabaseSettings Database { get; set; }
