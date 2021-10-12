@@ -14,7 +14,7 @@ namespace Database.GraphQl.GetHttpsResources
     {
         [UseDbContext(typeof(Data.ApplicationDbContext))]
         // [UseUserManager]
-        [Authorize(Policy = Configuration.AuthConfiguration.WritePolicy)]
+        // [Authorize(Policy = Configuration.AuthConfiguration.WritePolicy)]
         public async Task<CreateGetHttpsResourcePayload> CreateGetHttpsResourceAsync(
             CreateGetHttpsResourceInput input,
             // [GlobalState(nameof(ClaimsPrincipal))] ClaimsPrincipal claimsPrincipal,

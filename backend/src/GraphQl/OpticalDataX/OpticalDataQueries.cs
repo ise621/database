@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace Database.GraphQl.OpticalDataX
         // [UseProjection] // We disabled projections because when requesting `id` all results had the same `id` and when also requesting `uuid`, the latter was always the empty UUID `000...`.
         [UseFiltering]
         [UseSorting]
-        public IQueryable<Data.OpticalData> GetOpticalDataX(
+        public IQueryable<Data.OpticalData> GetAllOpticalData(
             [ScopedService] Data.ApplicationDbContext context
             )
         {
@@ -24,13 +25,16 @@ namespace Database.GraphQl.OpticalDataX
         }
 
         public Task<Data.OpticalData?> GetOpticalDataAsync(
-            Guid uuid,
+            Guid id,
+            DateTime? timestamp,
+            [GraphQLType(typeof(LocaleType))] string? locale,
             OpticalDataByIdDataLoader byId,
             CancellationToken cancellationToken
             )
         {
+            // TODO Use `timestamp` and `locale`.
             return byId.LoadAsync(
-                uuid,
+                id,
                 cancellationToken
                 );
         }

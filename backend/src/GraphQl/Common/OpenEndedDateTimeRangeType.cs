@@ -29,7 +29,7 @@ namespace Database.GraphQl.Common
                   );
 
             descriptor
-              .Field("to")
+              .Field("until")
               .Type<DateTimeType>()
               .Resolve(context =>
                   {

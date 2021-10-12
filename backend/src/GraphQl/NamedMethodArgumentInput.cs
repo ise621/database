@@ -5,6 +5,6 @@ namespace Database.GraphQl
 {
     public record NamedMethodArgumentInput(
             string Name
-    // TODO [GraphQLType(nameof(AnyType))] object Value
+    // TODO [GraphQLType(nameof(NonNullType<AnyType>))] object Value
     );
 }

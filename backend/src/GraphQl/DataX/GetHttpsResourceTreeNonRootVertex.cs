@@ -1,13 +1,20 @@
 using System;
+using HotChocolate;
+using HotChocolate.Types;
 
 namespace Database.GraphQl.DataX
 {
     public sealed class GetHttpsResourceTreeNonRootVertex
     : IGetHttpsResourceTreeVertex
     {
+        [GraphQLType(typeof(NonNullType<IdType>))]
         public string VertexId { get; }
+
         public Data.GetHttpsResource Value { get; }
+
+        [GraphQLType(typeof(NonNullType<IdType>))]
         public string ParentId { get; }
+
         public Data.ToTreeVertexAppliedConversionMethod AppliedConversionMethod { get; }
 
         public GetHttpsResourceTreeNonRootVertex(

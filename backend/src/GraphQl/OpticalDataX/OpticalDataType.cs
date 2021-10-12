@@ -11,6 +11,9 @@ namespace Database.GraphQl.OpticalDataX
         {
             base.Configure(descriptor);
             descriptor
+                .Field(x => x.Locale)
+                .Type<NonNullType<LocaleType>>();
+            descriptor
                 .Field(x => x.Resources)
                 .ResolveWith<OpticalDataResolvers>(t => t.GetGetHttpsResources(default!, default!, default!));
             descriptor

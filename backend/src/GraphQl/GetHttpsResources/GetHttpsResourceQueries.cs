@@ -24,13 +24,13 @@ namespace Database.GraphQl.GetHttpsResources
         }
 
         public Task<Data.GetHttpsResource?> GetGetHttpsResourceAsync(
-            Guid uuid,
+            Guid id,
             GetHttpsResourceByIdDataLoader byId,
             CancellationToken cancellationToken
             )
         {
             return byId.LoadAsync(
-                uuid,
+                id,
                 cancellationToken
                 );
         }

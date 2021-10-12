@@ -4,6 +4,6 @@ namespace Database.GraphQl.Common
 {
     public record OpenEndedDateTimeRangeInput(
           DateTime? From,
-          DateTime? To
+          DateTime? Until
         );
 }
