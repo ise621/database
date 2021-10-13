@@ -1,6 +1,7 @@
 /src/core
 /src/tempkey.rsa
 /src/wwwroot/assets/
+/src/files/
 /trace.*
 /.secrets
 

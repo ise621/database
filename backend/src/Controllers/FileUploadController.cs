@@ -14,6 +14,9 @@ using Microsoft.Net.Http.Headers;
 using Database.Data;
 using Database.Filters;
 using Database.Utilities;
+using System.Linq;
+using System.Threading;
+using Microsoft.EntityFrameworkCore;
 
 namespace Database.Controllers
 {
@@ -25,7 +28,7 @@ namespace Database.Controllers
         private readonly long _fileSizeLimit = 10737418240; // 10 GiB = 10 * 1024 MiB = 10 * 1024 * 1024^2 Byte = 10 * 1024 * 1048576 Byte = 10737418240 Byte
         private readonly ILogger<FileUploadController> _logger;
         private readonly string[] _permittedExtensions = { ".json", ".xml", ".txt", ".csv" };
-        private readonly string _targetFilePath = "./files/";
+        private readonly string _targetDirectoryPath = "./files/";
 
         // Get the default form options so that we can use them to set the default 
         // limits for request body data.
@@ -39,7 +42,7 @@ namespace Database.Controllers
             _logger = logger;
             _context = context;
             // To save physical files to the temporary files folder, use:
-            //_targetFilePath = Path.GetTempPath();
+            //_targetDirectoryPath = Path.GetTempPath();
         }
 
         // The following upload methods:
@@ -52,13 +55,27 @@ namespace Database.Controllers
         //    headers. The antiforgery token filter first looks for tokens in 
         //    the request header and then falls back to reading the body.
 
-        [HttpPost]
+        [HttpPost("~/api/upload-file")]
         [DisableFormValueModelBinding]
         // TODO Add this `[ValidateAntiForgeryToken]` once we know where to set the generation token cookie!
         // TODO Where to put: [GenerateAntiforgeryTokenCookie] ?
         [RequestFormLimits(MultipartBodyLengthLimit = 268435456)] // 256 MiB
-        public async Task<IActionResult> UploadFile()
+        public async Task<IActionResult> UploadFile(
+            string accessToken,
+            Guid getHttpsResourceUuid,
+            CancellationToken cancellationToken
+        )
         {
+            Directory.CreateDirectory(_targetDirectoryPath);
+            if (!await _context.GetHttpsResources.AsQueryable()
+                .Where(u => u.Id == getHttpsResourceUuid)
+                .AnyAsync(cancellationToken)
+                .ConfigureAwait(false)
+                )
+            {
+                ModelState.AddModelError("GetHttpsResourceUuid", $"There is no GET HTTPS resource with UUID {getHttpsResourceUuid:D}.");
+                return BadRequest(ModelState);
+            }
             if (!MultipartRequestHelper.IsMultipartContentType(Request.ContentType))
             {
                 ModelState.AddModelError("File",
@@ -101,7 +118,7 @@ namespace Database.Controllers
                         // the file name, HTML-encode the value.
                         var trustedFileNameForDisplay = WebUtility.HtmlEncode(
                                 contentDisposition.FileName.Value);
-                        var trustedFileNameForFileStorage = Path.GetRandomFileName();
+                        var trustedFileNameForFileStorage = getHttpsResourceUuid.ToString("D");
 
                         // **WARNING!**
                         // In the following example, the file is saved without
@@ -126,13 +143,13 @@ namespace Database.Controllers
                         }
 
                         using var targetStream = System.IO.File.Create(
-                            Path.Combine(_targetFilePath, trustedFileNameForFileStorage));
+                            Path.Combine(_targetDirectoryPath, trustedFileNameForFileStorage));
                         await targetStream.WriteAsync(streamedFileContent);
 
                         _logger.LogInformation(
                             "Uploaded file '{TrustedFileNameForDisplay}' saved to " +
                             "'{TargetFilePath}' as {TrustedFileNameForFileStorage}",
-                            trustedFileNameForDisplay, _targetFilePath,
+                            trustedFileNameForDisplay, _targetDirectoryPath,
                             trustedFileNameForFileStorage);
                     }
                 }

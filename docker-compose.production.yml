@@ -63,6 +63,7 @@ services:
       - XBASE_OpenIdConnectClientSecret=${OPEN_ID_CONNECT_CLIENT_SECRET}
     volumes:
       - backend_logs:/app/logs
+      - files:/app/files
       - ./secrets:/run/secrets:ro
     depends_on:
       - database
@@ -100,4 +101,5 @@ services:
 volumes:
   data:
   emails:
+  files:
   backend_logs:

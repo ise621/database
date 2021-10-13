@@ -211,36 +211,37 @@ namespace Database.Utilities
             data.Position = 0;
 
             using var reader = new BinaryReader(data);
-            if (ext.Equals(".txt") || ext.Equals(".csv") || ext.Equals(".prn"))
-            {
-                if (_allowedChars.Length == 0)
-                {
-                    // Limits characters to ASCII encoding.
-                    for (var i = 0; i < data.Length; i++)
-                    {
-                        if (reader.ReadByte() > sbyte.MaxValue)
-                        {
-                            return false;
-                        }
-                    }
-                }
-                else
-                {
-                    // Limits characters to ASCII encoding and
-                    // values of the _allowedChars array.
-                    for (var i = 0; i < data.Length; i++)
-                    {
-                        var b = reader.ReadByte();
-                        if (b > sbyte.MaxValue ||
-                            !_allowedChars.Contains(b))
-                        {
-                            return false;
-                        }
-                    }
-                }
+            // TODO Uncomment the following but allow UTF-X, at least for `.txt` files
+            // if (ext.Equals(".txt") || ext.Equals(".csv") || ext.Equals(".prn"))
+            // {
+            //     if (_allowedChars.Length == 0)
+            //     {
+            //         // Limits characters to ASCII encoding.
+            //         for (var i = 0; i < data.Length; i++)
+            //         {
+            //             if (reader.ReadByte() > sbyte.MaxValue)
+            //             {
+            //                 return false;
+            //             }
+            //         }
+            //     }
+            //     else
+            //     {
+            //         // Limits characters to ASCII encoding and
+            //         // values of the _allowedChars array.
+            //         for (var i = 0; i < data.Length; i++)
+            //         {
+            //             var b = reader.ReadByte();
+            //             if (b > sbyte.MaxValue ||
+            //                 !_allowedChars.Contains(b))
+            //             {
+            //                 return false;
+            //             }
+            //         }
+            //     }
 
-                return true;
-            }
+            //     return true;
+            // }
 
             // Uncomment the following code block if you must permit
             // files whose signature isn't provided in the _fileSignature
