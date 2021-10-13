@@ -9,7 +9,6 @@ namespace Database.Data
     {
         public string Description { get; private set; }
         public string HashValue { get; private set; }
-        public Uri Locator { get; private set; }
         public Guid DataFormatId { get; private set; }
         public ICollection<FileMetaInformation> ArchivedFilesMetaInformation { get; private set; } = new List<FileMetaInformation>();
 
@@ -32,7 +31,6 @@ namespace Database.Data
         public GetHttpsResource(
           string description,
           string hashValue,
-          Uri locator,
           Guid dataFormatId,
           Guid dataId,
           Guid? parentId,
@@ -42,7 +40,6 @@ namespace Database.Data
         : this(
             description: description,
             hashValue: hashValue,
-            locator: locator,
             dataFormatId: dataFormatId,
             parentId: parentId,
             archivedFilesMetaInformation: archivedFilesMetaInformation,
@@ -55,7 +52,6 @@ namespace Database.Data
         public GetHttpsResource(
           string description,
           string hashValue,
-          Uri locator,
           Guid dataFormatId,
           Guid? parentId,
           ICollection<FileMetaInformation> archivedFilesMetaInformation,
@@ -64,7 +60,6 @@ namespace Database.Data
         : this(
             description: description,
             hashValue: hashValue,
-            locator: locator,
             dataFormatId: dataFormatId,
             parentId: parentId
         )
@@ -77,7 +72,6 @@ namespace Database.Data
         public GetHttpsResource(
           string description,
           string hashValue,
-          Uri locator,
           Guid dataFormatId,
           Guid dataId,
           Guid? parentId
@@ -85,7 +79,6 @@ namespace Database.Data
         : this(
             description: description,
             hashValue: hashValue,
-            locator: locator,
             dataFormatId: dataFormatId,
             parentId: parentId
         )
@@ -96,14 +89,12 @@ namespace Database.Data
         public GetHttpsResource(
           string description,
           string hashValue,
-          Uri locator,
           Guid dataFormatId,
           Guid? parentId
         )
         {
             Description = description;
             HashValue = hashValue;
-            Locator = locator;
             DataFormatId = dataFormatId;
             ParentId = parentId;
         }

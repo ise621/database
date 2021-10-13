@@ -79,6 +79,11 @@ server {
     client_max_body_size 10240m;
   }
 
+  location /files {
+    proxy_pass http://backend;
+    limit_req  zone=one burst=10 nodelay;
+  }
+
   location /health {
     proxy_pass http://backend;
     limit_req  zone=one burst=20 nodelay;
