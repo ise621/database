@@ -17,7 +17,7 @@ export type ResolverContext = {
   res?: ServerResponse;
 };
 
-function createIsomorphLink(context: ResolverContext = {}, accessToken?: string) {
+function createIsomorphLink(context: ResolverContext = {}) {
   return createHttpLink({
     uri:
       // In the case `typeof window === "undefined"`, that is on the server
@@ -26,36 +26,34 @@ function createIsomorphLink(context: ResolverContext = {}, accessToken?: string)
       // proxy NGINX serves the certificate like in development we could use
       // "https://nginx:443/graphql/" to make local requests, which this does
       // however not work in production. Thus, on the server side we also use
-      // `${process.env.NEXT_PUBLIC_METABASE_URL}/graphql/` as on the client
+      // `${process.env.NEXT_PUBLIC_DATABASE_URL}/graphql/` as on the client
       // side.
       typeof window === "undefined"
-        ? `${process.env.NEXT_PUBLIC_METABASE_URL}/graphql/`
-        : `${process.env.NEXT_PUBLIC_METABASE_URL}/graphql/`,
+        ? `${process.env.NEXT_PUBLIC_DATABASE_URL}/graphql/`
+        : `${process.env.NEXT_PUBLIC_DATABASE_URL}/graphql/`,
     useGETForQueries: false, // Use `POST` for queries to avoid "414 Request-URI Too Large" errors
     credentials: "same-origin",
     headers: {
-      authorization: accessToken ? `Bearer ${accessToken}` : "",
       cookie: context.req ? context.req.headers.cookie : null,
     },
   });
 }
 
-function createApolloClient(context?: ResolverContext, accessToken?: string) {
+function createApolloClient(context?: ResolverContext) {
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
-    link: createIsomorphLink(context, accessToken),
+    link: createIsomorphLink(context),
     cache: new InMemoryCache(),
   });
 }
 
 export function initializeApollo(
   initialState: any = null,
-  accessToken?: string,
   // Pages with Next.js data fetching methods, like `getStaticProps`, can send
   // a custom context which will be used by `SchemaLink` to server render pages
   context?: ResolverContext
 ) {
-  const _apolloClient = apolloClient ?? createApolloClient(context, accessToken);
+  const _apolloClient = apolloClient ?? createApolloClient(context);
 
   // If your page has Next.js data fetching methods that use Apollo Client, the initial state
   // get hydrated here
@@ -87,7 +85,7 @@ export function messageApolloError(error: ApolloError) {
   );
 }
 
-export function useApollo(initialState: any, accessToken?: string) {
-  const store = useMemo(() => initializeApollo(initialState, accessToken), [initialState]);
+export function useApollo(initialState: any) {
+  const store = useMemo(() => initializeApollo(initialState), [initialState]);
   return store;
 }
