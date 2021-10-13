@@ -11,6 +11,7 @@ const layout = {
 function Page() {
   const [form] = Form.useForm();
 
+  // TODO The access token should not be given as URL parameter because it can be seen in plain text when the request is intercepted. How can we give the parameter in the POST body of the upload request constructed by Ant.Design?
   const constructFileUploadAction = (_file: RcFile) =>
     `/api/upload-file?accessToken=${encodeURIComponent(
       form.getFieldValue("accessToken")

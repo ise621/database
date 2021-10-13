@@ -24,11 +24,12 @@ namespace Database.Controllers
     // and https://github.com/dotnet/AspNetCore.Docs/blob/b4599432690b8753fc2eac23d52957f47e01997a/aspnetcore/mvc/models/file-uploads/samples/3.x/SampleApp/
     public class FileUploadController : Controller
     {
-        private readonly ApplicationDbContext _context;
-        private readonly long _fileSizeLimit = 10737418240; // 10 GiB = 10 * 1024 MiB = 10 * 1024 * 1024^2 Byte = 10 * 1024 * 1048576 Byte = 10737418240 Byte
         private readonly ILogger<FileUploadController> _logger;
+        private readonly ApplicationDbContext _context;
+        private readonly string _accessToken;
+        private const long _fileSizeLimit = 10737418240; // 10 GiB = 10 * 1024 MiB = 10 * 1024 * 1024^2 Byte = 10 * 1024 * 1048576 Byte = 10737418240 Byte
         private readonly string[] _permittedExtensions = { ".json", ".xml", ".txt", ".csv" };
-        private readonly string _targetDirectoryPath = "./files/";
+        private const string _targetDirectoryPath = "./files/";
 
         // Get the default form options so that we can use them to set the default 
         // limits for request body data.
@@ -36,11 +37,13 @@ namespace Database.Controllers
 
         public FileUploadController(
             ILogger<FileUploadController> logger,
-            ApplicationDbContext context
+            ApplicationDbContext context,
+            AppSettings appSettings
             )
         {
             _logger = logger;
             _context = context;
+            _accessToken = appSettings.AccessToken;
             // To save physical files to the temporary files folder, use:
             //_targetDirectoryPath = Path.GetTempPath();
         }
@@ -67,6 +70,11 @@ namespace Database.Controllers
         )
         {
             Directory.CreateDirectory(_targetDirectoryPath);
+            if (accessToken != _accessToken)
+            {
+                ModelState.AddModelError("AccessToken", $"The access token {accessToken} is invalid.");
+                return BadRequest(ModelState);
+            }
             if (!await _context.GetHttpsResources.AsQueryable()
                 .Where(u => u.Id == getHttpsResourceUuid)
                 .AnyAsync(cancellationToken)
