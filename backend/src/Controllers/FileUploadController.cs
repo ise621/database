@@ -62,7 +62,7 @@ namespace Database.Controllers
         [DisableFormValueModelBinding]
         // TODO Add this `[ValidateAntiForgeryToken]` once we know where to set the generation token cookie!
         // TODO Where to put: [GenerateAntiforgeryTokenCookie] ?
-        [RequestFormLimits(MultipartBodyLengthLimit = 268435456)] // 256 MiB
+        [RequestFormLimits(MultipartBodyLengthLimit = 10737418240)] // 10 GiB
         public async Task<IActionResult> UploadFile(
             string accessToken,
             Guid getHttpsResourceUuid,

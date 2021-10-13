@@ -76,6 +76,7 @@ server {
   location /api {
     proxy_pass http://backend;
     limit_req  zone=one burst=10 nodelay;
+    client_max_body_size 10240m;
   }
 
   location /health {
