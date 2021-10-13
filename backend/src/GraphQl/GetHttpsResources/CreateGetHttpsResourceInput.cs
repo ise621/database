@@ -4,6 +4,7 @@ using System.Collections.Generic;
 namespace Database.GraphQl.GetHttpsResources
 {
     public record CreateGetHttpsResourceInput(
+          string AccessToken,
           string Description,
           string HashValue,
           Uri Locator,

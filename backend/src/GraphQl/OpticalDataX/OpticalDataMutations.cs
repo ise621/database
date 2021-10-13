@@ -2,6 +2,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Database.Extensions;
 using HotChocolate;
 using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Data;
@@ -20,6 +21,7 @@ namespace Database.GraphQl.OpticalDataX
             // [GlobalState(nameof(ClaimsPrincipal))] ClaimsPrincipal claimsPrincipal,
             // [ScopedService] UserManager<Data.User> userManager,
             [ScopedService] Data.ApplicationDbContext context,
+            [Service] AppSettings appSettings,
             CancellationToken cancellationToken
         )
         {
@@ -31,15 +33,16 @@ namespace Database.GraphQl.OpticalDataX
             //      cancellationToken
             //      ).ConfigureAwait(false)
             // )
-            // {
-            //     return new CreateOpticalDataPayload(
-            //         new CreateOpticalDataError(
-            //           CreateOpticalDataErrorCode.UNAUTHORIZED,
-            //           "You are not authorized to create optical data for the institution.",
-            //           new[] { nameof(input), nameof(input.CreatorId).FirstCharToLower() }
-            //         )
-            //     );
-            // }
+            if (input.AccessToken != appSettings.AccessToken)
+            {
+                return new CreateOpticalDataPayload(
+                    new CreateOpticalDataError(
+                      CreateOpticalDataErrorCode.UNAUTHORIZED,
+                      $"The access token {input.AccessToken} is invalid.",
+                      new[] { nameof(input), nameof(input.AccessToken).FirstCharToLower() }
+                    )
+                );
+            }
             var opticalData = new Data.OpticalData(
                 locale: input.Locale,
                 componentId: input.ComponentId,
