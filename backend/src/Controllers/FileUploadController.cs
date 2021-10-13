@@ -69,7 +69,6 @@ namespace Database.Controllers
             CancellationToken cancellationToken
         )
         {
-            Directory.CreateDirectory(_targetDirectoryPath);
             if (accessToken != _accessToken)
             {
                 ModelState.AddModelError("AccessToken", $"The access token {accessToken} is invalid.");
@@ -93,6 +92,7 @@ namespace Database.Controllers
                 return BadRequest(ModelState);
             }
 
+            Directory.CreateDirectory(_targetDirectoryPath);
             var boundary = MultipartRequestHelper.GetBoundary(
                 MediaTypeHeaderValue.Parse(Request.ContentType),
                 _defaultFormOptions.MultipartBoundaryLengthLimit);
