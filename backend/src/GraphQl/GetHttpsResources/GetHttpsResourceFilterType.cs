@@ -14,7 +14,7 @@ namespace Database.GraphQl.GetHttpsResources
             descriptor.Field(x => x.Description);
             descriptor.Field(x => x.HashValue);
             descriptor.Field(x => x.Locator);
-            descriptor.Field(x => x.FormatId);
+            descriptor.Field(x => x.DataFormatId);
         }
     }
 }

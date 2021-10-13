@@ -108,12 +108,12 @@ namespace Database.GraphQl.OpticalDataX
                     description: input.RootResource.Description,
                     hashValue: input.RootResource.HashValue,
                     locator: input.RootResource.Locator,
-                    formatId: input.RootResource.FormatId,
+                    dataFormatId: input.RootResource.DataFormatId,
                     parentId: null,
                     archivedFilesMetaInformation: input.RootResource.ArchivedFilesMetaInformation.Select(i =>
                         new Data.FileMetaInformation(
                             path: i.Path,
-                            formatId: i.FormatId
+                            dataFormatId: i.DataFormatId
                         )
                     ).ToList(),
                     appliedConversionMethod:

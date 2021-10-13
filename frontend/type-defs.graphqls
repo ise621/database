@@ -61,7 +61,7 @@ type DataApproval {
 }
 
 type FileMetaInformation {
-  formatId: UUID!
+  dataFormatId: UUID!
   path: [String!]!
 }
 
@@ -70,8 +70,8 @@ type GetHttpsResource implements Node {
   archivedFilesMetaInformation: [FileMetaInformation!]!
   children: [GetHttpsResource!]!
   data: OpticalData!
+  dataFormatId: UUID!
   description: String!
-  formatId: UUID!
   hashValue: String!
   id: ID!
   locator: URL!
@@ -239,9 +239,9 @@ input CreateGetHttpsResourceInput {
   accessToken: String!
   appliedConversionMethod: ToTreeVertexAppliedConversionMethodInput
   archivedFilesMetaInformation: [FileMetaInformationInput!]!
+  dataFormatId: UUID!
   dataId: UUID!
   description: String!
-  formatId: UUID!
   hashValue: String!
   locator: URL!
   parentId: UUID
@@ -321,7 +321,7 @@ input DateTimePropositionInput {
 }
 
 input FileMetaInformationInput {
-  formatId: UUID!
+  dataFormatId: UUID!
   path: [String!]!
 }
 
@@ -352,14 +352,14 @@ input GetHttpsResourcePropositionInput {
   description: StringPropositionInput
   hashValue: StringPropositionInput
   locator: UriPropositionInput
-  formatId: UuidPropositionInput
+  dataFormatId: UuidPropositionInput
 }
 
 input GetHttpsResourceSortInput {
   description: SortEnumType
   hashValue: SortEnumType
   locator: UriSortInput
-  formatId: SortEnumType
+  dataFormatId: SortEnumType
   dataId: SortEnumType
   data: DataXSortInput
   parentId: SortEnumType
@@ -449,8 +449,8 @@ input OpticalDataSortInput {
 input RootGetHttpsResourceInput {
   appliedConversionMethod: ToTreeVertexAppliedConversionMethodInput
   archivedFilesMetaInformation: [FileMetaInformationInput!]!
+  dataFormatId: UUID!
   description: String!
-  formatId: UUID!
   hashValue: String!
   locator: URL!
 }

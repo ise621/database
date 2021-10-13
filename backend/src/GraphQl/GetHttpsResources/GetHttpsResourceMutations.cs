@@ -47,13 +47,13 @@ namespace Database.GraphQl.GetHttpsResources
                 description: input.Description,
                 hashValue: input.HashValue,
                 locator: input.Locator,
-                formatId: input.FormatId,
+                dataFormatId: input.DataFormatId,
                 dataId: input.DataId,
                 parentId: input.ParentId,
                 archivedFilesMetaInformation: input.ArchivedFilesMetaInformation.Select(i =>
                     new Data.FileMetaInformation(
                         path: i.Path,
-                        formatId: i.FormatId
+                        dataFormatId: i.DataFormatId
                     )
                 ).ToList(),
                 appliedConversionMethod:

@@ -7,7 +7,7 @@ namespace Database.GraphQl
           string Description,
           string HashValue,
           Uri Locator,
-          Guid FormatId,
+          Guid DataFormatId,
           IReadOnlyList<FileMetaInformationInput> ArchivedFilesMetaInformation,
           ToTreeVertexAppliedConversionMethodInput? AppliedConversionMethod
         );

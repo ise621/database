@@ -10,7 +10,7 @@ namespace Database.Data
         public string Description { get; private set; }
         public string HashValue { get; private set; }
         public Uri Locator { get; private set; }
-        public Guid FormatId { get; private set; }
+        public Guid DataFormatId { get; private set; }
         public ICollection<FileMetaInformation> ArchivedFilesMetaInformation { get; private set; } = new List<FileMetaInformation>();
 
         public Guid DataId { get; private set; }
@@ -33,7 +33,7 @@ namespace Database.Data
           string description,
           string hashValue,
           Uri locator,
-          Guid formatId,
+          Guid dataFormatId,
           Guid dataId,
           Guid? parentId,
           ICollection<FileMetaInformation> archivedFilesMetaInformation,
@@ -43,7 +43,7 @@ namespace Database.Data
             description: description,
             hashValue: hashValue,
             locator: locator,
-            formatId: formatId,
+            dataFormatId: dataFormatId,
             parentId: parentId,
             archivedFilesMetaInformation: archivedFilesMetaInformation,
             appliedConversionMethod: appliedConversionMethod
@@ -56,7 +56,7 @@ namespace Database.Data
           string description,
           string hashValue,
           Uri locator,
-          Guid formatId,
+          Guid dataFormatId,
           Guid? parentId,
           ICollection<FileMetaInformation> archivedFilesMetaInformation,
           ToTreeVertexAppliedConversionMethod? appliedConversionMethod
@@ -65,7 +65,7 @@ namespace Database.Data
             description: description,
             hashValue: hashValue,
             locator: locator,
-            formatId: formatId,
+            dataFormatId: dataFormatId,
             parentId: parentId
         )
         {
@@ -78,7 +78,7 @@ namespace Database.Data
           string description,
           string hashValue,
           Uri locator,
-          Guid formatId,
+          Guid dataFormatId,
           Guid dataId,
           Guid? parentId
         )
@@ -86,7 +86,7 @@ namespace Database.Data
             description: description,
             hashValue: hashValue,
             locator: locator,
-            formatId: formatId,
+            dataFormatId: dataFormatId,
             parentId: parentId
         )
         {
@@ -97,14 +97,14 @@ namespace Database.Data
           string description,
           string hashValue,
           Uri locator,
-          Guid formatId,
+          Guid dataFormatId,
           Guid? parentId
         )
         {
             Description = description;
             HashValue = hashValue;
             Locator = locator;
-            FormatId = formatId;
+            DataFormatId = dataFormatId;
             ParentId = parentId;
         }
     }
