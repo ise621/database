@@ -1,5 +1,4 @@
 using System;
-using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -8,7 +7,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using Database.Data;
@@ -86,9 +84,7 @@ namespace Database.Controllers
             if (!MultipartRequestHelper.IsMultipartContentType(Request.ContentType))
             {
                 ModelState.AddModelError("File",
-                    $"The request couldn't be processed (Error 1).");
-                // Log error
-
+                    $"The request content is not multipart.");
                 return BadRequest(ModelState);
             }
 
@@ -97,7 +93,7 @@ namespace Database.Controllers
                 MediaTypeHeaderValue.Parse(Request.ContentType),
                 _defaultFormOptions.MultipartBoundaryLengthLimit);
             var reader = new MultipartReader(boundary, HttpContext.Request.Body);
-            var section = await reader.ReadNextSectionAsync();
+            var section = await reader.ReadNextSectionAsync(cancellationToken).ConfigureAwait(false);
 
             while (section != null)
             {
@@ -115,9 +111,7 @@ namespace Database.Controllers
                         .HasFileContentDisposition(contentDisposition ?? throw new Exception("Impossible (because `hasContentDispositionHeader` is `true`)")))
                     {
                         ModelState.AddModelError("File",
-                            $"The request couldn't be processed (Error 2).");
-                        // Log error
-
+                            $"There is no content-disposition header.");
                         return BadRequest(ModelState);
                     }
                     else
@@ -143,7 +137,7 @@ namespace Database.Controllers
                             ModelState,
                             _permittedExtensions,
                             _fileSizeLimit
-                        );
+                        ).ConfigureAwait(false);
 
                         if (!ModelState.IsValid)
                         {
@@ -152,7 +146,7 @@ namespace Database.Controllers
 
                         using var targetStream = System.IO.File.Create(
                             Path.Combine(_targetDirectoryPath, trustedFileNameForFileStorage));
-                        await targetStream.WriteAsync(streamedFileContent);
+                        await targetStream.WriteAsync(streamedFileContent, cancellationToken).ConfigureAwait(false);
 
                         _logger.LogInformation(
                             "Uploaded file '{TrustedFileNameForDisplay}' saved to " +
@@ -164,7 +158,7 @@ namespace Database.Controllers
 
                 // Drain any remaining section body that hasn't been consumed and
                 // read the headers for the next section.
-                section = await reader.ReadNextSectionAsync();
+                section = await reader.ReadNextSectionAsync(cancellationToken).ConfigureAwait(false);
             }
 
             return Created(nameof(FileUploadController), null);
@@ -186,10 +180,5 @@ namespace Database.Controllers
 
             return mediaType.Encoding;
         }
-    }
-
-    public class FormData
-    {
-        public string Note { get; set; } = "";
     }
 }
