@@ -14,7 +14,7 @@ namespace Database.GraphQl.GetHttpsResources
             descriptor.Field(x => x.Description);
             descriptor.Field(x => x.HashValue);
             descriptor.Field(x => x.DataFormatId);
-            // TODO descriptor.Field(x => x.AppliedConversionMethod);
+            descriptor.Field(x => x.AppliedConversionMethod);
             descriptor.Field(x => x.ArchivedFilesMetaInformation);
             descriptor.Field(x => x.DataId);
             descriptor.Field(x => x.ParentId);

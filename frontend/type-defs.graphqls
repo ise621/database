@@ -3,6 +3,19 @@
   mutation: Mutation
 }
 
+interface Data {
+  appliedMethod: AppliedMethod!
+  approvals: [DataApproval!]!
+  componentId: UUID!
+  createdAt: DateTime!
+  creatorId: UUID!
+  description: String
+  locale: Locale!
+  name: String
+  resources: [GetHttpsResource!]!
+  warnings: [String!]!
+}
+
 "The node interface is implemented by entities that have a global unique identifier."
 interface Node {
   id: ID!
@@ -135,7 +148,7 @@ type OpenEndedDateTimeRange {
   until: DateTime
 }
 
-type OpticalData implements Node {
+type OpticalData implements Node & Data {
   appliedMethod: AppliedMethod!
   approvals: [DataApproval!]!
   cielabColors: [CielabColor!]!
@@ -212,6 +225,14 @@ input AppliedMethodInput {
   sources: [NamedMethodSourceInput!]!
 }
 
+input AppliedMethodPropositionInput {
+  and: [AppliedMethodPropositionInput!]
+  or: [AppliedMethodPropositionInput!]
+  methodId: UuidPropositionInput
+  arguments: ListNamedMethodArgumentFilterTypePropositionInput
+  sources: ListFilterInputTypeOfNamedMethodSourcePropositionInput
+}
+
 input AppliedMethodSortInput {
   methodId: SortEnumType
 }
@@ -269,6 +290,15 @@ input CrossDatabaseDataReferenceInput {
   databaseId: UUID!
 }
 
+input CrossDatabaseDataReferencePropositionInput {
+  and: [CrossDatabaseDataReferencePropositionInput!]
+  or: [CrossDatabaseDataReferencePropositionInput!]
+  dataId: UuidPropositionInput
+  dataTimestamp: DateTimePropositionInput
+  dataKind: DataKindPropositionInput
+  databaseId: UuidPropositionInput
+}
+
 input DataApprovalInput {
   approverId: UUID!
   keyFingerprint: String!
@@ -287,6 +317,13 @@ input DataApprovalPropositionInput {
   query: StringPropositionInput
   response: StringPropositionInput
   approverId: UuidPropositionInput
+}
+
+input DataKindPropositionInput {
+  equalTo: DataKind
+  notEqualTo: DataKind
+  in: [DataKind!]
+  notIn: [DataKind!]
 }
 
 input DataXSortInput {
@@ -353,6 +390,7 @@ input GetHttpsResourcePropositionInput {
   description: StringPropositionInput
   hashValue: StringPropositionInput
   dataFormatId: UuidPropositionInput
+  appliedConversionMethod: ToTreeVertexAppliedConversionMethodPropositionInput
   archivedFilesMetaInformation: ListFilterInputTypeOfFileMetaInformationPropositionInput
   dataId: UuidPropositionInput
   parentId: NullableOfUuidPropositionInput
@@ -393,6 +431,13 @@ input ListFilterInputTypeOfFileMetaInformationPropositionInput {
   any: Boolean
 }
 
+input ListFilterInputTypeOfNamedMethodSourcePropositionInput {
+  all: NamedMethodSourcePropositionInput
+  none: NamedMethodSourcePropositionInput
+  some: NamedMethodSourcePropositionInput
+  any: Boolean
+}
+
 input ListGetHttpsResourceFilterTypePropositionInput {
   all: GetHttpsResourcePropositionInput
   none: GetHttpsResourcePropositionInput
@@ -400,13 +445,33 @@ input ListGetHttpsResourceFilterTypePropositionInput {
   any: Boolean
 }
 
+input ListNamedMethodArgumentFilterTypePropositionInput {
+  all: NamedMethodArgumentPropositionInput
+  none: NamedMethodArgumentPropositionInput
+  some: NamedMethodArgumentPropositionInput
+  any: Boolean
+}
+
 input NamedMethodArgumentInput {
   name: String!
+}
+
+input NamedMethodArgumentPropositionInput {
+  and: [NamedMethodArgumentPropositionInput!]
+  or: [NamedMethodArgumentPropositionInput!]
+  name: StringPropositionInput
 }
 
 input NamedMethodSourceInput {
   name: String!
   value: CrossDatabaseDataReferenceInput!
+}
+
+input NamedMethodSourcePropositionInput {
+  and: [NamedMethodSourcePropositionInput!]
+  or: [NamedMethodSourcePropositionInput!]
+  name: StringPropositionInput
+  value: CrossDatabaseDataReferencePropositionInput
 }
 
 input NullableOfUuidPropositionInput {
@@ -432,6 +497,7 @@ input OpticalDataPropositionInput {
   componentId: UuidPropositionInput
   creatorId: UuidPropositionInput
   createdAt: DateTimePropositionInput
+  appliedMethod: AppliedMethodPropositionInput
   approvals: ListFilterInputTypeOfDataApprovalPropositionInput
   resources: ListGetHttpsResourceFilterTypePropositionInput
   warnings: StringsPropositionInput
@@ -490,6 +556,14 @@ input ToTreeVertexAppliedConversionMethodInput {
   arguments: [NamedMethodArgumentInput!]!
   methodId: UUID!
   sourceName: String!
+}
+
+input ToTreeVertexAppliedConversionMethodPropositionInput {
+  and: [ToTreeVertexAppliedConversionMethodPropositionInput!]
+  or: [ToTreeVertexAppliedConversionMethodPropositionInput!]
+  methodId: UuidPropositionInput
+  arguments: ListNamedMethodArgumentFilterTypePropositionInput
+  sourceName: StringPropositionInput
 }
 
 input ToTreeVertexAppliedConversionMethodSortInput {

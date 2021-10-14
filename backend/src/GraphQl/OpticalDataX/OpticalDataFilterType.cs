@@ -17,7 +17,7 @@ namespace Database.GraphQl.OpticalDataX
             descriptor.Field(x => x.ComponentId);
             descriptor.Field(x => x.CreatorId);
             descriptor.Field(x => x.CreatedAt);
-            // TODO descriptor.Field(x => x.AppliedMethod);
+            descriptor.Field(x => x.AppliedMethod);
             descriptor.Field(x => x.Approvals);
             descriptor.Field(x => x.Resources);
             descriptor.Field(x => x.Warnings);
