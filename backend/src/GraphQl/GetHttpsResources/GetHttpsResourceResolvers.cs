@@ -24,8 +24,7 @@ namespace Database.GraphQl.GetHttpsResources
             [Service] AppSettings appSettings
         )
         {
-            // TODO Why is `?? Guid.Empty` below necessary although `getHttpsResource.ParentId` is not null?
-            return new Uri($"{appSettings.Host}/files/{getHttpsResource.Id}");
+            return new Uri($"{appSettings.Host}/api/resources/{getHttpsResource.Id}");
         }
 
         public async Task<Data.GetHttpsResource?> GetParent(

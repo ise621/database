@@ -46,7 +46,6 @@ namespace Database.GraphQl.GetHttpsResources
             var getHttpsResource = new Data.GetHttpsResource(
                 description: input.Description,
                 hashValue: input.HashValue,
-                locator: input.Locator,
                 dataFormatId: input.DataFormatId,
                 dataId: input.DataId,
                 parentId: input.ParentId,

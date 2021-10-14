@@ -7,7 +7,6 @@ namespace Database.GraphQl.GetHttpsResources
           string AccessToken,
           string Description,
           string HashValue,
-          Uri Locator,
           Guid DataFormatId,
           Guid DataId,
           Guid? ParentId,

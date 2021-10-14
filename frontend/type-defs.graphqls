@@ -216,11 +216,6 @@ input AppliedMethodSortInput {
   methodId: SortEnumType
 }
 
-input BooleanPropositionInput {
-  equalTo: Boolean
-  notEqualTo: Boolean
-}
-
 input CielabColorInput {
   aStar: Float!
   bStar: Float!
@@ -243,7 +238,6 @@ input CreateGetHttpsResourceInput {
   dataId: UUID!
   description: String!
   hashValue: String!
-  locator: URL!
   parentId: UUID
 }
 
@@ -325,6 +319,13 @@ input FileMetaInformationInput {
   path: [String!]!
 }
 
+input FileMetaInformationPropositionInput {
+  and: [FileMetaInformationPropositionInput!]
+  or: [FileMetaInformationPropositionInput!]
+  path: StringsPropositionInput
+  dataFormatId: UuidPropositionInput
+}
+
 input FloatPropositionInput {
   equalTo: Float
   notEqualTo: Float
@@ -351,14 +352,16 @@ input GetHttpsResourcePropositionInput {
   id: UuidPropositionInput
   description: StringPropositionInput
   hashValue: StringPropositionInput
-  locator: UriPropositionInput
   dataFormatId: UuidPropositionInput
+  archivedFilesMetaInformation: ListFilterInputTypeOfFileMetaInformationPropositionInput
+  dataId: UuidPropositionInput
+  parentId: NullableOfUuidPropositionInput
+  parent: GetHttpsResourcePropositionInput
 }
 
 input GetHttpsResourceSortInput {
   description: SortEnumType
   hashValue: SortEnumType
-  locator: UriSortInput
   dataFormatId: SortEnumType
   dataId: SortEnumType
   data: DataXSortInput
@@ -367,19 +370,6 @@ input GetHttpsResourceSortInput {
   parent: GetHttpsResourceSortInput
   id: SortEnumType
   xmin: SortEnumType
-}
-
-input Int32PropositionInput {
-  equalTo: Int
-  notEqualTo: Int
-  in: [Int!]
-  notIn: [Int!]
-  greaterThan: Int
-  notGreaterThan: Int
-  greaterThanOrEqualTo: Int
-  notGreaterThanOrEqualTo: Int
-  lessThan: Int
-  notLessThanOrEqualTo: Int
 }
 
 input ListFilterInputTypeOfCielabColorPropositionInput {
@@ -393,6 +383,13 @@ input ListFilterInputTypeOfDataApprovalPropositionInput {
   all: DataApprovalPropositionInput
   none: DataApprovalPropositionInput
   some: DataApprovalPropositionInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfFileMetaInformationPropositionInput {
+  all: FileMetaInformationPropositionInput
+  none: FileMetaInformationPropositionInput
+  some: FileMetaInformationPropositionInput
   any: Boolean
 }
 
@@ -410,6 +407,19 @@ input NamedMethodArgumentInput {
 input NamedMethodSourceInput {
   name: String!
   value: CrossDatabaseDataReferenceInput!
+}
+
+input NullableOfUuidPropositionInput {
+  equalTo: UUID
+  notEqualTo: UUID
+  in: [UUID]
+  notIn: [UUID]
+  greaterThan: UUID
+  notGreaterThan: UUID
+  greaterThanOrEqualTo: UUID
+  notGreaterThanOrEqualTo: UUID
+  lessThan: UUID
+  notLessThanOrEqualTo: UUID
 }
 
 input OpticalDataPropositionInput {
@@ -452,7 +462,6 @@ input RootGetHttpsResourceInput {
   dataFormatId: UUID!
   description: String!
   hashValue: String!
-  locator: URL!
 }
 
 input StringPropositionInput {
@@ -486,64 +495,6 @@ input ToTreeVertexAppliedConversionMethodInput {
 input ToTreeVertexAppliedConversionMethodSortInput {
   methodId: SortEnumType
   sourceName: SortEnumType
-}
-
-input UriHostNameTypePropositionInput {
-  equalTo: UriHostNameType
-  notEqualTo: UriHostNameType
-  in: [UriHostNameType!]
-  notIn: [UriHostNameType!]
-}
-
-input UriPropositionInput {
-  and: [UriPropositionInput!]
-  or: [UriPropositionInput!]
-  absolutePath: StringPropositionInput
-  absoluteUri: StringPropositionInput
-  localPath: StringPropositionInput
-  authority: StringPropositionInput
-  hostNameType: UriHostNameTypePropositionInput
-  isDefaultPort: BooleanPropositionInput
-  isFile: BooleanPropositionInput
-  isLoopback: BooleanPropositionInput
-  pathAndQuery: StringPropositionInput
-  segments: StringsPropositionInput
-  isUnc: BooleanPropositionInput
-  host: StringPropositionInput
-  port: Int32PropositionInput
-  query: StringPropositionInput
-  fragment: StringPropositionInput
-  scheme: StringPropositionInput
-  originalString: StringPropositionInput
-  dnsSafeHost: StringPropositionInput
-  idnHost: StringPropositionInput
-  isAbsoluteUri: BooleanPropositionInput
-  userEscaped: BooleanPropositionInput
-  userInfo: StringPropositionInput
-}
-
-input UriSortInput {
-  absolutePath: SortEnumType
-  absoluteUri: SortEnumType
-  localPath: SortEnumType
-  authority: SortEnumType
-  hostNameType: SortEnumType
-  isDefaultPort: SortEnumType
-  isFile: SortEnumType
-  isLoopback: SortEnumType
-  pathAndQuery: SortEnumType
-  isUnc: SortEnumType
-  host: SortEnumType
-  port: SortEnumType
-  query: SortEnumType
-  fragment: SortEnumType
-  scheme: SortEnumType
-  originalString: SortEnumType
-  dnsSafeHost: SortEnumType
-  idnHost: SortEnumType
-  isAbsoluteUri: SortEnumType
-  userEscaped: SortEnumType
-  userInfo: SortEnumType
 }
 
 input UuidPropositionInput {
@@ -584,14 +535,6 @@ enum DataKind {
 enum SortEnumType {
   ASC
   DESC
-}
-
-enum UriHostNameType {
-  UNKNOWN
-  BASIC
-  DNS
-  I_PV4
-  I_PV6
 }
 
 directive @authorize("Defines when when the resolver shall be executed.By default the resolver is executed after the policy has determined that the current user is allowed to access the field." apply: ApplyPolicy! = BEFORE_RESOLVER "The name of the authorization policy that determines access to the annotated resource." policy: String "Roles that are allowed to access the annotated resource." roles: [String!]) repeatable on SCHEMA | OBJECT | FIELD_DEFINITION

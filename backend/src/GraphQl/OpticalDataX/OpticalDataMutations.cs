@@ -107,7 +107,6 @@ namespace Database.GraphQl.OpticalDataX
             var resource = new Data.GetHttpsResource(
                     description: input.RootResource.Description,
                     hashValue: input.RootResource.HashValue,
-                    locator: input.RootResource.Locator,
                     dataFormatId: input.RootResource.DataFormatId,
                     parentId: null,
                     archivedFilesMetaInformation: input.RootResource.ArchivedFilesMetaInformation.Select(i =>
