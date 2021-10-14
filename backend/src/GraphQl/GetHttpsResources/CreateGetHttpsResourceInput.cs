@@ -4,10 +4,10 @@ using System.Collections.Generic;
 namespace Database.GraphQl.GetHttpsResources
 {
     public record CreateGetHttpsResourceInput(
+          string AccessToken,
           string Description,
           string HashValue,
-          Uri Locator,
-          Guid FormatId,
+          Guid DataFormatId,
           Guid DataId,
           Guid? ParentId,
           IReadOnlyList<FileMetaInformationInput> ArchivedFilesMetaInformation,

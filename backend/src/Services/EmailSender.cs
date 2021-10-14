@@ -35,7 +35,7 @@ namespace Database.Services
             message.From.Add(
                 new MailboxAddress(
                     "Database",
-                    "metabase@buildingenvelopedata.org"
+                    "database@solarbuildingenvelopes.com"
                 )
             );
             message.To.Add(

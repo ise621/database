@@ -7,15 +7,15 @@ namespace Database.Data
     public sealed class FileMetaInformation
     {
         public string[] Path { get; private set; }
-        public Guid FormatId { get; private set; }
+        public Guid DataFormatId { get; private set; }
 
         public FileMetaInformation(
           string[] path,
-          Guid formatId
+          Guid dataFormatId
         )
         {
             Path = path;
-            FormatId = formatId;
+            DataFormatId = dataFormatId;
         }
     }
 }

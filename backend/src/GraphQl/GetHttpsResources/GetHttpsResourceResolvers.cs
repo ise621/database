@@ -19,6 +19,14 @@ namespace Database.GraphQl.GetHttpsResources
             return byId.LoadAsync(getHttpsResource.Id, cancellationToken)!;
         }
 
+        public Uri GetLocator(
+            [Parent] Data.GetHttpsResource getHttpsResource,
+            [Service] AppSettings appSettings
+        )
+        {
+            return new Uri($"{appSettings.Host}/api/resources/{getHttpsResource.Id}");
+        }
+
         public async Task<Data.GetHttpsResource?> GetParent(
             [Parent] Data.GetHttpsResource getHttpsResource,
             GetHttpsResourceByIdDataLoader byId,

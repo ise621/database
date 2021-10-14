@@ -278,6 +278,9 @@ RUN \
 # https://code.visualstudio.com/docs/remote/containers-advanced#_avoiding-extension-reinstalls-on-container-rebuild
 RUN \
   mkdir --parents \
+    ./src/logs \
+    ./src/files && \
+  mkdir --parents \
     ./src/bin \
     ./src/obj && \
   mkdir --parents \

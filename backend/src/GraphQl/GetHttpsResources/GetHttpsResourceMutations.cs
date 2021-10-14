@@ -2,6 +2,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Database.Extensions;
 using HotChocolate;
 using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Data;
@@ -20,6 +21,7 @@ namespace Database.GraphQl.GetHttpsResources
             // [GlobalState(nameof(ClaimsPrincipal))] ClaimsPrincipal claimsPrincipal,
             // [ScopedService] UserManager<Data.User> userManager,
             [ScopedService] Data.ApplicationDbContext context,
+            [Service] AppSettings appSettings,
             CancellationToken cancellationToken
         )
         {
@@ -31,26 +33,26 @@ namespace Database.GraphQl.GetHttpsResources
             //      cancellationToken
             //      ).ConfigureAwait(false)
             // )
-            // {
-            //     return new CreateGetHttpsResourcePayload(
-            //         new CreateGetHttpsResourceError(
-            //           CreateGetHttpsResourceErrorCode.UNAUTHORIZED,
-            //           "You are not authorized to create optical data for the institution.",
-            //           new[] { nameof(input), nameof(input.CreatorId).FirstCharToLower() }
-            //         )
-            //     );
-            // }
+            if (input.AccessToken != appSettings.AccessToken)
+            {
+                return new CreateGetHttpsResourcePayload(
+                    new CreateGetHttpsResourceError(
+                      CreateGetHttpsResourceErrorCode.UNAUTHORIZED,
+                      $"The access token {input.AccessToken} is invalid.",
+                      new[] { nameof(input), nameof(input.AccessToken).FirstCharToLower() }
+                    )
+                );
+            }
             var getHttpsResource = new Data.GetHttpsResource(
                 description: input.Description,
                 hashValue: input.HashValue,
-                locator: input.Locator,
-                formatId: input.FormatId,
+                dataFormatId: input.DataFormatId,
                 dataId: input.DataId,
                 parentId: input.ParentId,
                 archivedFilesMetaInformation: input.ArchivedFilesMetaInformation.Select(i =>
                     new Data.FileMetaInformation(
                         path: i.Path,
-                        formatId: i.FormatId
+                        dataFormatId: i.DataFormatId
                     )
                 ).ToList(),
                 appliedConversionMethod:

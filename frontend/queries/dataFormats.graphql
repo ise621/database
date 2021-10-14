@@ -1,9 +1,0 @@
-query DataFormats {
-  dataFormats {
-    nodes {
-      id
-      uuid
-      name
-    }
-  }
-}

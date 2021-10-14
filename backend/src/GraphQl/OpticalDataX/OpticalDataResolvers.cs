@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Database.GraphQl.DataX;
@@ -19,10 +20,14 @@ namespace Database.GraphQl.OpticalDataX
 
         public GetHttpsResourceTree GetGetHttpsResourceTree(
             [Parent] Data.OpticalData opticalData
-
         )
         {
             return new GetHttpsResourceTree(opticalData);
+        }
+
+        public DateTime GetTimestamp()
+        {
+            return DateTime.UtcNow;
         }
     }
 }

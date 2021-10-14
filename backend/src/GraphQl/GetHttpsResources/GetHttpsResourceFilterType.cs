@@ -13,8 +13,12 @@ namespace Database.GraphQl.GetHttpsResources
             descriptor.Field(x => x.Id);
             descriptor.Field(x => x.Description);
             descriptor.Field(x => x.HashValue);
-            descriptor.Field(x => x.Locator);
-            descriptor.Field(x => x.FormatId);
+            descriptor.Field(x => x.DataFormatId);
+            descriptor.Field(x => x.AppliedConversionMethod);
+            descriptor.Field(x => x.ArchivedFilesMetaInformation);
+            descriptor.Field(x => x.DataId);
+            descriptor.Field(x => x.ParentId);
+            descriptor.Field(x => x.Parent);
         }
     }
 }

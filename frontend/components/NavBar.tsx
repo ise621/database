@@ -1,8 +1,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Menu, Button } from "antd";
-import { signIn, signOut, useSession } from "next-auth/client";
+import { Menu } from "antd";
 
 type NavItemProps = {
   path: string;
@@ -13,9 +12,8 @@ export type NavBarProps = {
   items: NavItemProps[];
 };
 
-export const NavBar: React.FunctionComponent<NavBarProps> = ({ items }) => {
+export default function NavBar({ items }: NavBarProps) {
   const router = useRouter();
-  const [session /*, loading */] = useSession()
 
   return (
     <Menu mode="horizontal" selectedKeys={[router.pathname]} theme="dark">
@@ -24,23 +22,6 @@ export const NavBar: React.FunctionComponent<NavBarProps> = ({ items }) => {
           <Link href={path}>{label}</Link>
         </Menu.Item>
       ))}
-      {session && (
-        <Menu.Item>
-          <Button type="link" onClick={() => signOut()}>
-            Logout
-          </Button>
-        </Menu.Item>
-      )}
-      {!session && (
-        <Menu.Item>
-          {/* TODO Instead of the provider id `metabase` use a global constant. It must match the one set in `[...nextauth].ts` */}
-          <Button type="link" onClick={() => signIn("metabase")}>
-            Login
-          </Button>
-        </Menu.Item>
-      )}
     </Menu>
   );
-};
-
-export default NavBar;
+}

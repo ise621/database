@@ -1,29 +1,62 @@
 import Head from "next/head";
-import * as React from "react";
+import { ReactNode, useEffect } from "react";
 import Footer from "./Footer";
 import NavBar from "./NavBar";
-import { Layout as AntLayout } from "antd";
+import { Modal, Layout as AntLayout, Typography } from "antd";
 import paths from "../paths";
-import { signIn, useSession } from "next-auth/client";
-import { useEffect } from "react";
+import { useCookies } from "react-cookie";
 
 const navItems = [
   {
     path: paths.home,
-    label: `Home`,
+    label: "Home",
+  },
+  {
+    path: paths.data,
+    label: "Data",
+  },
+  {
+    path: paths.createData,
+    label: "Create Data",
+  },
+  {
+    path: paths.uploadFile,
+    label: "Upload File",
   },
 ];
 
-const Layout: React.FunctionComponent = ({ children }) => {
-  const [session] = useSession();
-  const appTitle = "Database";
+export type LayoutProps = {
+  children?: ReactNode;
+};
+
+const cookieConsentName = "consent";
+const cookieConsentValue = "yes";
+
+export default function Layout({ children }: LayoutProps) {
+  const appTitle = "TestLab Solar Façades";
+
+  const [cookies, setCookie] = useCookies([cookieConsentName]);
+  const shouldShowCookieConsent =
+    cookies[cookieConsentName] != cookieConsentValue;
 
   useEffect(() => {
-    if (session?.error === "RefreshAccessTokenError") {
-      {/* TODO Instead of the provider id `metabase` use a global constant. It must match the one set in `[...nextauth].ts` */}
-      signIn("metabase"); // Force sign in to hopefully resolve error
+    if (shouldShowCookieConsent) {
+      Modal.info({
+        title: "Cookie Consent",
+        content: (
+          <Typography.Paragraph>
+            This website employs cookies to make it work securely. As these
+            cookies are essential you need to agree to their usage to use this
+            website.
+          </Typography.Paragraph>
+        ),
+        okText: "I agree",
+        onOk: () => {
+          setCookie(cookieConsentName, cookieConsentValue);
+        },
+      });
     }
-  }, [session]);
+  }, [shouldShowCookieConsent, setCookie]);
 
   return (
     <AntLayout>
@@ -43,6 +76,4 @@ const Layout: React.FunctionComponent = ({ children }) => {
       </AntLayout.Footer>
     </AntLayout>
   );
-};
-
-export default Layout;
+}

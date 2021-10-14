@@ -10,6 +10,9 @@ namespace Database
         public string MetabaseHost { get; set; }
         = "";
 
+        public string AccessToken { get; set; }
+        = "";
+
         public LoggingSettings Logging { get; set; }
         = new LoggingSettings();
 

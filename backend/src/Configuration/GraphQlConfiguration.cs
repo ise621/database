@@ -89,9 +89,10 @@ namespace Database.Configuration
                   .AddType(new UuidType('D')) // https://chillicream.com/docs/hotchocolate/defining-a-schema/scalars#uuid-type
                   .AddType(new GraphQl.LocaleType())
                   // Object Types
+                  .AddType<GraphQl.DataX.DataType>()
                   .AddType<GraphQl.GetHttpsResources.GetHttpsResourceType>()
-                  .AddType<GraphQl.OpticalDataX.OpticalDataType>()
                   .AddType<GraphQl.NamedMethodArgumentType>()
+                  .AddType<GraphQl.OpticalDataX.OpticalDataType>()
                   /* .AddType<GraphQl.DataX.DataApproval>() */
                   /* .AddType<GraphQl.DataX.GetHttpsResourceTreeNonRootVertex>() */
                   /* .AddType<GraphQl.DataX.GetHttpsResourceTreeRoot>() */
@@ -128,6 +129,7 @@ namespace Database.Configuration
             descriptor.AllowOr();
             // Bind custom types
             descriptor.BindRuntimeType<Data.GetHttpsResource, GraphQl.GetHttpsResources.GetHttpsResourceFilterType>();
+            descriptor.BindRuntimeType<Data.NamedMethodArgument, GraphQl.NamedMethodArgumentFilterType>();
             descriptor.BindRuntimeType<Data.OpticalData, GraphQl.OpticalDataX.OpticalDataFilterType>();
         }
 

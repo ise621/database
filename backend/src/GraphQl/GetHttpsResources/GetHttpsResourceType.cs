@@ -11,6 +11,9 @@ namespace Database.GraphQl.GetHttpsResources
         {
             base.Configure(descriptor);
             descriptor
+                .Field("locator")
+                .ResolveWith<GetHttpsResourceResolvers>(t => t.GetLocator(default!, default!));
+            descriptor
                 .Field(x => x.ParentId)
                 .Ignore();
             descriptor

@@ -9,7 +9,6 @@ namespace Database.GraphQl
             IObjectTypeDescriptor<Data.NamedMethodArgument> descriptor
             )
         {
-            base.Configure(descriptor);
             // TODO Convert value to "nested collections", that is, some
             // hierarchy of `IReadOnlyDictionary<string, object>` and
             // `IReadOnlyList<object>`. See also
