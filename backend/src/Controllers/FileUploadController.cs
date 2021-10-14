@@ -61,7 +61,9 @@ namespace Database.Controllers
         // TODO Add this `[ValidateAntiForgeryToken]` once we know where to set the generation token cookie!
         // TODO Where to put: [GenerateAntiforgeryTokenCookie] ?
         // TODO Are both RequestFormLimits and RequestSizeLimit needed?
+        // See https://docs.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads?view=aspnetcore-5.0#multipart-body-length-limit
         [RequestFormLimits(MultipartBodyLengthLimit = 10737418240)] // 10 GiB
+        // See https://docs.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads?view=aspnetcore-5.0#kestrel-maximum-request-body-size
         [RequestSizeLimit(10737418240)] // 10 GiB
         public async Task<IActionResult> UploadFile(
             string accessToken,
