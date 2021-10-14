@@ -12,7 +12,10 @@ interface Data {
   description: String
   locale: Locale!
   name: String
+  resourceTree: GetHttpsResourceTree!
   resources: [GetHttpsResource!]!
+  timestamp: DateTime!
+  uuid: UUID!
   warnings: [String!]!
 }
 
@@ -167,6 +170,7 @@ type OpticalData implements Node & Data {
   nearnormalHemisphericalVisibleTransmittances: [Float!]!
   resourceTree: GetHttpsResourceTree!
   resources: [GetHttpsResource!]!
+  timestamp: DateTime!
   uuid: UUID!
   warnings: [String!]!
 }
