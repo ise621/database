@@ -19,6 +19,10 @@ namespace Database.GraphQl.OpticalDataX
             descriptor
                 .Field("resourceTree")
                 .ResolveWith<OpticalDataResolvers>(t => t.GetGetHttpsResourceTree(default!));
+            descriptor
+                .Field("timestamp")
+                .Type<NonNullType<DateTimeType>>()
+                .ResolveWith<OpticalDataResolvers>(t => t.GetTimestamp());
         }
     }
 }
