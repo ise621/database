@@ -66,6 +66,8 @@ services:
       # ["dotnet", "watch", "run", "--no-restore"]
     volumes:
       - ./backend:/app
+      - backend_logs:/app/src/logs
+      - files:/app/src/files
       - backend_vscode_server_extensions:/home/me/.vscode-server/extensions
       - backend_vscode_server_insiders_extensions:/home/me/.vscode-server-insiders/extensions
       # - backend_node_modules:/app/node_modules
@@ -138,6 +140,7 @@ services:
       - ./nginx/templates/development:/etc/nginx/templates:ro
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/html:/etc/nginx/html:ro
+      - files:/data/files:ro
       # - /etc/nginx/conf.d # run in read-only mode ...
       # - /var/cache/nginx # ...
       # - /var/run # ...
@@ -155,6 +158,8 @@ services:
 volumes:
   data:
   emails:
+  files:
+  backend_logs:
   # backend_node_modules:
   backend_vscode_server_extensions:
   backend_vscode_server_insiders_extensions:

@@ -97,9 +97,14 @@ server {
     client_max_body_size 10240m;
   }
 
-  location /files {
-    proxy_pass http://backend;
-    limit_req  zone=one burst=10 nodelay;
+  location /api/resources/ {
+    # Inspired by https://docs.nginx.com/nginx/admin-guide/web-server/serving-static-content/
+    alias /data/files/; # https://nginx.org/en/docs/http/ngx_http_core_module.html#alias
+    sendfile on;
+    sendfile_max_chunk 1m;
+    tcp_nopush on;
+    tcp_nodelay on;
+    keepalive_timeout 65;
   }
 
   location /health {
