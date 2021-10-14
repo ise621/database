@@ -137,7 +137,7 @@ namespace Database.GraphQl
 
                                         if (existingString.Length > lengthToPadTo)
                                         {
-                                            return existingString.Substring(0, lengthToPadTo);
+                                            return existingString[..lengthToPadTo];
                                         }
 
                                         return existingString + " ".PadRight(lengthToPadTo - existingString.Length);
