@@ -74,15 +74,15 @@ fragment DataPartial on Data {
   warnings
 }
 
-# query AllData($where: DataPropositionInput!) {
-#   allData(where: $where) {
-#     nodes {
-#       ...DataPartial
-#     }
-#   }
-# }
+query AllData($where: DataPropositionInput) {
+  allData(where: $where) {
+    nodes {
+      ...DataPartial
+    }
+  }
+}
 
-# query HasData($where: DataPropositionInput!) {
+# query HasData($where: DataPropositionInput) {
 #   hasData(where: $where)
 # }
 

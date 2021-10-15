@@ -78,14 +78,15 @@ namespace Database.Configuration
                       )
                   )
                   .AddQueryType(d => d.Name(nameof(GraphQl.Query)))
-                      .AddType<GraphQl.GetHttpsResources.GetHttpsResourceQueries>()
                       .AddType<GraphQl.CalorimetricDataX.CalorimetricDataQueries>()
+                      .AddType<GraphQl.DataX.DataQueries>()
+                      .AddType<GraphQl.GetHttpsResources.GetHttpsResourceQueries>()
                       .AddType<GraphQl.HygrothermalDataX.HygrothermalDataQueries>()
                       .AddType<GraphQl.OpticalDataX.OpticalDataQueries>()
                       .AddType<GraphQl.PhotovoltaicDataX.PhotovoltaicDataQueries>()
                   .AddMutationType(d => d.Name(nameof(GraphQl.Mutation)))
-                      .AddType<GraphQl.GetHttpsResources.GetHttpsResourceMutations>()
                       .AddType<GraphQl.CalorimetricDataX.CalorimetricDataMutations>()
+                      .AddType<GraphQl.GetHttpsResources.GetHttpsResourceMutations>()
                       .AddType<GraphQl.HygrothermalDataX.HygrothermalDataMutations>()
                       .AddType<GraphQl.OpticalDataX.OpticalDataMutations>()
                       .AddType<GraphQl.PhotovoltaicDataX.PhotovoltaicDataMutations>()
@@ -95,11 +96,11 @@ namespace Database.Configuration
                   .AddType(new UuidType('D')) // https://chillicream.com/docs/hotchocolate/defining-a-schema/scalars#uuid-type
                   .AddType(new GraphQl.LocaleType())
                   // Object Types
+                  .AddType<GraphQl.CalorimetricDataX.CalorimetricDataType>()
                   .AddType<GraphQl.DataX.DataType>()
                   .AddType<GraphQl.GetHttpsResources.GetHttpsResourceType>()
-                  .AddType<GraphQl.NamedMethodArgumentType>()
-                  .AddType<GraphQl.CalorimetricDataX.CalorimetricDataType>()
                   .AddType<GraphQl.HygrothermalDataX.HygrothermalDataType>()
+                  .AddType<GraphQl.NamedMethodArgumentType>()
                   .AddType<GraphQl.OpticalDataX.OpticalDataType>()
                   .AddType<GraphQl.PhotovoltaicDataX.PhotovoltaicDataType>()
                   // Data Loaders
@@ -148,30 +149,33 @@ namespace Database.Configuration
                 return nameString;
             }
             return
-                new Regex(@"Double").Replace(
-                    new Regex(@"Float").Replace(
-                        new Regex(@"ListString").Replace(
-                            new Regex(@"ListFloat").Replace(
-                                new Regex(@"Guid").Replace(
-                                    new Regex(@"^Comparable").Replace(
-                                        new Regex(@"FilterInput$").Replace(
-                                            new Regex(@"OperationFilterInput").Replace(
-                                                nameString.Value,
+                new Regex(@"IData").Replace(
+                    new Regex(@"Double").Replace(
+                        new Regex(@"Float").Replace(
+                            new Regex(@"ListString").Replace(
+                                new Regex(@"ListFloat").Replace(
+                                    new Regex(@"Guid").Replace(
+                                        new Regex(@"^Comparable").Replace(
+                                            new Regex(@"FilterInput$").Replace(
+                                                new Regex(@"OperationFilterInput").Replace(
+                                                    nameString.Value,
+                                                    "PropositionInput"
+                                                ),
                                                 "PropositionInput"
                                             ),
-                                            "PropositionInput"
+                                            ""
                                         ),
-                                        ""
+                                        "Uuid"
                                     ),
-                                    "Uuid"
+                                    "Floats"
                                 ),
-                                "Floats"
+                                "Strings"
                             ),
-                            "Strings"
+                            "Float"
                         ),
                         "Float"
                     ),
-                    "Float"
+                    "Data"
                 );
         }
     }
