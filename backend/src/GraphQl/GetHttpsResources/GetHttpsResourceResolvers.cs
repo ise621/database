@@ -1,22 +1,43 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Database.GraphQl.CalorimetricDataX;
+using Database.GraphQl.HygrothermalDataX;
 using Database.GraphQl.OpticalDataX;
+using Database.GraphQl.PhotovoltaicDataX;
 using HotChocolate;
 
 namespace Database.GraphQl.GetHttpsResources
 {
     public sealed class GetHttpsResourceResolvers
     {
-        // TODO Support non-optical data.
-        public Task<Data.OpticalData> GetData(
+        public async Task<Data.IData?> GetData(
             [Parent] Data.GetHttpsResource getHttpsResource,
-            OpticalDataByIdDataLoader byId,
+            CalorimetricDataByIdDataLoader calorimetricDataById,
+            HygrothermalDataByIdDataLoader hygrothermalDataById,
+            OpticalDataByIdDataLoader opticalDataById,
+            PhotovoltaicDataByIdDataLoader photovoltaicDataById,
             CancellationToken cancellationToken
 
         )
         {
-            return byId.LoadAsync(getHttpsResource.Id, cancellationToken)!;
+            return
+                await calorimetricDataById.LoadAsync(
+                    getHttpsResource.DataId,
+                    cancellationToken
+                ).ConfigureAwait(false) ??
+                await hygrothermalDataById.LoadAsync(
+                    getHttpsResource.DataId,
+                    cancellationToken
+                ).ConfigureAwait(false) ??
+                await opticalDataById.LoadAsync(
+                    getHttpsResource.DataId,
+                    cancellationToken
+                ).ConfigureAwait(false) ??
+                (await photovoltaicDataById.LoadAsync(
+                    getHttpsResource.DataId,
+                    cancellationToken
+                ).ConfigureAwait(false) as Data.IData);
         }
 
         public Uri GetLocator(

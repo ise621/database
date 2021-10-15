@@ -27,7 +27,7 @@ namespace Database.GraphQl.GetHttpsResources
                 .Ignore();
             descriptor
                 .Field(x => x.Data)
-                .ResolveWith<GetHttpsResourceResolvers>(t => t.GetData(default!, default!, default!));
+                .ResolveWith<GetHttpsResourceResolvers>(t => t.GetData(default!, default!, default!, default!, default!, default!));
         }
     }
 }

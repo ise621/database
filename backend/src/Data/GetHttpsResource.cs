@@ -14,8 +14,8 @@ namespace Database.Data
 
         public Guid DataId { get; private set; }
 
-        [InverseProperty(nameof(DataX.Resources))]
-        public DataX? Data { get; set; }
+        [InverseProperty(nameof(IData.Resources))]
+        public IData? Data { get; set; }
 
         public Guid? ParentId { get; private set; }
         // TODO Require the conversion method to be given whenever there is a parent. In other words, either both are `null` or both are non-`null`.
