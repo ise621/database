@@ -1,4 +1,3 @@
-using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Npgsql;
@@ -59,7 +58,10 @@ namespace Database.Data
 
         // https://docs.microsoft.com/en-us/ef/core/miscellaneous/nullable-reference-types#dbcontext-and-dbset
         public DbSet<GetHttpsResource> GetHttpsResources { get; private set; } = default!;
+        public DbSet<CalorimetricData> CalorimetricData { get; private set; } = default!;
+        public DbSet<HygrothermalData> HygrothermalData { get; private set; } = default!;
         public DbSet<OpticalData> OpticalData { get; private set; } = default!;
+        public DbSet<PhotovoltaicData> PhotovoltaicData { get; private set; } = default!;
 
         public ApplicationDbContext(
             DbContextOptions<ApplicationDbContext> options
@@ -82,9 +84,21 @@ namespace Database.Data
                 )
               .ToTable("get_https_resource");
             ConfigureEntity(
+                builder.Entity<CalorimetricData>()
+                )
+              .ToTable("calorimetric_data");
+            ConfigureEntity(
+                builder.Entity<HygrothermalData>()
+                )
+              .ToTable("hygrothermal_data");
+            ConfigureEntity(
                 builder.Entity<OpticalData>()
                 )
               .ToTable("optical_data");
+            ConfigureEntity(
+                builder.Entity<PhotovoltaicData>()
+                )
+              .ToTable("photovoltaic_data");
         }
     }
 }

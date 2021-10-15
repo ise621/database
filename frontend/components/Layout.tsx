@@ -12,8 +12,20 @@ const navItems = [
     label: "Home",
   },
   {
-    path: paths.data,
-    label: "Data",
+    path: paths.calorimetricData,
+    label: "Calorimetric Data",
+  },
+  {
+    path: paths.hygrothermalData,
+    label: "Hygrothermal Data",
+  },
+  {
+    path: paths.opticalData,
+    label: "Optical Data",
+  },
+  {
+    path: paths.photovoltaicData,
+    label: "Photovoltaic Data",
   },
   {
     path: paths.createData,

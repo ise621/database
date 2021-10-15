@@ -79,10 +79,16 @@ namespace Database.Configuration
                   )
                   .AddQueryType(d => d.Name(nameof(GraphQl.Query)))
                       .AddType<GraphQl.GetHttpsResources.GetHttpsResourceQueries>()
+                      .AddType<GraphQl.CalorimetricDataX.CalorimetricDataQueries>()
+                      .AddType<GraphQl.HygrothermalDataX.HygrothermalDataQueries>()
                       .AddType<GraphQl.OpticalDataX.OpticalDataQueries>()
+                      .AddType<GraphQl.PhotovoltaicDataX.PhotovoltaicDataQueries>()
                   .AddMutationType(d => d.Name(nameof(GraphQl.Mutation)))
                       .AddType<GraphQl.GetHttpsResources.GetHttpsResourceMutations>()
+                      .AddType<GraphQl.CalorimetricDataX.CalorimetricDataMutations>()
+                      .AddType<GraphQl.HygrothermalDataX.HygrothermalDataMutations>()
                       .AddType<GraphQl.OpticalDataX.OpticalDataMutations>()
+                      .AddType<GraphQl.PhotovoltaicDataX.PhotovoltaicDataMutations>()
                   /* .AddSubscriptionType(d => d.Name(nameof(GraphQl.Subscription))) */
                   /*     .AddType<ComponentSubscriptions>() */
                   // Scalar Types
@@ -92,14 +98,10 @@ namespace Database.Configuration
                   .AddType<GraphQl.DataX.DataType>()
                   .AddType<GraphQl.GetHttpsResources.GetHttpsResourceType>()
                   .AddType<GraphQl.NamedMethodArgumentType>()
+                  .AddType<GraphQl.CalorimetricDataX.CalorimetricDataType>()
+                  .AddType<GraphQl.HygrothermalDataX.HygrothermalDataType>()
                   .AddType<GraphQl.OpticalDataX.OpticalDataType>()
-                  /* .AddType<GraphQl.DataX.DataApproval>() */
-                  /* .AddType<GraphQl.DataX.GetHttpsResourceTreeNonRootVertex>() */
-                  /* .AddType<GraphQl.DataX.GetHttpsResourceTreeRoot>() */
-                  /* .AddType<GraphQl.DataX.HygrothermalData>() */
-                  /* .AddType<GraphQl.DataX.OpticalData>() */
-                  /* .AddType<GraphQl.DataX.PhotovoltaicData>() */
-                  /* .AddType<GraphQl.DataX.ResponseApproval>() */
+                  .AddType<GraphQl.PhotovoltaicDataX.PhotovoltaicDataType>()
                   // Data Loaders
                   /* .AddDataLoader<GraphQl.Components.ComponentByIdDataLoader>() */
                   // Paging
@@ -130,7 +132,10 @@ namespace Database.Configuration
             // Bind custom types
             descriptor.BindRuntimeType<Data.GetHttpsResource, GraphQl.GetHttpsResources.GetHttpsResourceFilterType>();
             descriptor.BindRuntimeType<Data.NamedMethodArgument, GraphQl.NamedMethodArgumentFilterType>();
+            descriptor.BindRuntimeType<Data.CalorimetricData, GraphQl.CalorimetricDataX.CalorimetricDataFilterType>();
+            descriptor.BindRuntimeType<Data.HygrothermalData, GraphQl.HygrothermalDataX.HygrothermalDataFilterType>();
             descriptor.BindRuntimeType<Data.OpticalData, GraphQl.OpticalDataX.OpticalDataFilterType>();
+            descriptor.BindRuntimeType<Data.PhotovoltaicData, GraphQl.PhotovoltaicDataX.PhotovoltaicDataFilterType>();
         }
 
         // TODO Overriding and changing type names in this way is _super_ error-prone. However, using `descriptor.Configure<...FilterInputType<T>>(x => x.Name(name))` does not work. Why?

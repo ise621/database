@@ -86,6 +86,202 @@ fragment DataPartial on Data {
 #   hasData(where: $where)
 # }
 
+fragment CalorimetricDataPartial on CalorimetricData {
+  uuid
+  timestamp
+  componentId
+  name
+  description
+  appliedMethod {
+    methodId
+    arguments {
+      name
+      value
+    }
+    sources {
+      name
+      value {
+        dataId
+        dataKind
+        dataTimestamp
+        databaseId
+      }
+    }
+  }
+  resourceTree {
+    root {
+      value {
+        description
+        hashValue
+        locator
+        dataFormatId
+      }
+    }
+    nonRootVertices {
+      appliedConversionMethod {
+        arguments {
+          name
+          value
+        }
+        methodId
+        sourceName
+      }
+      parentId
+      value {
+        archivedFilesMetaInformation {
+          dataFormatId
+          path
+        }
+        description
+        dataFormatId
+        hashValue
+        id
+        locator
+        uuid
+      }
+      vertexId
+    }
+  }
+  approvals {
+    approverId
+    keyFingerprint
+    query
+    response
+    signature
+    timestamp
+  }
+  createdAt
+  creatorId
+  locale
+  resources {
+    description
+    hashValue
+    locator
+    dataFormatId
+  }
+  warnings
+  # TODO All the above should be replaced by `...DataPartial`. If we do so
+  # though, the result returned by the query `AllCalorimetricData` does not include
+  # the fields above. Why?
+  gValues
+  uValues
+}
+
+query AllCalorimetricData($where: CalorimetricDataPropositionInput) {
+  allCalorimetricData(where: $where) {
+    nodes {
+      ...CalorimetricDataPartial
+    }
+  }
+}
+
+# query HasCalorimetricData($where: DataPropositionInput!) {
+#   hasCalorimetricData(where: $where)
+# }
+
+query AllCalorimetricData($where: CalorimetricDataPropositionInput) {
+  allCalorimetricData(where: $where) {
+    nodes {
+      ...CalorimetricDataPartial
+    }
+  }
+}
+
+# query HasCalorimetricData($where: DataPropositionInput!) {
+#   hasCalorimetricData(where: $where)
+# }
+
+fragment HygrothermalDataPartial on HygrothermalData {
+  uuid
+  timestamp
+  componentId
+  name
+  description
+  appliedMethod {
+    methodId
+    arguments {
+      name
+      value
+    }
+    sources {
+      name
+      value {
+        dataId
+        dataKind
+        dataTimestamp
+        databaseId
+      }
+    }
+  }
+  resourceTree {
+    root {
+      value {
+        description
+        hashValue
+        locator
+        dataFormatId
+      }
+    }
+    nonRootVertices {
+      appliedConversionMethod {
+        arguments {
+          name
+          value
+        }
+        methodId
+        sourceName
+      }
+      parentId
+      value {
+        archivedFilesMetaInformation {
+          dataFormatId
+          path
+        }
+        description
+        dataFormatId
+        hashValue
+        id
+        locator
+        uuid
+      }
+      vertexId
+    }
+  }
+  approvals {
+    approverId
+    keyFingerprint
+    query
+    response
+    signature
+    timestamp
+  }
+  createdAt
+  creatorId
+  locale
+  resources {
+    description
+    hashValue
+    locator
+    dataFormatId
+  }
+  warnings
+  # TODO All the above should be replaced by `...DataPartial`. If we do so
+  # though, the result returned by the query `AllHygrothermalData` does not include
+  # the fields above. Why?
+}
+
+query AllHygrothermalData($where: HygrothermalDataPropositionInput) {
+  allHygrothermalData(where: $where) {
+    nodes {
+      ...HygrothermalDataPartial
+    }
+  }
+}
+
+# query HasHygrothermalData($where: DataPropositionInput!) {
+#   hasHygrothermalData(where: $where)
+# }
+
 fragment OpticalDataPartial on OpticalData {
   uuid
   timestamp
@@ -180,4 +376,95 @@ query AllOpticalData($where: OpticalDataPropositionInput) {
 
 # query HasOpticalData($where: DataPropositionInput!) {
 #   hasOpticalData(where: $where)
+# }
+
+fragment PhotovoltaicDataPartial on PhotovoltaicData {
+  uuid
+  timestamp
+  componentId
+  name
+  description
+  appliedMethod {
+    methodId
+    arguments {
+      name
+      value
+    }
+    sources {
+      name
+      value {
+        dataId
+        dataKind
+        dataTimestamp
+        databaseId
+      }
+    }
+  }
+  resourceTree {
+    root {
+      value {
+        description
+        hashValue
+        locator
+        dataFormatId
+      }
+    }
+    nonRootVertices {
+      appliedConversionMethod {
+        arguments {
+          name
+          value
+        }
+        methodId
+        sourceName
+      }
+      parentId
+      value {
+        archivedFilesMetaInformation {
+          dataFormatId
+          path
+        }
+        description
+        dataFormatId
+        hashValue
+        id
+        locator
+        uuid
+      }
+      vertexId
+    }
+  }
+  approvals {
+    approverId
+    keyFingerprint
+    query
+    response
+    signature
+    timestamp
+  }
+  createdAt
+  creatorId
+  locale
+  resources {
+    description
+    hashValue
+    locator
+    dataFormatId
+  }
+  warnings
+  # TODO All the above should be replaced by `...DataPartial`. If we do so
+  # though, the result returned by the query `AllPhotovoltaicData` does not include
+  # the fields above. Why?
+}
+
+query AllPhotovoltaicData($where: PhotovoltaicDataPropositionInput) {
+  allPhotovoltaicData(where: $where) {
+    nodes {
+      ...PhotovoltaicDataPartial
+    }
+  }
+}
+
+# query HasPhotovoltaicData($where: DataPropositionInput!) {
+#   hasPhotovoltaicData(where: $where)
 # }

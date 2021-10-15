@@ -30,10 +30,60 @@ type AppliedMethod {
   sources: [NamedMethodSource!]!
 }
 
+type CalorimetricData implements Node & Data {
+  appliedMethod: AppliedMethod!
+  approvals: [DataApproval!]!
+  componentId: UUID!
+  createdAt: DateTime!
+  creatorId: UUID!
+  description: String
+  gValues: [Float!]!
+  id: ID!
+  locale: Locale!
+  name: String
+  resourceTree: GetHttpsResourceTree!
+  resources: [GetHttpsResource!]!
+  timestamp: DateTime!
+  uValues: [Float!]!
+  uuid: UUID!
+  warnings: [String!]!
+}
+
+"A connection to a list of items."
+type CalorimetricDataConnection {
+  "A list of edges."
+  edges: [CalorimetricDataEdge!]
+  "A flattened list of the nodes."
+  nodes: [CalorimetricData!]
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+"An edge in a connection."
+type CalorimetricDataEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: CalorimetricData!
+}
+
 type CielabColor {
   aStar: Float!
   bStar: Float!
   lStar: Float!
+}
+
+type CreateCalorimetricDataError {
+  code: CreateCalorimetricDataErrorCode!
+  message: String!
+  path: [String!]!
+}
+
+type CreateCalorimetricDataPayload {
+  calorimetricData: CalorimetricData
+  errors: [CreateCalorimetricDataError!]
+  query: Query!
 }
 
 type CreateGetHttpsResourceError {
@@ -48,6 +98,18 @@ type CreateGetHttpsResourcePayload {
   query: Query!
 }
 
+type CreateHygrothermalDataError {
+  code: CreateHygrothermalDataErrorCode!
+  message: String!
+  path: [String!]!
+}
+
+type CreateHygrothermalDataPayload {
+  errors: [CreateHygrothermalDataError!]
+  hygrothermalData: HygrothermalData
+  query: Query!
+}
+
 type CreateOpticalDataError {
   code: CreateOpticalDataErrorCode!
   message: String!
@@ -57,6 +119,18 @@ type CreateOpticalDataError {
 type CreateOpticalDataPayload {
   errors: [CreateOpticalDataError!]
   opticalData: OpticalData
+  query: Query!
+}
+
+type CreatePhotovoltaicDataError {
+  code: CreatePhotovoltaicDataErrorCode!
+  message: String!
+  path: [String!]!
+}
+
+type CreatePhotovoltaicDataPayload {
+  errors: [CreatePhotovoltaicDataError!]
+  photovoltaicData: PhotovoltaicData
   query: Query!
 }
 
@@ -131,9 +205,48 @@ type GetHttpsResourceTreeRoot {
   vertexId: ID!
 }
 
+type HygrothermalData implements Node & Data {
+  appliedMethod: AppliedMethod!
+  approvals: [DataApproval!]!
+  componentId: UUID!
+  createdAt: DateTime!
+  creatorId: UUID!
+  description: String
+  id: ID!
+  locale: Locale!
+  name: String
+  resourceTree: GetHttpsResourceTree!
+  resources: [GetHttpsResource!]!
+  timestamp: DateTime!
+  uuid: UUID!
+  warnings: [String!]!
+}
+
+"A connection to a list of items."
+type HygrothermalDataConnection {
+  "A list of edges."
+  edges: [HygrothermalDataEdge!]
+  "A flattened list of the nodes."
+  nodes: [HygrothermalData!]
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+"An edge in a connection."
+type HygrothermalDataEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: HygrothermalData!
+}
+
 type Mutation {
+  createCalorimetricData(input: CreateCalorimetricDataInput!): CreateCalorimetricDataPayload!
   createGetHttpsResource(input: CreateGetHttpsResourceInput!): CreateGetHttpsResourcePayload!
+  createHygrothermalData(input: CreateHygrothermalDataInput!): CreateHygrothermalDataPayload!
   createOpticalData(input: CreateOpticalDataInput!): CreateOpticalDataPayload!
+  createPhotovoltaicData(input: CreatePhotovoltaicDataInput!): CreatePhotovoltaicDataPayload!
 }
 
 type NamedMethodArgument {
@@ -206,15 +319,57 @@ type PageInfo {
   startCursor: String
 }
 
+type PhotovoltaicData implements Node & Data {
+  appliedMethod: AppliedMethod!
+  approvals: [DataApproval!]!
+  componentId: UUID!
+  createdAt: DateTime!
+  creatorId: UUID!
+  description: String
+  id: ID!
+  locale: Locale!
+  name: String
+  resourceTree: GetHttpsResourceTree!
+  resources: [GetHttpsResource!]!
+  timestamp: DateTime!
+  uuid: UUID!
+  warnings: [String!]!
+}
+
+"A connection to a list of items."
+type PhotovoltaicDataConnection {
+  "A list of edges."
+  edges: [PhotovoltaicDataEdge!]
+  "A flattened list of the nodes."
+  nodes: [PhotovoltaicData!]
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+"An edge in a connection."
+type PhotovoltaicDataEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: PhotovoltaicData!
+}
+
 type Query {
+  allCalorimetricData("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int locale: Locale order: [CalorimetricDataSortInput!] timestamp: DateTime where: CalorimetricDataPropositionInput): CalorimetricDataConnection
+  allHygrothermalData("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int locale: Locale order: [HygrothermalDataSortInput!] timestamp: DateTime where: HygrothermalDataPropositionInput): HygrothermalDataConnection
   allOpticalData("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int locale: Locale order: [OpticalDataSortInput!] timestamp: DateTime where: OpticalDataPropositionInput): OpticalDataConnection
+  allPhotovoltaicData("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int locale: Locale order: [PhotovoltaicDataSortInput!] timestamp: DateTime where: PhotovoltaicDataPropositionInput): PhotovoltaicDataConnection
+  calorimetricData(id: UUID! locale: Locale timestamp: DateTime): CalorimetricData
   getHttpsResource(id: UUID!): GetHttpsResource
   getHttpsResources("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int order: [GetHttpsResourceSortInput!] where: GetHttpsResourcePropositionInput): GetHttpsResourceConnection
+  hygrothermalData(id: UUID! locale: Locale timestamp: DateTime): HygrothermalData
   "Fetches an object given its ID."
   node("ID of the object." id: ID!): Node
   "Lookup nodes by a list of IDs."
   nodes("The list of node IDs." ids: [ID!]!): [Node]!
   opticalData(id: UUID! locale: Locale timestamp: DateTime): OpticalData
+  photovoltaicData(id: UUID! locale: Locale timestamp: DateTime): PhotovoltaicData
 }
 
 type ToTreeVertexAppliedConversionMethod {
@@ -241,6 +396,36 @@ input AppliedMethodSortInput {
   methodId: SortEnumType
 }
 
+input CalorimetricDataPropositionInput {
+  and: [CalorimetricDataPropositionInput!]
+  or: [CalorimetricDataPropositionInput!]
+  id: UuidPropositionInput
+  locale: StringPropositionInput
+  name: StringPropositionInput
+  description: StringPropositionInput
+  componentId: UuidPropositionInput
+  creatorId: UuidPropositionInput
+  createdAt: DateTimePropositionInput
+  appliedMethod: AppliedMethodPropositionInput
+  approvals: ListFilterInputTypeOfDataApprovalPropositionInput
+  resources: ListGetHttpsResourceFilterTypePropositionInput
+  warnings: StringsPropositionInput
+  gValues: FloatsPropositionInput
+  uValues: FloatsPropositionInput
+}
+
+input CalorimetricDataSortInput {
+  locale: SortEnumType
+  componentId: SortEnumType
+  name: SortEnumType
+  description: SortEnumType
+  creatorId: SortEnumType
+  createdAt: SortEnumType
+  appliedMethod: AppliedMethodSortInput
+  id: SortEnumType
+  xmin: SortEnumType
+}
+
 input CielabColorInput {
   aStar: Float!
   bStar: Float!
@@ -255,6 +440,22 @@ input CielabColorPropositionInput {
   bStar: FloatPropositionInput
 }
 
+input CreateCalorimetricDataInput {
+  accessToken: String!
+  appliedMethod: AppliedMethodInput!
+  approvals: [DataApprovalInput!]!
+  componentId: UUID!
+  createdAt: DateTime!
+  creatorId: UUID!
+  description: String
+  gValues: [Float!]!
+  locale: String!
+  name: String
+  rootResource: RootGetHttpsResourceInput!
+  uValues: [Float!]!
+  warnings: [String!]!
+}
+
 input CreateGetHttpsResourceInput {
   accessToken: String!
   appliedConversionMethod: ToTreeVertexAppliedConversionMethodInput
@@ -264,6 +465,20 @@ input CreateGetHttpsResourceInput {
   description: String!
   hashValue: String!
   parentId: UUID
+}
+
+input CreateHygrothermalDataInput {
+  accessToken: String!
+  appliedMethod: AppliedMethodInput!
+  approvals: [DataApprovalInput!]!
+  componentId: UUID!
+  createdAt: DateTime!
+  creatorId: UUID!
+  description: String
+  locale: String!
+  name: String
+  rootResource: RootGetHttpsResourceInput!
+  warnings: [String!]!
 }
 
 input CreateOpticalDataInput {
@@ -283,6 +498,20 @@ input CreateOpticalDataInput {
   nearnormalHemisphericalSolarTransmittances: [Float!]!
   nearnormalHemisphericalVisibleReflectances: [Float!]!
   nearnormalHemisphericalVisibleTransmittances: [Float!]!
+  rootResource: RootGetHttpsResourceInput!
+  warnings: [String!]!
+}
+
+input CreatePhotovoltaicDataInput {
+  accessToken: String!
+  appliedMethod: AppliedMethodInput!
+  approvals: [DataApprovalInput!]!
+  componentId: UUID!
+  createdAt: DateTime!
+  creatorId: UUID!
+  description: String
+  locale: String!
+  name: String
   rootResource: RootGetHttpsResourceInput!
   warnings: [String!]!
 }
@@ -414,6 +643,34 @@ input GetHttpsResourceSortInput {
   xmin: SortEnumType
 }
 
+input HygrothermalDataPropositionInput {
+  and: [HygrothermalDataPropositionInput!]
+  or: [HygrothermalDataPropositionInput!]
+  id: UuidPropositionInput
+  locale: StringPropositionInput
+  name: StringPropositionInput
+  description: StringPropositionInput
+  componentId: UuidPropositionInput
+  creatorId: UuidPropositionInput
+  createdAt: DateTimePropositionInput
+  appliedMethod: AppliedMethodPropositionInput
+  approvals: ListFilterInputTypeOfDataApprovalPropositionInput
+  resources: ListGetHttpsResourceFilterTypePropositionInput
+  warnings: StringsPropositionInput
+}
+
+input HygrothermalDataSortInput {
+  locale: SortEnumType
+  componentId: SortEnumType
+  name: SortEnumType
+  description: SortEnumType
+  creatorId: SortEnumType
+  createdAt: SortEnumType
+  appliedMethod: AppliedMethodSortInput
+  id: SortEnumType
+  xmin: SortEnumType
+}
+
 input ListFilterInputTypeOfCielabColorPropositionInput {
   all: CielabColorPropositionInput
   none: CielabColorPropositionInput
@@ -526,6 +783,34 @@ input OpticalDataSortInput {
   xmin: SortEnumType
 }
 
+input PhotovoltaicDataPropositionInput {
+  and: [PhotovoltaicDataPropositionInput!]
+  or: [PhotovoltaicDataPropositionInput!]
+  id: UuidPropositionInput
+  locale: StringPropositionInput
+  name: StringPropositionInput
+  description: StringPropositionInput
+  componentId: UuidPropositionInput
+  creatorId: UuidPropositionInput
+  createdAt: DateTimePropositionInput
+  appliedMethod: AppliedMethodPropositionInput
+  approvals: ListFilterInputTypeOfDataApprovalPropositionInput
+  resources: ListGetHttpsResourceFilterTypePropositionInput
+  warnings: StringsPropositionInput
+}
+
+input PhotovoltaicDataSortInput {
+  locale: SortEnumType
+  componentId: SortEnumType
+  name: SortEnumType
+  description: SortEnumType
+  creatorId: SortEnumType
+  createdAt: SortEnumType
+  appliedMethod: AppliedMethodSortInput
+  id: SortEnumType
+  xmin: SortEnumType
+}
+
 input RootGetHttpsResourceInput {
   appliedConversionMethod: ToTreeVertexAppliedConversionMethodInput
   archivedFilesMetaInformation: [FileMetaInformationInput!]!
@@ -593,12 +878,27 @@ enum ApplyPolicy {
   AFTER_RESOLVER
 }
 
+enum CreateCalorimetricDataErrorCode {
+  UNKNOWN
+  UNAUTHORIZED
+}
+
 enum CreateGetHttpsResourceErrorCode {
   UNKNOWN
   UNAUTHORIZED
 }
 
+enum CreateHygrothermalDataErrorCode {
+  UNKNOWN
+  UNAUTHORIZED
+}
+
 enum CreateOpticalDataErrorCode {
+  UNKNOWN
+  UNAUTHORIZED
+}
+
+enum CreatePhotovoltaicDataErrorCode {
   UNKNOWN
   UNAUTHORIZED
 }
