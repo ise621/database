@@ -14,7 +14,8 @@ namespace Database.Data
 
         public Guid DataId { get; private set; }
 
-        [InverseProperty(nameof(IData.Resources))]
+        // TODO [InverseProperty(nameof(IData.Resources))]
+        [NotMapped]
         public IData? Data { get; set; }
 
         public Guid? ParentId { get; private set; }

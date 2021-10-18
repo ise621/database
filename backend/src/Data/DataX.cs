@@ -19,7 +19,8 @@ namespace Database.Data
         // public ResponseApproval Approval { get; private set; }
 
         // TODO Exactly one resource must not have a parent and each other resource must have one from this list and the graph must be connected. In other words, the resources must form a tree.
-        [InverseProperty(nameof(GetHttpsResource.Data))]
+        // TODO [InverseProperty(nameof(GetHttpsResource.Data))]
+        [NotMapped]
         public ICollection<GetHttpsResource> Resources { get; } = new List<GetHttpsResource>();
 
         protected DataX(
