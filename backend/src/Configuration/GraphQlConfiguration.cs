@@ -134,6 +134,7 @@ namespace Database.Configuration
             descriptor.BindRuntimeType<Data.GetHttpsResource, GraphQl.GetHttpsResources.GetHttpsResourceFilterType>();
             descriptor.BindRuntimeType<Data.NamedMethodArgument, GraphQl.NamedMethodArgumentFilterType>();
             descriptor.BindRuntimeType<Data.CalorimetricData, GraphQl.CalorimetricDataX.CalorimetricDataFilterType>();
+            descriptor.BindRuntimeType<Data.IData, GraphQl.DataX.DataFilterType>();
             descriptor.BindRuntimeType<Data.HygrothermalData, GraphQl.HygrothermalDataX.HygrothermalDataFilterType>();
             descriptor.BindRuntimeType<Data.OpticalData, GraphQl.OpticalDataX.OpticalDataFilterType>();
             descriptor.BindRuntimeType<Data.PhotovoltaicData, GraphQl.PhotovoltaicDataX.PhotovoltaicDataFilterType>();
