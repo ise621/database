@@ -1,0 +1,592 @@
+mutation {
+  createOpticalData(input: {
+    accessToken: "secret"
+    appliedMethod: {
+      arguments: [{
+        name: "x"
+        # value
+      }]
+      methodId: "31a9c5b3-85d4-4cd2-b9b5-c9b8c3426719"
+      sources: [{
+        name: "y"
+        value: {
+          dataId: "31a9c5b3-85d4-4cd2-b9b5-c9b8c3426719"
+          dataKind: OPTICAL_DATA
+          dataTimestamp: "2009-06-15T13:45:30"
+          databaseId: "31a9c5b3-85d4-4cd2-b9b5-c9b8c3426719"
+        }
+      }]
+    }
+    approvals: [{
+      approverId: "31a9c5b3-85d4-4cd2-b9b5-c9b8c3426719"
+      keyFingerprint: ""
+      query: ""
+      response: ""
+      signature: ""
+      timestamp: "2009-06-15T13:45:30"
+    }]
+    cielabColors: [{
+      aStar: 1
+      bStar: 1
+      lStar: 1
+    }]
+    colorRenderingIndices: [1, 2, 3]
+    componentId: "31a9c5b3-85d4-4cd2-b9b5-c9b8c3426719"
+    createdAt: "2009-06-15T13:45:30"
+    creatorId: "31a9c5b3-85d4-4cd2-b9b5-c9b8c3426719"
+    description: "Our measured optical data"
+    infraredEmittances: [1, 2, 3]
+    locale: "en-US"
+    name: "Out optical data"
+    nearnormalHemisphericalSolarReflectances: [1, 2, 3]
+    nearnormalHemisphericalSolarTransmittances: [1, 2, 3]
+    nearnormalHemisphericalVisibleReflectances: [1, 2, 3]
+    nearnormalHemisphericalVisibleTransmittances: [1, 2, 3]
+    rootResource: {
+      archivedFilesMetaInformation: [{
+        dataFormatId: "31a9c5b3-85d4-4cd2-b9b5-c9b8c3426719"
+        path: "./a/b/c"
+      }]
+      description: "Our resource"
+      dataFormatId: "31a9c5b3-85d4-4cd2-b9b5-c9b8c3426719"
+      hashValue: "TODO"
+    }
+    warnings: ["First", "Second", "Third"]
+  })
+  {
+    opticalData {
+      appliedMethod {
+        arguments {
+          name
+          # value
+        }
+        methodId
+        sources {
+          name
+          value {
+            dataId
+            dataKind
+            dataTimestamp
+            databaseId
+          }
+        }
+      }
+      approvals {
+        approverId
+        keyFingerprint
+        query
+        response
+        signature
+        timestamp
+      }
+      cielabColors {
+        aStar
+        bStar
+        lStar
+      }
+      colorRenderingIndices
+      componentId
+      createdAt
+      creatorId
+      description
+      id
+      infraredEmittances
+      locale
+      name
+      nearnormalHemisphericalSolarReflectances
+      nearnormalHemisphericalSolarTransmittances
+      nearnormalHemisphericalVisibleReflectances
+      nearnormalHemisphericalVisibleTransmittances
+      resourceTree {
+        nonRootVertices {
+          appliedConversionMethod {
+            arguments {
+              name
+              # value
+            }
+            methodId
+            sourceName
+          }
+          parentId
+          value {
+            archivedFilesMetaInformation {
+              dataFormatId
+              path
+            }
+            description
+            dataFormatId
+            hashValue
+            id
+            locator
+            uuid
+          }
+          vertexId
+        }
+        root {
+          value {
+            archivedFilesMetaInformation {
+              dataFormatId
+              path
+            }
+            description
+            dataFormatId
+            hashValue
+            id
+            locator
+            uuid
+          }
+          vertexId
+        }
+      }
+      resources {
+        archivedFilesMetaInformation {
+          dataFormatId
+          path
+        }
+        description
+        dataFormatId
+        hashValue
+        id
+        locator
+        uuid
+      }
+      uuid
+      warnings
+    }
+    errors {
+      code
+      message
+      path
+    }
+  }
+}
+
+
+mutation {
+  createPhotovoltaicData(input: {
+    accessToken: "secret"
+    appliedMethod: {
+      arguments: [{
+        name: "x"
+        # value
+      }]
+      methodId: "31a9c5b3-85d4-4cd2-b9b5-c9b8c3426719"
+      sources: [{
+        name: "y"
+        value: {
+          dataId: "31a9c5b3-85d4-4cd2-b9b5-c9b8c3426719"
+          dataKind: OPTICAL_DATA
+          dataTimestamp: "2009-06-15T13:45:30"
+          databaseId: "31a9c5b3-85d4-4cd2-b9b5-c9b8c3426719"
+        }
+      }]
+    }
+    approvals: [{
+      approverId: "31a9c5b3-85d4-4cd2-b9b5-c9b8c3426719"
+      keyFingerprint: ""
+      query: ""
+      response: ""
+      signature: ""
+      timestamp: "2009-06-15T13:45:30"
+    }]
+    componentId: "31a9c5b3-85d4-4cd2-b9b5-c9b8c3426719"
+    createdAt: "2009-06-15T13:45:30"
+    creatorId: "31a9c5b3-85d4-4cd2-b9b5-c9b8c3426719"
+    description: "Our measured optical data"
+    locale: "en-US"
+    name: "Out optical data"
+    rootResource: {
+      archivedFilesMetaInformation: [{
+        dataFormatId: "31a9c5b3-85d4-4cd2-b9b5-c9b8c3426719"
+        path: "./a/b/c"
+      }]
+      description: "Our resource"
+      dataFormatId: "31a9c5b3-85d4-4cd2-b9b5-c9b8c3426719"
+      hashValue: "TODO"
+    }
+    warnings: ["First", "Second", "Third"]
+  })
+  {
+    photovoltaicData {
+      appliedMethod {
+        arguments {
+          name
+          # value
+        }
+        methodId
+        sources {
+          name
+          value {
+            dataId
+            dataKind
+            dataTimestamp
+            databaseId
+          }
+        }
+      }
+      approvals {
+        approverId
+        keyFingerprint
+        query
+        response
+        signature
+        timestamp
+      }
+      componentId
+      createdAt
+      creatorId
+      description
+      id
+      locale
+      name
+      resourceTree {
+        nonRootVertices {
+          appliedConversionMethod {
+            arguments {
+              name
+              # value
+            }
+            methodId
+            sourceName
+          }
+          parentId
+          value {
+            archivedFilesMetaInformation {
+              dataFormatId
+              path
+            }
+            description
+            dataFormatId
+            hashValue
+            id
+            locator
+            uuid
+          }
+          vertexId
+        }
+        root {
+          value {
+            archivedFilesMetaInformation {
+              dataFormatId
+              path
+            }
+            description
+            dataFormatId
+            hashValue
+            id
+            locator
+            uuid
+          }
+          vertexId
+        }
+      }
+      resources {
+        archivedFilesMetaInformation {
+          dataFormatId
+          path
+        }
+        description
+        dataFormatId
+        hashValue
+        id
+        locator
+        uuid
+      }
+      uuid
+      warnings
+    }
+    errors {
+      code
+      message
+      path
+    }
+  }
+}
+
+
+
+mutation {
+  createHygrothermalData(input: {
+    accessToken: "secret"
+    appliedMethod: {
+      arguments: [{
+        name: "x"
+        # value
+      }]
+      methodId: "31a9c5b3-85d4-4cd2-b9b5-c9b8c3426719"
+      sources: [{
+        name: "y"
+        value: {
+          dataId: "31a9c5b3-85d4-4cd2-b9b5-c9b8c3426719"
+          dataKind: OPTICAL_DATA
+          dataTimestamp: "2009-06-15T13:45:30"
+          databaseId: "31a9c5b3-85d4-4cd2-b9b5-c9b8c3426719"
+        }
+      }]
+    }
+    approvals: [{
+      approverId: "31a9c5b3-85d4-4cd2-b9b5-c9b8c3426719"
+      keyFingerprint: ""
+      query: ""
+      response: ""
+      signature: ""
+      timestamp: "2009-06-15T13:45:30"
+    }]
+    componentId: "31a9c5b3-85d4-4cd2-b9b5-c9b8c3426719"
+    createdAt: "2009-06-15T13:45:30"
+    creatorId: "31a9c5b3-85d4-4cd2-b9b5-c9b8c3426719"
+    description: "Our measured optical data"
+    locale: "en-US"
+    name: "Out optical data"
+    rootResource: {
+      archivedFilesMetaInformation: [{
+        dataFormatId: "31a9c5b3-85d4-4cd2-b9b5-c9b8c3426719"
+        path: "./a/b/c"
+      }]
+      description: "Our resource"
+      dataFormatId: "31a9c5b3-85d4-4cd2-b9b5-c9b8c3426719"
+      hashValue: "TODO"
+    }
+    warnings: ["First", "Second", "Third"]
+  })
+  {
+    hygrothermalData {
+      appliedMethod {
+        arguments {
+          name
+          # value
+        }
+        methodId
+        sources {
+          name
+          value {
+            dataId
+            dataKind
+            dataTimestamp
+            databaseId
+          }
+        }
+      }
+      approvals {
+        approverId
+        keyFingerprint
+        query
+        response
+        signature
+        timestamp
+      }
+      componentId
+      createdAt
+      creatorId
+      description
+      id
+      locale
+      name
+      resourceTree {
+        nonRootVertices {
+          appliedConversionMethod {
+            arguments {
+              name
+              # value
+            }
+            methodId
+            sourceName
+          }
+          parentId
+          value {
+            archivedFilesMetaInformation {
+              dataFormatId
+              path
+            }
+            description
+            dataFormatId
+            hashValue
+            id
+            locator
+            uuid
+          }
+          vertexId
+        }
+        root {
+          value {
+            archivedFilesMetaInformation {
+              dataFormatId
+              path
+            }
+            description
+            dataFormatId
+            hashValue
+            id
+            locator
+            uuid
+          }
+          vertexId
+        }
+      }
+      resources {
+        archivedFilesMetaInformation {
+          dataFormatId
+          path
+        }
+        description
+        dataFormatId
+        hashValue
+        id
+        locator
+        uuid
+      }
+      uuid
+      warnings
+    }
+    errors {
+      code
+      message
+      path
+    }
+  }
+}
+
+
+mutation {
+  createCalorimetricData(input: {
+    accessToken: "secret"
+    appliedMethod: {
+      arguments: [{
+        name: "x"
+        # value
+      }]
+      methodId: "31a9c5b3-85d4-4cd2-b9b5-c9b8c3426719"
+      sources: [{
+        name: "y"
+        value: {
+          dataId: "31a9c5b3-85d4-4cd2-b9b5-c9b8c3426719"
+          dataKind: OPTICAL_DATA
+          dataTimestamp: "2009-06-15T13:45:30"
+          databaseId: "31a9c5b3-85d4-4cd2-b9b5-c9b8c3426719"
+        }
+      }]
+    }
+    approvals: [{
+      approverId: "31a9c5b3-85d4-4cd2-b9b5-c9b8c3426719"
+      keyFingerprint: ""
+      query: ""
+      response: ""
+      signature: ""
+      timestamp: "2009-06-15T13:45:30"
+    }]
+    componentId: "31a9c5b3-85d4-4cd2-b9b5-c9b8c3426719"
+    createdAt: "2009-06-15T13:45:30"
+    creatorId: "31a9c5b3-85d4-4cd2-b9b5-c9b8c3426719"
+    description: "Our measured optical data"
+    locale: "en-US"
+    name: "Out optical data"
+    rootResource: {
+      archivedFilesMetaInformation: [{
+        dataFormatId: "31a9c5b3-85d4-4cd2-b9b5-c9b8c3426719"
+        path: "./a/b/c"
+      }]
+      description: "Our resource"
+      dataFormatId: "31a9c5b3-85d4-4cd2-b9b5-c9b8c3426719"
+      hashValue: "TODO"
+    }
+    warnings: ["First", "Second", "Third"]
+    gValues: [0.3, 0.5, 0.8]
+    uValues: [0.2, 0.1, 0.5]
+  })
+  {
+    calorimetricData {
+      appliedMethod {
+        arguments {
+          name
+          # value
+        }
+        methodId
+        sources {
+          name
+          value {
+            dataId
+            dataKind
+            dataTimestamp
+            databaseId
+          }
+        }
+      }
+      approvals {
+        approverId
+        keyFingerprint
+        query
+        response
+        signature
+        timestamp
+      }
+      componentId
+      createdAt
+      creatorId
+      description
+      id
+      locale
+      name
+      resourceTree {
+        nonRootVertices {
+          appliedConversionMethod {
+            arguments {
+              name
+              # value
+            }
+            methodId
+            sourceName
+          }
+          parentId
+          value {
+            archivedFilesMetaInformation {
+              dataFormatId
+              path
+            }
+            description
+            dataFormatId
+            hashValue
+            id
+            locator
+            uuid
+          }
+          vertexId
+        }
+        root {
+          value {
+            archivedFilesMetaInformation {
+              dataFormatId
+              path
+            }
+            description
+            dataFormatId
+            hashValue
+            id
+            locator
+            uuid
+          }
+          vertexId
+        }
+      }
+      resources {
+        archivedFilesMetaInformation {
+          dataFormatId
+          path
+        }
+        description
+        dataFormatId
+        hashValue
+        id
+        locator
+        uuid
+      }
+      uuid
+      warnings
+    }
+    errors {
+      code
+      message
+      path
+    }
+  }
+}
+

@@ -117,7 +117,7 @@ function Page() {
             );
           }
         }
-        const { error, data } = await allDataQuery.refetch(
+        const { error, data: dataX } = await allDataQuery.refetch(
           propositions.length == 0
             ? {}
             : {
@@ -132,7 +132,7 @@ function Page() {
           );
         }
         // TODO Casting to `Data` is wrong and error prone!
-        setData((data?.allData?.nodes || []) as Data[]);
+        setData((dataX?.allData?.nodes || []) as Data[]);
       } catch (error) {
         // TODO Handle properly.
         console.log("Failed:", error);
@@ -149,7 +149,7 @@ function Page() {
 
   return (
     <Layout>
-      <Typography.Title> Data</Typography.Title>
+      <Typography.Title>Data</Typography.Title>
       {/* TODO Display error messages in a list? */}
       {globalErrorMessages.length > 0 && (
         <Alert type="error" message={globalErrorMessages.join(" ")} />
