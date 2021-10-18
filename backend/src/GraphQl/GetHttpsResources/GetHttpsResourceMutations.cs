@@ -47,7 +47,10 @@ namespace Database.GraphQl.GetHttpsResources
                 description: input.Description,
                 hashValue: input.HashValue,
                 dataFormatId: input.DataFormatId,
-                dataId: input.DataId,
+                calorimetricDataId: input.DataKind == Enumerations.DataKind.CALORIMETRIC_DATA ? input.DataId : null,
+                hygrothermalDataId: input.DataKind == Enumerations.DataKind.HYGROTHERMAL_DATA ? input.DataId : null,
+                opticalDataId: input.DataKind == Enumerations.DataKind.OPTICAL_DATA ? input.DataId : null,
+                photovoltaicDataId: input.DataKind == Enumerations.DataKind.PHOTOVOLTAIC_DATA ? input.DataId : null,
                 parentId: input.ParentId,
                 archivedFilesMetaInformation: input.ArchivedFilesMetaInformation.Select(i =>
                     new Data.FileMetaInformation(

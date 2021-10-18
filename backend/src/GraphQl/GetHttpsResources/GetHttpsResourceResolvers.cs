@@ -21,23 +21,35 @@ namespace Database.GraphQl.GetHttpsResources
 
         )
         {
-            return
-                await calorimetricDataById.LoadAsync(
-                    getHttpsResource.DataId,
+            if (getHttpsResource.CalorimetricDataId is not null)
+            {
+                return await calorimetricDataById.LoadAsync(
+                    getHttpsResource.CalorimetricDataId ?? throw new Exception("Impossible!"),
                     cancellationToken
-                ).ConfigureAwait(false) ??
-                await hygrothermalDataById.LoadAsync(
-                    getHttpsResource.DataId,
+                ).ConfigureAwait(false);
+            }
+            if (getHttpsResource.HygrothermalDataId is not null)
+            {
+                return await hygrothermalDataById.LoadAsync(
+                    getHttpsResource.HygrothermalDataId ?? throw new Exception("Impossible!"),
                     cancellationToken
-                ).ConfigureAwait(false) ??
-                await opticalDataById.LoadAsync(
-                    getHttpsResource.DataId,
+                ).ConfigureAwait(false);
+            }
+            if (getHttpsResource.OpticalDataId is not null)
+            {
+                return await opticalDataById.LoadAsync(
+                    getHttpsResource.OpticalDataId ?? throw new Exception("Impossible!"),
                     cancellationToken
-                ).ConfigureAwait(false) ??
-                (await photovoltaicDataById.LoadAsync(
-                    getHttpsResource.DataId,
+                ).ConfigureAwait(false);
+            }
+            if (getHttpsResource.PhotovoltaicDataId is not null)
+            {
+                return await photovoltaicDataById.LoadAsync(
+                    getHttpsResource.PhotovoltaicDataId ?? throw new Exception("Impossible!"),
                     cancellationToken
-                ).ConfigureAwait(false) as Data.IData);
+                ).ConfigureAwait(false);
+            }
+            return null;
         }
 
         public Uri GetLocator(

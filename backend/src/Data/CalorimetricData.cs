@@ -1,11 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Database.Data
 {
     public sealed class CalorimetricData
     : DataX
     {
+        [InverseProperty(nameof(GetHttpsResource.CalorimetricData))]
+        public override ICollection<GetHttpsResource> Resources { get; } = new List<GetHttpsResource>();
+
         public double[] GValues { get; private set; }
         public double[] UValues { get; private set; }
 

@@ -12,11 +12,31 @@ namespace Database.Data
         public Guid DataFormatId { get; private set; }
         public ICollection<FileMetaInformation> ArchivedFilesMetaInformation { get; private set; } = new List<FileMetaInformation>();
 
-        public Guid DataId { get; private set; }
-
-        // TODO [InverseProperty(nameof(IData.Resources))]
+        // TODO Make sure that at least one ID is always present. In that case `Guid.Empty` should never be used!
         [NotMapped]
-        public IData? Data { get; set; }
+        public Guid DataId { get => CalorimetricDataId ?? HygrothermalDataId ?? OpticalDataId ?? PhotovoltaicDataId ?? Guid.Empty; }
+        [NotMapped]
+        public IData? Data { get => CalorimetricData ?? HygrothermalData ?? OpticalData ?? PhotovoltaicData as IData; }
+
+        public Guid? CalorimetricDataId { get; private set; }
+        [InverseProperty(nameof(Database.Data.CalorimetricData.Resources))]
+        public CalorimetricData? CalorimetricData { get; set; }
+
+        public Guid? HygrothermalDataId { get; private set; }
+
+        [InverseProperty(nameof(Database.Data.HygrothermalData.Resources))]
+        public HygrothermalData? HygrothermalData { get; set; }
+
+        public Guid? OpticalDataId { get; private set; }
+
+        [InverseProperty(nameof(Database.Data.OpticalData.Resources))]
+        public OpticalData? OpticalData { get; set; }
+
+        public Guid? PhotovoltaicDataId { get; private set; }
+
+        [InverseProperty(nameof(Database.Data.PhotovoltaicData.Resources))]
+        public PhotovoltaicData? PhotovoltaicData { get; set; }
+
 
         public Guid? ParentId { get; private set; }
         // TODO Require the conversion method to be given whenever there is a parent. In other words, either both are `null` or both are non-`null`.
@@ -33,7 +53,10 @@ namespace Database.Data
           string description,
           string hashValue,
           Guid dataFormatId,
-          Guid dataId,
+          Guid? calorimetricDataId,
+          Guid? hygrothermalDataId,
+          Guid? opticalDataId,
+          Guid? photovoltaicDataId,
           Guid? parentId,
           ICollection<FileMetaInformation> archivedFilesMetaInformation,
           ToTreeVertexAppliedConversionMethod? appliedConversionMethod
@@ -47,7 +70,10 @@ namespace Database.Data
             appliedConversionMethod: appliedConversionMethod
         )
         {
-            DataId = dataId;
+            CalorimetricDataId = calorimetricDataId;
+            HygrothermalDataId = hygrothermalDataId;
+            OpticalDataId = opticalDataId;
+            PhotovoltaicDataId = photovoltaicDataId;
         }
 
         public GetHttpsResource(
@@ -74,7 +100,10 @@ namespace Database.Data
           string description,
           string hashValue,
           Guid dataFormatId,
-          Guid dataId,
+          Guid? calorimetricDataId,
+          Guid? hygrothermalDataId,
+          Guid? opticalDataId,
+          Guid? photovoltaicDataId,
           Guid? parentId
         )
         : this(
@@ -84,7 +113,10 @@ namespace Database.Data
             parentId: parentId
         )
         {
-            DataId = dataId;
+            CalorimetricDataId = calorimetricDataId;
+            HygrothermalDataId = hygrothermalDataId;
+            OpticalDataId = opticalDataId;
+            PhotovoltaicDataId = photovoltaicDataId;
         }
 
         public GetHttpsResource(

@@ -1,11 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Database.Data
 {
     public sealed class OpticalData
     : DataX
     {
+        [InverseProperty(nameof(GetHttpsResource.OpticalData))]
+        public override ICollection<GetHttpsResource> Resources { get; } = new List<GetHttpsResource>();
+
         public double[] NearnormalHemisphericalVisibleTransmittances { get; private set; }
         public double[] NearnormalHemisphericalVisibleReflectances { get; private set; }
         public double[] NearnormalHemisphericalSolarTransmittances { get; private set; }

@@ -9,6 +9,7 @@ namespace Database.GraphQl.GetHttpsResources
           string HashValue,
           Guid DataFormatId,
           Guid DataId,
+          Enumerations.DataKind DataKind,
           Guid? ParentId,
           IReadOnlyList<FileMetaInformationInput> ArchivedFilesMetaInformation,
           ToTreeVertexAppliedConversionMethodInput? AppliedConversionMethod

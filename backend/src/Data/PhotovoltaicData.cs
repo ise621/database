@@ -1,11 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Database.Data
 {
     public sealed class PhotovoltaicData
     : DataX
     {
+        [InverseProperty(nameof(GetHttpsResource.PhotovoltaicData))]
+        public override ICollection<GetHttpsResource> Resources { get; } = new List<GetHttpsResource>();
+
         public PhotovoltaicData(
           string locale,
           Guid componentId,
