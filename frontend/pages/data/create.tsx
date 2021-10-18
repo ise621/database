@@ -1,5 +1,5 @@
 import { Row, Col, Card, Typography } from "antd";
-import Layout from "../components/Layout";
+import Layout from "../../components/Layout";
 
 function Page() {
   return (

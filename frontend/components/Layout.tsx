@@ -11,10 +11,10 @@ const navItems = [
     path: paths.home,
     label: "Home",
   },
-  // {
-  //   path: paths.data,
-  //   label: "Data",
-  // },
+  {
+    path: paths.data,
+    label: "All Data",
+  },
   {
     path: paths.calorimetricData,
     label: "Calorimetric Data",

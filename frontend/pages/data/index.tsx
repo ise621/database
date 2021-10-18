@@ -1,13 +1,13 @@
-import Layout from "../components/Layout";
+import Layout from "../../components/Layout";
 import { Table, message, Form, Button, Alert, Typography } from "antd";
-import { useAllPhotovoltaicDataQuery } from "../queries/data.graphql";
+import { useAllDataQuery } from "../../queries/data.graphql";
 import {
-  PhotovoltaicData,
+  Data,
   Scalars,
-  PhotovoltaicDataPropositionInput,
-} from "../__generated__/__types__";
+  DataPropositionInput,
+} from "../../__generated__/__types__";
 import { useState } from "react";
-import { setMapValue } from "../lib/freeTextFilter";
+import { setMapValue } from "../../lib/freeTextFilter";
 import {
   getDescriptionColumnProps,
   getFilterableDescriptionListColumnProps,
@@ -15,11 +15,11 @@ import {
   getNameColumnProps,
   getTimestampColumnProps,
   getUuidColumnProps,
-} from "../lib/table";
+} from "../../lib/table";
 import {
   UuidPropositionComparator,
   UuidPropositionFormList,
-} from "../components/UuidPropositionFormList";
+} from "../../components/UuidPropositionFormList";
 
 // TODO Pagination. See https://www.apollographql.com/docs/react/pagination/core-api/
 
@@ -38,8 +38,8 @@ enum Negator {
 
 const negateIfNecessary = (
   negator: Negator,
-  proposition: PhotovoltaicDataPropositionInput
-): PhotovoltaicDataPropositionInput => {
+  proposition: DataPropositionInput
+): DataPropositionInput => {
   switch (negator) {
     case Negator.Is:
       return proposition;
@@ -50,8 +50,8 @@ const negateIfNecessary = (
 };
 
 const conjunct = (
-  propositions: PhotovoltaicDataPropositionInput[]
-): PhotovoltaicDataPropositionInput => {
+  propositions: DataPropositionInput[]
+): DataPropositionInput => {
   if (propositions.length == 0) {
     return {};
   }
@@ -62,8 +62,8 @@ const conjunct = (
 };
 
 // const disjunct = (
-//   propositions: PhotovoltaicDataPropositionInput[]
-// ): PhotovoltaicDataPropositionInput => {
+//   propositions: DataPropositionInput[]
+// ): DataPropositionInput => {
 //   if (propositions.length == 0) {
 //     return {};
 //   }
@@ -79,12 +79,12 @@ function Page() {
   const [globalErrorMessages, setGlobalErrorMessages] = useState(
     new Array<string>()
   );
-  const [data, setData] = useState<PhotovoltaicData[]>([]);
+  const [data, setData] = useState<Data[]>([]);
   // Using `skip` is inspired by https://github.com/apollographql/apollo-client/issues/5268#issuecomment-749501801
   // An alternative would be `useLazy...` as told in https://github.com/apollographql/apollo-client/issues/5268#issuecomment-527727653
   // `useLazy...` does not return a `Promise` though as `use...Query.refetch` does which is used below.
   // For error policies see https://www.apollographql.com/docs/react/v2/data/error-handling/#error-policies
-  const allPhotovoltaicDataQuery = useAllPhotovoltaicDataQuery({
+  const allDataQuery = useAllDataQuery({
     skip: true,
     errorPolicy: "all",
   });
@@ -107,7 +107,7 @@ function Page() {
       try {
         setFiltering(true);
         // https://www.apollographql.com/docs/react/networking/authentication/#reset-store-on-logout
-        const propositions: PhotovoltaicDataPropositionInput[] = [];
+        const propositions: DataPropositionInput[] = [];
         if (componentIds) {
           for (let { negator, comparator, value } of componentIds) {
             propositions.push(
@@ -117,7 +117,7 @@ function Page() {
             );
           }
         }
-        const { error, data } = await allPhotovoltaicDataQuery.refetch(
+        const { error, data } = await allDataQuery.refetch(
           propositions.length == 0
             ? {}
             : {
@@ -131,8 +131,8 @@ function Page() {
             error.graphQLErrors.map((error) => error.message).join(" ")
           );
         }
-        // TODO Casting to `PhotovoltaicData` is wrong and error prone!
-        setData((data?.allPhotovoltaicData?.nodes || []) as PhotovoltaicData[]);
+        // TODO Casting to `Data` is wrong and error prone!
+        setData((data?.allData?.nodes || []) as Data[]);
       } catch (error) {
         // TODO Handle properly.
         console.log("Failed:", error);
@@ -149,7 +149,7 @@ function Page() {
 
   return (
     <Layout>
-      <Typography.Title>Photovoltaic Data</Typography.Title>
+      <Typography.Title> Data</Typography.Title>
       {/* TODO Display error messages in a list? */}
       {globalErrorMessages.length > 0 && (
         <Alert type="error" message={globalErrorMessages.join(" ")} />
