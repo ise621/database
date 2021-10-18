@@ -19,7 +19,7 @@ namespace Database.GraphQl.DataX
                 dbContextFactory,
                 (dbContext, ids) =>
                     dbContext.GetHttpsResources.AsQueryable().Where(x =>
-                        x.ParentId == null && ids.Contains(x.DataId)
+                        x.ParentId == null && ids.Contains(x.CalorimetricDataId ?? x.HygrothermalDataId ?? x.OpticalDataId ?? x.PhotovoltaicDataId ?? Guid.Empty)
                     ),
                 x => x.DataId
                 )
