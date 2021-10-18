@@ -26,6 +26,30 @@ namespace Database.GraphQl.GetHttpsResources
                 .Field(x => x.DataId)
                 .Ignore();
             descriptor
+                .Field(x => x.CalorimetricDataId)
+                .Ignore();
+            descriptor
+                .Field(x => x.CalorimetricData)
+                .Ignore();
+            descriptor
+                .Field(x => x.HygrothermalDataId)
+                .Ignore();
+            descriptor
+                .Field(x => x.HygrothermalData)
+                .Ignore();
+            descriptor
+                .Field(x => x.OpticalDataId)
+                .Ignore();
+            descriptor
+                .Field(x => x.OpticalData)
+                .Ignore();
+            descriptor
+                .Field(x => x.PhotovoltaicDataId)
+                .Ignore();
+            descriptor
+                .Field(x => x.PhotovoltaicData)
+                .Ignore();
+            descriptor
                 .Field(x => x.Data)
                 .ResolveWith<GetHttpsResourceResolvers>(t => t.GetData(default!, default!, default!, default!, default!, default!));
         }

@@ -171,6 +171,7 @@ type DataEdge {
 
 type FileMetaInformation {
   dataFormatId: UUID!
+  formatId: UUID!
   path: [String!]!
 }
 
@@ -178,9 +179,10 @@ type GetHttpsResource implements Node {
   appliedConversionMethod: ToTreeVertexAppliedConversionMethod
   archivedFilesMetaInformation: [FileMetaInformation!]!
   children: [GetHttpsResource!]!
-  data: OpticalData!
+  data: Data
   dataFormatId: UUID!
   description: String!
+  formatId: UUID!
   hashValue: String!
   id: ID!
   locator: URL!
@@ -483,6 +485,7 @@ input CreateGetHttpsResourceInput {
   archivedFilesMetaInformation: [FileMetaInformationInput!]!
   dataFormatId: UUID!
   dataId: UUID!
+  dataKind: DataKind!
   description: String!
   hashValue: String!
   parentId: UUID
@@ -583,28 +586,16 @@ input DataKindPropositionInput {
 input DataPropositionInput {
   and: [DataPropositionInput!]
   or: [DataPropositionInput!]
-  componentId: UuidPropositionInput
+  locale: StringPropositionInput
   name: StringPropositionInput
   description: StringPropositionInput
-  warnings: StringsPropositionInput
+  componentId: UuidPropositionInput
   creatorId: UuidPropositionInput
   createdAt: DateTimePropositionInput
   appliedMethod: AppliedMethodPropositionInput
   approvals: ListFilterInputTypeOfDataApprovalPropositionInput
   resources: ListGetHttpsResourceFilterTypePropositionInput
-  locale: StringPropositionInput
-}
-
-input DataXSortInput {
-  locale: SortEnumType
-  componentId: SortEnumType
-  name: SortEnumType
-  description: SortEnumType
-  creatorId: SortEnumType
-  createdAt: SortEnumType
-  appliedMethod: AppliedMethodSortInput
-  id: SortEnumType
-  xmin: SortEnumType
+  warnings: StringsPropositionInput
 }
 
 input DateTimePropositionInput {
@@ -630,6 +621,7 @@ input FileMetaInformationPropositionInput {
   or: [FileMetaInformationPropositionInput!]
   path: StringsPropositionInput
   dataFormatId: UuidPropositionInput
+  formatId: UuidPropositionInput
 }
 
 input FloatPropositionInput {
@@ -670,8 +662,17 @@ input GetHttpsResourceSortInput {
   description: SortEnumType
   hashValue: SortEnumType
   dataFormatId: SortEnumType
+  formatId: SortEnumType
   dataId: SortEnumType
-  data: DataXSortInput
+  data: IDataSortInput
+  calorimetricDataId: SortEnumType
+  calorimetricData: CalorimetricDataSortInput
+  hygrothermalDataId: SortEnumType
+  hygrothermalData: HygrothermalDataSortInput
+  opticalDataId: SortEnumType
+  opticalData: OpticalDataSortInput
+  photovoltaicDataId: SortEnumType
+  photovoltaicData: PhotovoltaicDataSortInput
   parentId: SortEnumType
   appliedConversionMethod: ToTreeVertexAppliedConversionMethodSortInput
   parent: GetHttpsResourceSortInput
