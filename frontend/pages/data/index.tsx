@@ -131,7 +131,6 @@ function Page() {
             error.graphQLErrors.map((error) => error.message).join(" ")
           );
         }
-        console.log(dataX);
         // TODO Casting to `Data` is wrong and error prone!
         setData((dataX?.allData?.nodes || []) as Data[]);
       } catch (error) {
