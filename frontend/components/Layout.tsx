@@ -31,14 +31,6 @@ const navItems = [
     path: paths.photovoltaicData,
     label: "Photovoltaic Data",
   },
-  {
-    path: paths.createData,
-    label: "Create Data",
-  },
-  {
-    path: paths.uploadFile,
-    label: "Upload File",
-  },
 ];
 
 export type LayoutProps = {
