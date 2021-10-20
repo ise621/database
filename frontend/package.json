@@ -5,7 +5,7 @@
   "author": "Simon Wacker",
   "license": "MIT",
   "scripts": {
-    "codegen": "graphql-let",
+    "codegen": "graphql-let && graphql-codegen --config codegen.yml",
     "dev": "yarn codegen && next -p 8080",
     "build": "yarn codegen && next build",
     "test": "yarn codegen && jest",
@@ -26,6 +26,7 @@
   "devDependencies": {
     "@babel/core": "^7.0",
     "@graphql-codegen/cli": "^2.0.1",
+    "@graphql-codegen/fragment-matcher": "^3.1.0",
     "@graphql-codegen/import-types-preset": "^2.0.0",
     "@graphql-codegen/plugin-helpers": "^2.0.0",
     "@graphql-codegen/typescript": "^2.0.0",
