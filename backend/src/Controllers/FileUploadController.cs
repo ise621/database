@@ -26,7 +26,7 @@ namespace Database.Controllers
         private readonly ApplicationDbContext _context;
         private readonly string _accessToken;
         private const long _fileSizeLimit = 10737418240; // 10 GiB = 10 * 1024 MiB = 10 * 1024 * 1024^2 Byte = 10 * 1024 * 1048576 Byte = 10737418240 Byte
-        private readonly string[] _permittedExtensions = { ".json", ".xml", ".txt", ".csv", ".ifc" };
+        private readonly string[] _permittedExtensions = { ".json", ".xml", ".txt", ".csv", ".ifc", ".rad", ".svg", ".pdf", ".png" };
         private const string _targetDirectoryPath = "./files/";
 
         // Get the default form options so that we can use them to set the default 
