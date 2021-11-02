@@ -5,8 +5,13 @@ import {
   getFreeTextFilterProps,
 } from "./freeTextFilter";
 import Link from "next/link";
-import { Scalars } from "../__generated__/__types__";
+import {
+  AppliedMethod,
+  GetHttpsResourceTree,
+  Scalars,
+} from "../__generated__/__types__";
 import { Highlight } from "../components/Highlight";
+import paths from "../paths";
 
 const sortDirections: SortOrder[] = ["ascend", "descend"];
 
@@ -145,6 +150,33 @@ export function getInternallyLinkedFilterableStringColumnProps<RecordType>(
       ) : (
         <></>
       )
+  );
+}
+
+export function getExternallyLinkedFilterableStringColumnProps<RecordType>(
+  title: string,
+  key: keyof RecordType,
+  getValue: (record: RecordType) => string | null | undefined,
+  onFilterTextChange: (
+    key: keyof RecordType
+  ) => (newFilterText: string) => void,
+  getFilterText: (key: keyof RecordType) => string | undefined,
+  getPath: (record: RecordType) => string
+) {
+  return getFilterableStringColumnProps(
+    title,
+    key,
+    getValue,
+    onFilterTextChange,
+    getFilterText,
+    (record, highlightedValue, _value) => {
+      const href = getPath(record);
+      return href ? (
+        <Typography.Link href={href}>{highlightedValue}</Typography.Link>
+      ) : (
+        <></>
+      );
+    }
   );
 }
 
@@ -436,4 +468,114 @@ export function getFilterableDescriptionListColumnProps<RecordType>(
       }
     },
   };
+}
+
+export function getComponentUuidColumnProps<
+  RecordType extends { componentId: Scalars["UUID"] }
+>(
+  onFilterTextChange: (
+    key: keyof RecordType
+  ) => (newFilterText: string) => void,
+  getFilterText: (key: keyof RecordType) => string | undefined
+) {
+  return getExternallyLinkedFilterableStringColumnProps(
+    "Component UUID",
+    "componentId",
+    (x) => x.componentId,
+    onFilterTextChange,
+    getFilterText,
+    (x) => paths.metabase.component(x.componentId)
+  );
+}
+
+export function getAppliedMethodColumnProps<
+  RecordType extends { appliedMethod: AppliedMethod }
+>(
+  onFilterTextChange: (
+    key: keyof RecordType
+  ) => (newFilterText: string) => void,
+  getFilterText: (key: keyof RecordType) => string | undefined
+) {
+  return getFilterableDescriptionListColumnProps(
+    "Applied Method",
+    "appliedMethod",
+    (x) => [
+      {
+        key: "appliedMethodId",
+        title: "UUID",
+        value: x.appliedMethod.methodId,
+        render: (_record, highlightedValue, _value) => (
+          <Typography.Link
+            href={paths.metabase.method(x.appliedMethod.methodId)}
+          >
+            {highlightedValue}
+          </Typography.Link>
+        ),
+      },
+      // {
+      //   key: "appliedMethodName",
+      //   title: "Name",
+      //   value: x.appliedMethod.method?.name,
+      // },
+      // {
+      //   key: "appliedMethodDescription",
+      //   title: "Description",
+      //   value: x.appliedMethod.method?.description,
+      // },
+    ],
+    onFilterTextChange,
+    getFilterText
+  );
+}
+
+export function getResourceTreeColumnProps<
+  RecordType extends { resourceTree: GetHttpsResourceTree }
+>(
+  onFilterTextChange: (
+    key: keyof RecordType
+  ) => (newFilterText: string) => void,
+  getFilterText: (key: keyof RecordType) => string | undefined
+) {
+  return getFilterableDescriptionListColumnProps(
+    "Resource Tree Root",
+    "resourceTree",
+    (x) => [
+      {
+        key: "description",
+        title: "Description",
+        value: x.resourceTree.root.value.description,
+      },
+      {
+        key: "hashValue",
+        title: "Hash Value",
+        value: x.resourceTree.root.value.hashValue,
+      },
+      {
+        key: "locator",
+        title: "Locator",
+        value: x.resourceTree.root.value.locator,
+        render: (_record, hightlightedValue, _value) => (
+          <Typography.Link href={x.resourceTree.root.value.locator}>
+            {hightlightedValue}
+          </Typography.Link>
+        ),
+      },
+      {
+        key: "formatId",
+        title: "Format UUID",
+        value: x.resourceTree.root.value.dataFormatId,
+        render: (_record, hightlightedValue, _value) => (
+          <Typography.Link
+            href={paths.metabase.dataFormat(
+              x.resourceTree.root.value.dataFormatId
+            )}
+          >
+            {hightlightedValue}
+          </Typography.Link>
+        ),
+      },
+    ],
+    onFilterTextChange,
+    getFilterText
+  );
 }
