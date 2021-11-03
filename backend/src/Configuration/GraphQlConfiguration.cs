@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using HotChocolate.Data;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Database.GraphQl.Filters;
 
 namespace Database.Configuration
 {
@@ -219,6 +220,7 @@ namespace Database.Configuration
             descriptor.Operation(DefaultFilterOperations.And).Name("and");
             descriptor.Operation(DefaultFilterOperations.Or).Name("or");
             descriptor.Operation(DefaultFilterOperations.Data).Name("data");
+            descriptor.Operation(AdditionalFilterOperations.Not).Name("not");
             // TODO `inClosedInterval`
             return descriptor;
         }

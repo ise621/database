@@ -1,9 +1,10 @@
+using Database.GraphQl.DataX;
 using HotChocolate.Data.Filters;
 
 namespace Database.GraphQl.OpticalDataX
 {
     public sealed class OpticalDataFilterType
-      : FilterInputType<Data.OpticalData>
+      : DataFilterTypeBase<Data.OpticalData>
     {
         protected override void Configure(
           IFilterInputTypeDescriptor<Data.OpticalData> descriptor
@@ -11,16 +12,6 @@ namespace Database.GraphQl.OpticalDataX
         {
             descriptor.BindFieldsExplicitly();
             descriptor.Field(x => x.Id);
-            descriptor.Field(x => x.Locale);
-            descriptor.Field(x => x.Name);
-            descriptor.Field(x => x.Description);
-            descriptor.Field(x => x.ComponentId);
-            descriptor.Field(x => x.CreatorId);
-            descriptor.Field(x => x.CreatedAt);
-            descriptor.Field(x => x.AppliedMethod);
-            descriptor.Field(x => x.Approvals);
-            descriptor.Field(x => x.Resources);
-            descriptor.Field(x => x.Warnings);
             descriptor.Field(x => x.NearnormalHemisphericalSolarReflectances);
             descriptor.Field(x => x.NearnormalHemisphericalSolarTransmittances);
             descriptor.Field(x => x.NearnormalHemisphericalVisibleReflectances);
