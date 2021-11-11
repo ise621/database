@@ -6,16 +6,16 @@
 interface Data {
   appliedMethod: AppliedMethod!
   approvals: [DataApproval!]!
-  componentId: UUID!
+  componentId: Uuid!
   createdAt: DateTime!
-  creatorId: UUID!
+  creatorId: Uuid!
   description: String
   locale: Locale!
   name: String
   resourceTree: GetHttpsResourceTree!
   resources: [GetHttpsResource!]!
   timestamp: DateTime!
-  uuid: UUID!
+  uuid: Uuid!
   warnings: [String!]!
 }
 
@@ -26,16 +26,16 @@ interface Node {
 
 type AppliedMethod {
   arguments: [NamedMethodArgument!]!
-  methodId: UUID!
+  methodId: Uuid!
   sources: [NamedMethodSource!]!
 }
 
 type CalorimetricData implements Node & Data {
   appliedMethod: AppliedMethod!
   approvals: [DataApproval!]!
-  componentId: UUID!
+  componentId: Uuid!
   createdAt: DateTime!
-  creatorId: UUID!
+  creatorId: Uuid!
   description: String
   gValues: [Float!]!
   id: ID!
@@ -45,7 +45,7 @@ type CalorimetricData implements Node & Data {
   resources: [GetHttpsResource!]!
   timestamp: DateTime!
   uValues: [Float!]!
-  uuid: UUID!
+  uuid: Uuid!
   warnings: [String!]!
 }
 
@@ -135,14 +135,14 @@ type CreatePhotovoltaicDataPayload {
 }
 
 type CrossDatabaseDataReference {
-  dataId: UUID!
+  dataId: Uuid!
   dataKind: DataKind!
   dataTimestamp: DateTime!
-  databaseId: UUID!
+  databaseId: Uuid!
 }
 
 type DataApproval {
-  approverId: UUID!
+  approverId: Uuid!
   keyFingerprint: String!
   query: String!
   response: String!
@@ -170,8 +170,8 @@ type DataEdge {
 }
 
 type FileMetaInformation {
-  dataFormatId: UUID!
-  formatId: UUID!
+  dataFormatId: Uuid!
+  formatId: Uuid!
   path: [String!]!
 }
 
@@ -180,14 +180,14 @@ type GetHttpsResource implements Node {
   archivedFilesMetaInformation: [FileMetaInformation!]!
   children: [GetHttpsResource!]!
   data: Data
-  dataFormatId: UUID!
+  dataFormatId: Uuid!
   description: String!
-  formatId: UUID!
+  formatId: Uuid!
   hashValue: String!
   id: ID!
-  locator: URL!
+  locator: Url!
   parent: GetHttpsResource
-  uuid: UUID!
+  uuid: Uuid!
 }
 
 "A connection to a list of items."
@@ -229,9 +229,9 @@ type GetHttpsResourceTreeRoot {
 type HygrothermalData implements Node & Data {
   appliedMethod: AppliedMethod!
   approvals: [DataApproval!]!
-  componentId: UUID!
+  componentId: Uuid!
   createdAt: DateTime!
-  creatorId: UUID!
+  creatorId: Uuid!
   description: String
   id: ID!
   locale: Locale!
@@ -239,7 +239,7 @@ type HygrothermalData implements Node & Data {
   resourceTree: GetHttpsResourceTree!
   resources: [GetHttpsResource!]!
   timestamp: DateTime!
-  uuid: UUID!
+  uuid: Uuid!
   warnings: [String!]!
 }
 
@@ -290,9 +290,9 @@ type OpticalData implements Node & Data {
   approvals: [DataApproval!]!
   cielabColors: [CielabColor!]!
   colorRenderingIndices: [Float!]!
-  componentId: UUID!
+  componentId: Uuid!
   createdAt: DateTime!
-  creatorId: UUID!
+  creatorId: Uuid!
   description: String
   id: ID!
   infraredEmittances: [Float!]!
@@ -305,7 +305,7 @@ type OpticalData implements Node & Data {
   resourceTree: GetHttpsResourceTree!
   resources: [GetHttpsResource!]!
   timestamp: DateTime!
-  uuid: UUID!
+  uuid: Uuid!
   warnings: [String!]!
 }
 
@@ -343,9 +343,9 @@ type PageInfo {
 type PhotovoltaicData implements Node & Data {
   appliedMethod: AppliedMethod!
   approvals: [DataApproval!]!
-  componentId: UUID!
+  componentId: Uuid!
   createdAt: DateTime!
-  creatorId: UUID!
+  creatorId: Uuid!
   description: String
   id: ID!
   locale: Locale!
@@ -353,7 +353,7 @@ type PhotovoltaicData implements Node & Data {
   resourceTree: GetHttpsResourceTree!
   resources: [GetHttpsResource!]!
   timestamp: DateTime!
-  uuid: UUID!
+  uuid: Uuid!
   warnings: [String!]!
 }
 
@@ -382,28 +382,28 @@ type Query {
   allHygrothermalData("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int locale: Locale order: [HygrothermalDataSortInput!] timestamp: DateTime where: HygrothermalDataPropositionInput): HygrothermalDataConnection
   allOpticalData("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int locale: Locale order: [OpticalDataSortInput!] timestamp: DateTime where: OpticalDataPropositionInput): OpticalDataConnection
   allPhotovoltaicData("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int locale: Locale order: [PhotovoltaicDataSortInput!] timestamp: DateTime where: PhotovoltaicDataPropositionInput): PhotovoltaicDataConnection
-  calorimetricData(id: UUID! locale: Locale timestamp: DateTime): CalorimetricData
-  data(id: UUID! locale: Locale timestamp: DateTime): Data
-  getHttpsResource(id: UUID!): GetHttpsResource
+  calorimetricData(id: Uuid! locale: Locale timestamp: DateTime): CalorimetricData
+  data(id: Uuid! locale: Locale timestamp: DateTime): Data
+  getHttpsResource(id: Uuid!): GetHttpsResource
   getHttpsResources("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int order: [GetHttpsResourceSortInput!] where: GetHttpsResourcePropositionInput): GetHttpsResourceConnection
-  hygrothermalData(id: UUID! locale: Locale timestamp: DateTime): HygrothermalData
+  hygrothermalData(id: Uuid! locale: Locale timestamp: DateTime): HygrothermalData
   "Fetches an object given its ID."
   node("ID of the object." id: ID!): Node
   "Lookup nodes by a list of IDs."
   nodes("The list of node IDs." ids: [ID!]!): [Node]!
-  opticalData(id: UUID! locale: Locale timestamp: DateTime): OpticalData
-  photovoltaicData(id: UUID! locale: Locale timestamp: DateTime): PhotovoltaicData
+  opticalData(id: Uuid! locale: Locale timestamp: DateTime): OpticalData
+  photovoltaicData(id: Uuid! locale: Locale timestamp: DateTime): PhotovoltaicData
 }
 
 type ToTreeVertexAppliedConversionMethod {
   arguments: [NamedMethodArgument!]!
-  methodId: UUID!
+  methodId: Uuid!
   sourceName: String!
 }
 
 input AppliedMethodInput {
   arguments: [NamedMethodArgumentInput!]!
-  methodId: UUID!
+  methodId: Uuid!
   sources: [NamedMethodSourceInput!]!
 }
 
@@ -423,16 +423,6 @@ input CalorimetricDataPropositionInput {
   and: [CalorimetricDataPropositionInput!]
   or: [CalorimetricDataPropositionInput!]
   id: UuidPropositionInput
-  locale: StringPropositionInput
-  name: StringPropositionInput
-  description: StringPropositionInput
-  componentId: UuidPropositionInput
-  creatorId: UuidPropositionInput
-  createdAt: DateTimePropositionInput
-  appliedMethod: AppliedMethodPropositionInput
-  approvals: ListFilterInputTypeOfDataApprovalPropositionInput
-  resources: ListGetHttpsResourceFilterTypePropositionInput
-  warnings: StringsPropositionInput
   gValues: FloatsPropositionInput
   uValues: FloatsPropositionInput
 }
@@ -467,9 +457,9 @@ input CreateCalorimetricDataInput {
   accessToken: String!
   appliedMethod: AppliedMethodInput!
   approvals: [DataApprovalInput!]!
-  componentId: UUID!
+  componentId: Uuid!
   createdAt: DateTime!
-  creatorId: UUID!
+  creatorId: Uuid!
   description: String
   gValues: [Float!]!
   locale: String!
@@ -483,21 +473,21 @@ input CreateGetHttpsResourceInput {
   accessToken: String!
   appliedConversionMethod: ToTreeVertexAppliedConversionMethodInput
   archivedFilesMetaInformation: [FileMetaInformationInput!]!
-  dataFormatId: UUID!
-  dataId: UUID!
+  dataFormatId: Uuid!
+  dataId: Uuid!
   dataKind: DataKind!
   description: String!
   hashValue: String!
-  parentId: UUID
+  parentId: Uuid
 }
 
 input CreateHygrothermalDataInput {
   accessToken: String!
   appliedMethod: AppliedMethodInput!
   approvals: [DataApprovalInput!]!
-  componentId: UUID!
+  componentId: Uuid!
   createdAt: DateTime!
-  creatorId: UUID!
+  creatorId: Uuid!
   description: String
   locale: String!
   name: String
@@ -511,9 +501,9 @@ input CreateOpticalDataInput {
   approvals: [DataApprovalInput!]!
   cielabColors: [CielabColorInput!]!
   colorRenderingIndices: [Float!]!
-  componentId: UUID!
+  componentId: Uuid!
   createdAt: DateTime!
-  creatorId: UUID!
+  creatorId: Uuid!
   description: String
   infraredEmittances: [Float!]!
   locale: String!
@@ -530,9 +520,9 @@ input CreatePhotovoltaicDataInput {
   accessToken: String!
   appliedMethod: AppliedMethodInput!
   approvals: [DataApprovalInput!]!
-  componentId: UUID!
+  componentId: Uuid!
   createdAt: DateTime!
-  creatorId: UUID!
+  creatorId: Uuid!
   description: String
   locale: String!
   name: String
@@ -541,10 +531,10 @@ input CreatePhotovoltaicDataInput {
 }
 
 input CrossDatabaseDataReferenceInput {
-  dataId: UUID!
+  dataId: Uuid!
   dataKind: DataKind!
   dataTimestamp: DateTime!
-  databaseId: UUID!
+  databaseId: Uuid!
 }
 
 input CrossDatabaseDataReferencePropositionInput {
@@ -557,7 +547,7 @@ input CrossDatabaseDataReferencePropositionInput {
 }
 
 input DataApprovalInput {
-  approverId: UUID!
+  approverId: Uuid!
   keyFingerprint: String!
   query: String!
   response: String!
@@ -612,7 +602,7 @@ input DateTimePropositionInput {
 }
 
 input FileMetaInformationInput {
-  dataFormatId: UUID!
+  dataFormatId: Uuid!
   path: [String!]!
 }
 
@@ -684,16 +674,6 @@ input HygrothermalDataPropositionInput {
   and: [HygrothermalDataPropositionInput!]
   or: [HygrothermalDataPropositionInput!]
   id: UuidPropositionInput
-  locale: StringPropositionInput
-  name: StringPropositionInput
-  description: StringPropositionInput
-  componentId: UuidPropositionInput
-  creatorId: UuidPropositionInput
-  createdAt: DateTimePropositionInput
-  appliedMethod: AppliedMethodPropositionInput
-  approvals: ListFilterInputTypeOfDataApprovalPropositionInput
-  resources: ListGetHttpsResourceFilterTypePropositionInput
-  warnings: StringsPropositionInput
 }
 
 input HygrothermalDataSortInput {
@@ -783,32 +763,22 @@ input NamedMethodSourcePropositionInput {
 }
 
 input NullableOfUuidPropositionInput {
-  equalTo: UUID
-  notEqualTo: UUID
-  in: [UUID]
-  notIn: [UUID]
-  greaterThan: UUID
-  notGreaterThan: UUID
-  greaterThanOrEqualTo: UUID
-  notGreaterThanOrEqualTo: UUID
-  lessThan: UUID
-  notLessThanOrEqualTo: UUID
+  equalTo: Uuid
+  notEqualTo: Uuid
+  in: [Uuid]
+  notIn: [Uuid]
+  greaterThan: Uuid
+  notGreaterThan: Uuid
+  greaterThanOrEqualTo: Uuid
+  notGreaterThanOrEqualTo: Uuid
+  lessThan: Uuid
+  notLessThanOrEqualTo: Uuid
 }
 
 input OpticalDataPropositionInput {
   and: [OpticalDataPropositionInput!]
   or: [OpticalDataPropositionInput!]
   id: UuidPropositionInput
-  locale: StringPropositionInput
-  name: StringPropositionInput
-  description: StringPropositionInput
-  componentId: UuidPropositionInput
-  creatorId: UuidPropositionInput
-  createdAt: DateTimePropositionInput
-  appliedMethod: AppliedMethodPropositionInput
-  approvals: ListFilterInputTypeOfDataApprovalPropositionInput
-  resources: ListGetHttpsResourceFilterTypePropositionInput
-  warnings: StringsPropositionInput
   nearnormalHemisphericalSolarReflectances: FloatsPropositionInput
   nearnormalHemisphericalSolarTransmittances: FloatsPropositionInput
   nearnormalHemisphericalVisibleReflectances: FloatsPropositionInput
@@ -834,16 +804,6 @@ input PhotovoltaicDataPropositionInput {
   and: [PhotovoltaicDataPropositionInput!]
   or: [PhotovoltaicDataPropositionInput!]
   id: UuidPropositionInput
-  locale: StringPropositionInput
-  name: StringPropositionInput
-  description: StringPropositionInput
-  componentId: UuidPropositionInput
-  creatorId: UuidPropositionInput
-  createdAt: DateTimePropositionInput
-  appliedMethod: AppliedMethodPropositionInput
-  approvals: ListFilterInputTypeOfDataApprovalPropositionInput
-  resources: ListGetHttpsResourceFilterTypePropositionInput
-  warnings: StringsPropositionInput
 }
 
 input PhotovoltaicDataSortInput {
@@ -861,7 +821,7 @@ input PhotovoltaicDataSortInput {
 input RootGetHttpsResourceInput {
   appliedConversionMethod: ToTreeVertexAppliedConversionMethodInput
   archivedFilesMetaInformation: [FileMetaInformationInput!]!
-  dataFormatId: UUID!
+  dataFormatId: Uuid!
   description: String!
   hashValue: String!
 }
@@ -890,7 +850,7 @@ input StringsPropositionInput {
 
 input ToTreeVertexAppliedConversionMethodInput {
   arguments: [NamedMethodArgumentInput!]!
-  methodId: UUID!
+  methodId: Uuid!
   sourceName: String!
 }
 
@@ -908,16 +868,16 @@ input ToTreeVertexAppliedConversionMethodSortInput {
 }
 
 input UuidPropositionInput {
-  equalTo: UUID
-  notEqualTo: UUID
-  in: [UUID!]
-  notIn: [UUID!]
-  greaterThan: UUID
-  notGreaterThan: UUID
-  greaterThanOrEqualTo: UUID
-  notGreaterThanOrEqualTo: UUID
-  lessThan: UUID
-  notLessThanOrEqualTo: UUID
+  equalTo: Uuid
+  notEqualTo: Uuid
+  in: [Uuid!]
+  notIn: [Uuid!]
+  greaterThan: Uuid
+  notGreaterThan: Uuid
+  greaterThanOrEqualTo: Uuid
+  notGreaterThanOrEqualTo: Uuid
+  lessThan: Uuid
+  notLessThanOrEqualTo: Uuid
 }
 
 enum ApplyPolicy {
@@ -981,6 +941,6 @@ scalar DateTime @specifiedBy(url: "https:\/\/www.graphql-scalars.com\/date-time"
 "BCP 47 compliant Language Tag string"
 scalar Locale
 
-scalar URL @specifiedBy(url: "https:\/\/tools.ietf.org\/html\/rfc3986")
+scalar Url
 
-scalar UUID @specifiedBy(url: "https:\/\/tools.ietf.org\/html\/rfc4122")
+scalar Uuid
