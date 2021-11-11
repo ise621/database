@@ -94,7 +94,8 @@ namespace Database.Configuration
                   /* .AddSubscriptionType(d => d.Name(nameof(GraphQl.Subscription))) */
                   /*     .AddType<ComponentSubscriptions>() */
                   // Scalar Types
-                  .AddType(new UuidType('D')) // https://chillicream.com/docs/hotchocolate/defining-a-schema/scalars#uuid-type
+                  .AddType(new UuidType("Uuid", defaultFormat: 'D')) // https://chillicream.com/docs/hotchocolate/defining-a-schema/scalars#uuid-type
+                  .AddType(new UrlType("Url"))
                   .AddType(new GraphQl.LocaleType())
                   // Object Types
                   .AddType<GraphQl.CalorimetricDataX.CalorimetricDataType>()
