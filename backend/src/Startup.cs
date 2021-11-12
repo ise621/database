@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Database.Configuration;
 using Database.Data.Extensions;
+using HotChocolate.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
@@ -180,7 +181,28 @@ namespace Database
             /* app.UseWebSockets(); */
             app.UseEndpoints(_ =>
             {
-                _.MapGraphQL();
+                _.MapGraphQL().WithOptions(
+                    // https://chillicream.com/docs/hotchocolate/server/middleware
+                    new GraphQLServerOptions
+                    {
+                        EnableSchemaRequests = true,
+                        EnableGetRequests = false,
+                        // AllowedGetOperations = AllowedGetOperations.Query
+                        EnableMultipartRequests = false,
+                        Tool = {
+                            DisableTelemetry = true,
+                            Enable = true, // _environment.IsDevelopment()
+                            IncludeCookies = false,
+                            GraphQLEndpoint = "/graphql",
+                            HttpMethod = DefaultHttpMethod.Post,
+                            HttpHeaders = new HeaderDictionary
+                            {
+                                { "Content-Type", "application/json" }
+                            },
+                            Title = "GraphQL"
+                        }
+                    }
+                );
                 _.MapControllers();
             });
         }
