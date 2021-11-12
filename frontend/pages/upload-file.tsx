@@ -19,11 +19,13 @@ function Page() {
   const [form] = Form.useForm();
 
   const constructFileUploadAction = (_file: RcFile) =>
-    `/api/upload-file?accessToken=${encodeURIComponent(
-      form.getFieldValue("accessToken")
-    )}&getHttpsResourceUuid=${encodeURIComponent(
+    `/api/upload-file?getHttpsResourceUuid=${encodeURIComponent(
       form.getFieldValue("getHttpsResourceUuid")
     )}`;
+
+  const constructFileUploadData = (_file: RcFile) => ({
+    accessToken: form.getFieldValue("accessToken"),
+  });
 
   return (
     <Layout>
@@ -62,6 +64,7 @@ function Page() {
               <Form.Item name="file" label="File">
                 <Upload
                   action={constructFileUploadAction}
+                  data={constructFileUploadData}
                   withCredentials
                   listType="text"
                 >

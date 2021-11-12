@@ -66,14 +66,14 @@ namespace Database.Controllers
         // See https://docs.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads?view=aspnetcore-5.0#kestrel-maximum-request-body-size
         [RequestSizeLimit(10737418240)] // 10 GiB
         public async Task<IActionResult> UploadFile(
-            string accessToken,
-            Guid getHttpsResourceUuid,
+            [FromQuery] Guid getHttpsResourceUuid,
             CancellationToken cancellationToken
         )
         {
-            if (accessToken != _accessToken)
+            if (!MultipartRequestHelper.IsMultipartContentType(Request.ContentType))
             {
-                ModelState.AddModelError("AccessToken", $"The access token {accessToken} is invalid.");
+                ModelState.AddModelError("File",
+                    $"The request content is not multipart.");
                 return BadRequest(ModelState);
             }
             if (!await _context.GetHttpsResources.AsQueryable()
@@ -85,20 +85,41 @@ namespace Database.Controllers
                 ModelState.AddModelError("GetHttpsResourceUuid", $"There is no GET HTTPS resource with UUID {getHttpsResourceUuid:D}.");
                 return BadRequest(ModelState);
             }
-            if (!MultipartRequestHelper.IsMultipartContentType(Request.ContentType))
-            {
-                ModelState.AddModelError("File",
-                    $"The request content is not multipart.");
-                return BadRequest(ModelState);
-            }
 
-            Directory.CreateDirectory(_targetDirectoryPath);
             var boundary = MultipartRequestHelper.GetBoundary(
                 MediaTypeHeaderValue.Parse(Request.ContentType),
                 _defaultFormOptions.MultipartBoundaryLengthLimit);
             var reader = new MultipartReader(boundary, HttpContext.Request.Body);
             var section = await reader.ReadNextSectionAsync(cancellationToken).ConfigureAwait(false);
 
+            if (section is null)
+            {
+                ModelState.AddModelError("AccessToken", "Cannot read access token.");
+                return BadRequest(ModelState);
+            }
+            var hasFirstContentDispositionHeader =
+                ContentDispositionHeaderValue.TryParse(
+                    section.ContentDisposition, out var firstContentDisposition);
+            if (!hasFirstContentDispositionHeader)
+            {
+                ModelState.AddModelError("AccessToken", "Cannot parse content disposition header value.");
+                return BadRequest(ModelState);
+            }
+            if (!firstContentDisposition?.Name.Equals("accessToken") ?? throw new Exception("Impossible (because `hasFirstContentDispositionHeader` is `true`)"))
+            {
+                ModelState.AddModelError("AccessToken", $"Access token must come first, got {firstContentDisposition?.Name} instead.");
+                return BadRequest(ModelState);
+            }
+            var accessToken = await new StreamReader(section.Body).ReadToEndAsync().ConfigureAwait(false);
+            if (accessToken != _accessToken)
+            {
+                ModelState.AddModelError("AccessToken", $"The access token {accessToken} is invalid.");
+                return BadRequest(ModelState);
+            }
+
+            Directory.CreateDirectory(_targetDirectoryPath);
+
+            section = await reader.ReadNextSectionAsync(cancellationToken).ConfigureAwait(false);
             while (section != null)
             {
                 var hasContentDispositionHeader =
