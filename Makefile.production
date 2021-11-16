@@ -80,6 +80,11 @@ psql : ## Enter PostgreSQL interactive terminal in the running `database` servic
 		--dbname=xbase
 .PHONY : psql
 
+list : ## List all containers with health status
+	${docker_compose} ps \
+		--all
+.PHONY : list
+
 # TODO The entrypoint file of the PostgreSQL image uses the file refered to by `POSTGRES_PASSWORD_FILE` and this file needs to be accessible by `other`. Why? We do not want all people to be able to read secrets!
 postgres_password : ## Generate PostgreSQL password file with nothing but one password in plain text (note that if the data volume already exists, then it either needs to be removed resulting in the loss of all data or the password of the PostgreSQL user needs to be changed manually by executing the SQL query `ALTER USER postgres with password '...'`)
 	mkdir -p ./secrets

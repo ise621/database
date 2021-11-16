@@ -152,6 +152,11 @@ shelld : up ## Enter shell in an existing `database` container (after starting a
 		bash
 .PHONY : shelld
 
+list : ## List all containers with health status
+	${docker_compose} ps \
+		--all
+.PHONY : list
+
 createdb : ## Create databases
 	${docker_compose} exec \
 		database \
