@@ -1,5 +1,7 @@
 # Database
 
+This repository presents an example of a database which can be part of the network of [buildingenvelopedata.org](https://www.buildingenvelopedata.org/).
+
 ## Getting started
 
 ### On your Linux machine
