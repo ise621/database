@@ -1,6 +1,6 @@
 # Database
 
-This repository presents an example of a database which can be part of the network of [buildingenvelopedata.org](https://www.buildingenvelopedata.org/). Before deploying this repository, [machine](https://github.com/ise621/machine) can be used to set up the machine.
+This repository presents an example of a database which can be part of the network of [buildingenvelopedata.org](https://www.buildingenvelopedata.org/). Before deploying this repository, [machine](https://github.com/ise621/machine) can be used to set up the machine. The database uses [this API specification](https://github.com/ise621/building-envelope-data).
 
 ## Getting started
 
