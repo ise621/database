@@ -10,7 +10,7 @@ namespace Database.GraphQl.OpticalDataX
           IFilterInputTypeDescriptor<Data.OpticalData> descriptor
           )
         {
-            descriptor.BindFieldsExplicitly();
+            base.Configure(descriptor);
             descriptor.Field(x => x.Id);
             descriptor.Field(x => x.NearnormalHemisphericalSolarReflectances);
             descriptor.Field(x => x.NearnormalHemisphericalSolarTransmittances);

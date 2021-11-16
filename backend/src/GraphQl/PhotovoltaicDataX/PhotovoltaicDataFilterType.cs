@@ -10,7 +10,7 @@ namespace Database.GraphQl.PhotovoltaicDataX
           IFilterInputTypeDescriptor<Data.PhotovoltaicData> descriptor
           )
         {
-            descriptor.BindFieldsExplicitly();
+            base.Configure(descriptor);
             descriptor.Field(x => x.Id);
         }
     }

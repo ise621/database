@@ -10,7 +10,7 @@ namespace Database.GraphQl.HygrothermalDataX
           IFilterInputTypeDescriptor<Data.HygrothermalData> descriptor
           )
         {
-            descriptor.BindFieldsExplicitly();
+            base.Configure(descriptor);
             descriptor.Field(x => x.Id);
         }
     }

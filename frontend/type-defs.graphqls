@@ -422,6 +422,16 @@ input AppliedMethodSortInput {
 input CalorimetricDataPropositionInput {
   and: [CalorimetricDataPropositionInput!]
   or: [CalorimetricDataPropositionInput!]
+  locale: StringPropositionInput
+  name: StringPropositionInput
+  description: StringPropositionInput
+  componentId: UuidPropositionInput
+  creatorId: UuidPropositionInput
+  createdAt: DateTimePropositionInput
+  appliedMethod: AppliedMethodPropositionInput
+  approvals: ListFilterInputTypeOfDataApprovalPropositionInput
+  resources: ListGetHttpsResourceFilterTypePropositionInput
+  warnings: StringsPropositionInput
   id: UuidPropositionInput
   gValues: FloatsPropositionInput
   uValues: FloatsPropositionInput
@@ -673,6 +683,16 @@ input GetHttpsResourceSortInput {
 input HygrothermalDataPropositionInput {
   and: [HygrothermalDataPropositionInput!]
   or: [HygrothermalDataPropositionInput!]
+  locale: StringPropositionInput
+  name: StringPropositionInput
+  description: StringPropositionInput
+  componentId: UuidPropositionInput
+  creatorId: UuidPropositionInput
+  createdAt: DateTimePropositionInput
+  appliedMethod: AppliedMethodPropositionInput
+  approvals: ListFilterInputTypeOfDataApprovalPropositionInput
+  resources: ListGetHttpsResourceFilterTypePropositionInput
+  warnings: StringsPropositionInput
   id: UuidPropositionInput
 }
 
@@ -778,6 +798,16 @@ input NullableOfUuidPropositionInput {
 input OpticalDataPropositionInput {
   and: [OpticalDataPropositionInput!]
   or: [OpticalDataPropositionInput!]
+  locale: StringPropositionInput
+  name: StringPropositionInput
+  description: StringPropositionInput
+  componentId: UuidPropositionInput
+  creatorId: UuidPropositionInput
+  createdAt: DateTimePropositionInput
+  appliedMethod: AppliedMethodPropositionInput
+  approvals: ListFilterInputTypeOfDataApprovalPropositionInput
+  resources: ListGetHttpsResourceFilterTypePropositionInput
+  warnings: StringsPropositionInput
   id: UuidPropositionInput
   nearnormalHemisphericalSolarReflectances: FloatsPropositionInput
   nearnormalHemisphericalSolarTransmittances: FloatsPropositionInput
@@ -803,6 +833,16 @@ input OpticalDataSortInput {
 input PhotovoltaicDataPropositionInput {
   and: [PhotovoltaicDataPropositionInput!]
   or: [PhotovoltaicDataPropositionInput!]
+  locale: StringPropositionInput
+  name: StringPropositionInput
+  description: StringPropositionInput
+  componentId: UuidPropositionInput
+  creatorId: UuidPropositionInput
+  createdAt: DateTimePropositionInput
+  appliedMethod: AppliedMethodPropositionInput
+  approvals: ListFilterInputTypeOfDataApprovalPropositionInput
+  resources: ListGetHttpsResourceFilterTypePropositionInput
+  warnings: StringsPropositionInput
   id: UuidPropositionInput
 }
 
@@ -931,7 +971,7 @@ directive @defer("Deferred when true." if: Boolean "If this argument label has a
 directive @specifiedBy("The specifiedBy URL points to a human-readable specification. This field will only read a result for scalar types." url: String!) on SCALAR
 
 "The `@stream` directive may be provided for a field of `List` type so that the backend can leverage technology such as asynchronous iterators to provide a partial list in the initial response, and additional list items in subsequent responses. `@include` and `@skip` take precedence over `@stream`."
-directive @stream("Streamed when true." if: Boolean "The initial elements that shall be send down to the consumer." initialCount: Int! "If this argument label has a value other than null, it will be passed on to the result of this stream directive. This label is intended to give client applications a way to identify to which fragment a streamed result belongs to." label: String) on FIELD
+directive @stream("Streamed when true." if: Boolean "The initial elements that shall be send down to the consumer." initialCount: Int! = 0 "If this argument label has a value other than null, it will be passed on to the result of this stream directive. This label is intended to give client applications a way to identify to which fragment a streamed result belongs to." label: String) on FIELD
 
 scalar Any
 
