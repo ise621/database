@@ -2,9 +2,12 @@
 
 This repository presents an example of a database which can be part of the network of [buildingenvelopedata.org](https://www.buildingenvelopedata.org/). Before deploying this repository, [machine](https://github.com/ise621/machine) can be used to set up the machine. The database uses [this API specification](https://github.com/ise621/building-envelope-data).
 
+If you have a question for which you don't find the answer in this repository, please raise a [new issue](https://github.com/ise621/building-envelope-data/issues/new) and add the tag `question`! All ways to contribute are presented by [CONTRIBUTING.md](https://github.com/ise621/database/blob/develop/CONTRIBUTING.md). The basis for our collaboration is decribed by our [Code of Conduct](https://github.com/ise621/database/blob/develop/CODE_OF_CONDUCT.md).
+
 ## Getting started
 
 ### On your Linux machine
+
 1. Open your favorite shell, for example, good old
    [Bourne Again SHell, aka, `bash`](https://www.gnu.org/software/bash/),
    the somewhat newer
@@ -38,9 +41,10 @@ This repository presents an example of a database which can be part of the netwo
    `https://local.solarbuildingenvelopes.com:5051/email/`.
 
 In another shell
+
 1. Drop into `ash` with the working directory `/app`, which is mounted to the
    host's `./backend` directory, inside a fresh Docker container based on
-   `./backend/Dockerfile` by running `make shellb`.  If necessary, the Docker
+   `./backend/Dockerfile` by running `make shellb`. If necessary, the Docker
    image is (re)built automatically, which takes a while the first time.
 2. List all backend GNU Make targets by running `make help`.
 3. For example, update packages and tools by running `make update`.
@@ -51,6 +55,7 @@ The same works for frontend containers by running `make shellf`.
 ## Deployment
 
 ### Setting up a Debian production machine
+
 1. Use the sibling project [machine](https://github.com/ise621/machine) and its
    instructions for the first stage of the set-up.
 1. Enter a shell on the production machine using `ssh`.
@@ -74,6 +79,7 @@ The same works for frontend containers by running `make shellf`.
       `make --file Makefile.production createdb`.
 
 ### Creating a release
+
 1. [Draft a new release](https://github.com/ise621/database/actions/workflows/draft-new-release.yml)
    with a new version according to [Semantic Versioning](https://semver.org) by
    running the GitHub action which, in particular, creates a new branch named
@@ -92,11 +98,12 @@ The same works for frontend containers by running `make shellf`.
    `main` into `develop` is created that you need to merge to finish off.
 
 ### Deploying a release
+
 1. Enter a shell on the production machine using `ssh`.
 1. Change to the staging envrionment by running `cd /app/staging`.
 1. Deploy the new release in the staging environment by running
    `make --file Makefile.production deploy`.
-1. If it fails *after* the database backup was made, rollback to the previous
+1. If it fails _after_ the database backup was made, rollback to the previous
    state by running
    `make --file Makefile.production rollback`,
    figure out what went wrong, apply the necessary fixes to the codebase,
