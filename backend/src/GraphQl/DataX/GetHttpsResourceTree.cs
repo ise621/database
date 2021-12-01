@@ -31,7 +31,6 @@ namespace Database.GraphQl.DataX
             CancellationToken cancellationToken
         )
         {
-            // TODO base64 encode `index.ToString`.
             return (await byId.LoadAsync(_data.Id, cancellationToken).ConfigureAwait(false))
                 .Select(v =>
                     new GetHttpsResourceTreeNonRootVertex(v)

@@ -1,12 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using Database.Extensions;
 
 namespace Database.Data
 {
     public sealed class GetHttpsResource
     : Data.Entity
     {
+        public static string ConstructVertexId(Guid id)
+        {
+            return id.ToString("D").Base64Encode();
+        }
+
         public string Description { get; private set; }
         public string HashValue { get; private set; }
         public Guid DataFormatId { get; private set; }

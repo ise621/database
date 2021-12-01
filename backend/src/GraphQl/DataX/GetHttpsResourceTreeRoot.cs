@@ -6,7 +6,10 @@ namespace Database.GraphQl.DataX
     public sealed class GetHttpsResourceTreeRoot : IGetHttpsResourceTreeVertex
     {
         [GraphQLType(typeof(NonNullType<IdType>))]
-        public string VertexId { get; }
+        public string VertexId
+        {
+            get => Data.GetHttpsResource.ConstructVertexId(Value.Id);
+        }
 
         public Data.GetHttpsResource Value { get; }
 
@@ -14,8 +17,6 @@ namespace Database.GraphQl.DataX
             Data.GetHttpsResource value
         )
         {
-            // TODO base64 encode `VertexId`.
-            VertexId = value.Id.ToString("D");
             Value = value;
         }
     }
