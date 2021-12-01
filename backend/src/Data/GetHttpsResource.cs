@@ -16,8 +16,6 @@ namespace Database.Data
         public string Description { get; private set; }
         public string HashValue { get; private set; }
         public Guid DataFormatId { get; private set; }
-        // TODO Remove the following
-        public Guid FormatId { get => DataFormatId; }
         public ICollection<FileMetaInformation> ArchivedFilesMetaInformation { get; private set; } = new List<FileMetaInformation>();
 
         // TODO Make sure that at least one ID is always present. In that case `Guid.Empty` should never be used!
