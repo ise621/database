@@ -1,8 +1,8 @@
 # Database
 
-This repository presents an example of a database which can be part of the network of [buildingenvelopedata.org](https://www.buildingenvelopedata.org/). Before deploying this repository, [machine](https://github.com/ise621/machine) can be used to set up the machine. The database uses [this API specification](https://github.com/ise621/building-envelope-data).
+This repository presents an example of a database which can be part of the network of [buildingenvelopedata.org](https://www.buildingenvelopedata.org/). Before deploying this repository, [machine](https://github.com/building-envelope-data/machine) can be used to set up the machine. The database uses [this API specification](https://github.com/building-envelope-data/api).
 
-If you have a question for which you don't find the answer in this repository, please raise a [new issue](https://github.com/ise621/database/issues/new) and add the tag `question`! All ways to contribute are presented by [CONTRIBUTING.md](https://github.com/ise621/database/blob/develop/CONTRIBUTING.md). The basis for our collaboration is decribed by our [Code of Conduct](https://github.com/ise621/database/blob/develop/CODE_OF_CONDUCT.md).
+If you have a question for which you don't find the answer in this repository, please raise a [new issue](https://github.com/building-envelope-data/database/issues/new) and add the tag `question`! All ways to contribute are presented by [CONTRIBUTING.md](https://github.com/building-envelope-data/database/blob/develop/CONTRIBUTING.md). The basis for our collaboration is decribed by our [Code of Conduct](https://github.com/building-envelope-data/database/blob/develop/CODE_OF_CONDUCT.md).
 
 ## Getting started
 
@@ -22,7 +22,7 @@ If you have a question for which you don't find the answer in this repository, p
    [CentOS](https://www.centos.org/). For further information see
    [Installing Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
 1. Clone the source code by running
-   `git clone git@github.com:ise621/database.git` and navigate
+   `git clone git@github.com:building-envelope-data/database.git` and navigate
    into the new directory `database` by running `cd database`.
 1. Prepare your environment by running `cp .env.sample .env`,
    `cp frontend/.env.local.sample frontend/.env.local`, and adding the line
@@ -56,14 +56,14 @@ The same works for frontend containers by running `make shellf`.
 
 ### Setting up a Debian production machine
 
-1. Use the sibling project [machine](https://github.com/ise621/machine) and its
+1. Use the sibling project [machine](https://github.com/building-envelope-data/machine) and its
    instructions for the first stage of the set-up.
 1. Enter a shell on the production machine using `ssh`.
 1. Change into the directory `/app` by running `cd /app`.
 1. Clone the repository twice by running
    ```
    for environment in staging production ; do
-     git clone git@github.com:ise621/database.git ./${environment}
+     git clone git@github.com:building-envelope-data/database.git ./${environment}
    done
    ```
 1. For each of the two environments staging and production referred to by
@@ -80,7 +80,7 @@ The same works for frontend containers by running `make shellf`.
 
 ### Creating a release
 
-1. [Draft a new release](https://github.com/ise621/database/actions/workflows/draft-new-release.yml)
+1. [Draft a new release](https://github.com/building-envelope-data/database/actions/workflows/draft-new-release.yml)
    with a new version according to [Semantic Versioning](https://semver.org) by
    running the GitHub action which, in particular, creates a new branch named
    `release/v*.*.*`, where `*.*.*` is the version, and a corresponding pull
@@ -93,7 +93,7 @@ The same works for frontend containers by running `make shellf`.
    --- see
    [Migrations Overview](https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli)
    and following pages for details.
-1. [Publish the new release](https://github.com/ise621/database/actions/workflows/publish-new-release.yml)
+1. [Publish the new release](https://github.com/building-envelope-data/database/actions/workflows/publish-new-release.yml)
    by merging the release branch into `main` whereby a new pull request from
    `main` into `develop` is created that you need to merge to finish off.
 
