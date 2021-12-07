@@ -82,8 +82,14 @@ psql : ## Enter PostgreSQL interactive terminal in the running `database` servic
 
 list : ## List all containers with health status
 	${docker_compose} ps \
+		--no-trunc \
 		--all
 .PHONY : list
+
+list-services : ## List all services specified in the docker-compose file (used by Monit as configured in the `machine` project)
+	${docker_compose} config \
+		--services
+.PHONY : list-services
 
 # TODO The entrypoint file of the PostgreSQL image uses the file refered to by `POSTGRES_PASSWORD_FILE` and this file needs to be accessible by `other`. Why? We do not want all people to be able to read secrets!
 postgres_password : ## Generate PostgreSQL password file with nothing but one password in plain text (note that if the data volume already exists, then it either needs to be removed resulting in the loss of all data or the password of the PostgreSQL user needs to be changed manually by executing the SQL query `ALTER USER postgres with password '...'`)
