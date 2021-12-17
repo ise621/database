@@ -562,7 +562,7 @@ export function getResourceTreeColumnProps<
       },
       {
         key: "formatId",
-        title: "Format UUID",
+        title: "Data Format UUID",
         value: x.resourceTree.root.value.dataFormatId,
         render: (_record, hightlightedValue, _value) => (
           <Typography.Link
