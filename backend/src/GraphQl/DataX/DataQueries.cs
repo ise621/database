@@ -20,7 +20,7 @@ namespace Database.GraphQl.DataX
         [UseDbContext(typeof(Data.ApplicationDbContext))]
         [UsePaging]
         // [UseProjection] // We disabled projections because when requesting `id` all results had the same `id` and when also requesting `uuid`, the latter was always the empty UUID `000...`.
-        [UseFiltering] // Filtering does not work with unions.
+        [UseFiltering] // TODO Filtering does not work with unions.
         [UseSorting]
         public IEnumerable<Data.IData> GetAllData(
             DateTime? timestamp,
