@@ -1,7 +1,7 @@
 import { Form, Input, Button, Row, Col, Card, Typography, Upload } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import Layout from "../components/Layout";
-import { RcFile } from "antd/lib/upload/interface";
+import { RcFile, UploadFile } from "antd/lib/upload/interface";
 
 const layout = {
   labelCol: { span: 8 },
@@ -23,7 +23,7 @@ function Page() {
       form.getFieldValue("getHttpsResourceUuid")
     )}`;
 
-  const constructFileUploadData = (_file: RcFile) => ({
+  const constructFileUploadData = (_file: UploadFile<any>) => ({
     accessToken: form.getFieldValue("accessToken"),
   });
 
