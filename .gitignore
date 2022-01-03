@@ -4,7 +4,7 @@
 /machine/*.retry
 /nginx/html/maintenance.html
 /commit
-/backup.gz
+/backup
 
 .env
 .vscode

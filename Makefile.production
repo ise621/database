@@ -8,6 +8,9 @@ docker_compose = \
 		--file docker-compose.production.yml \
 		--project-name ${NAME}
 
+dump_archive_name = postgresql_dumpall.gz
+files_archive_name = files.gz
+
 # Taken from https://www.client9.com/self-documenting-makefiles/
 help : ## Print this help
 	@awk -F ':|##' '/^[^\t].+?:.*?##/ {\
@@ -129,7 +132,8 @@ docker-stats : ## Show Docker run-time metrics
 
 # Backup with `pg_dumpall`: https://www.postgresql.org/docs/13/backup-dump.html#BACKUP-DUMP-ALL
 # Command `pg_dumpall`: https://www.postgresql.org/docs/13/app-pg-dumpall.html
-backup : ## Backup databases to file with path `${DUMP_FILE}`, for example, `make --file Makefile.production DUMP_FILE=/app/data/backups/dump_$(date +"%Y-%m-%d_%H_%M_%S").gz backup`
+backup : ## Backup database and related data to directory with absolute path `${BACKUP_DIRECTORY}`, for example, `make --file Makefile.production BACKUP_DIRECTORY=/app/data/backups/$(date +"%Y-%m-%d_%H_%M_%S")/ backup`
+	mkdir --parents ${BACKUP_DIRECTORY}
 	${docker_compose} run \
 		--name backup_${NAME}_database \
 		--detach \
@@ -141,9 +145,27 @@ backup : ## Backup databases to file with path `${DUMP_FILE}`, for example, `mak
 			--clean \
 			--username=postgres \
 		| gzip \
-		> ${DUMP_FILE}
+		> ${BACKUP_DIRECTORY}/${dump_archive_name}
 	docker container stop backup_${NAME}_database
 	docker container rm --volumes backup_${NAME}_database
+	${docker_compose} run \
+		--name backup_${NAME}_files \
+		--detach \
+		backend
+	docker run \
+		--rm \
+		--volumes-from backup_${NAME}_files \
+		--volume ${BACKUP_DIRECTORY}:/backup \
+		debian:buster-slim \
+		tar \
+			--verbose \
+			--create \
+			--gzip \
+			--file=/backup/${files_archive_name} \
+			--directory=/app/src/ \
+			./files
+	docker container stop backup_${NAME}_files
+	docker container rm --volumes backup_${NAME}_files
 .PHONY : backup
 
 # Inspired by https://stackoverflow.com/questions/25785/delete-all-but-the-most-recent-x-files-in-bash/34862475#34862475
@@ -151,13 +173,13 @@ prune-backups : ## Keep the most recent 7 backups, delete the rest
 	cd /app/data/backups && ls -t --indicator-style=slash | grep --invert-match '/$$' | tail --lines=+8 | xargs --delimiter='\n' --no-run-if-empty rm --
 .PHONY : prune-backups
 
-restore : ## Restore databases from file with path `${DUMP_FILE}`, for example, `make --file Makefile.production DUMP_FILE=/app/data/backups/dump_2021-04-22_15_43_35.gz restore`
+restore : ## Restore database and related data from directory with absolute path `${BACKUP_DIRECTORY}`, for example, `make --file Makefile.production BACKUP_DIRECTORY=/app/data/backups/2021-04-22_15_43_35/ restore`
 	${docker_compose} run \
 		--name restore_${NAME}_database \
 		--detach \
 		database
 	while [ $$(docker inspect -f {{.State.Health.Status}} restore_${NAME}_database) != "healthy" ]; do sleep 1; done
-	gunzip --stdout ${DUMP_FILE} \
+	gunzip --stdout ${BACKUP_DIRECTORY}/${dump_archive_name} \
 	| docker exec \
 		--interactive \
 		restore_${NAME}_database \
@@ -168,6 +190,31 @@ restore : ## Restore databases from file with path `${DUMP_FILE}`, for example, 
 			--dbname=postgres
 	docker container stop restore_${NAME}_database
 	docker container rm --volumes restore_${NAME}_database
+	${docker_compose} run \
+		--name backup_${NAME}_files \
+		--detach \
+		backend
+	docker run \
+		--rm \
+		--volumes-from backup_${NAME}_files \
+		--volume ${BACKUP_DIRECTORY}:/backup \
+		debian:buster-slim \
+		bash -cx " \
+			cd /app/src/files && \
+			rm \
+				--recursive \
+				--force \
+				--dir \
+				* && \
+			tar \
+				--verbose \
+				--extract \
+				--gunzip \
+				--strip-components=2 \
+				--file=/backup/${files_archive_name} \
+		"
+	docker container stop backup_${NAME}_files
+	docker container rm --volumes backup_${NAME}_files
 .PHONY : restore
 
 begin-maintenance : ## Begin maintenance
@@ -180,13 +227,13 @@ end-maintenance : ## End maintenance
 	rm ./nginx/html/maintenance.html
 .PHONY : end-maintenance
 
-deploy : DUMP_FILE = ./backup.gz
+deploy : BACKUP_DIRECTORY = $(shell pwd)/backup/
 deploy : begin-maintenance store-commit backup fetch-all checkout-target migrate deploy-services run-tests end-maintenance ## Deploy tag, branch, or commit `${TARGET}`, for example, `make --file Makefile.production TARGET=v1.0.0 deploy`
 .PHONY : deploy
 
 rollback : TARGET = $(shell cat ./commit)
-rollback : DUMP_FILE = ./backup.gz
-rollback : begin-maintenance checkout-target restore deploy-services run-tests end-maintenance ## Rollback deployment attempt (use commit hash stored in `./commit` and database backup stored in `./backup.gz`)
+rollback : BACKUP_DIRECTORY = $(shell pwd)/backup/
+rollback : begin-maintenance checkout-target restore deploy-services run-tests end-maintenance ## Rollback deployment attempt (use commit hash stored in `./commit` and database backup stored in `./backup/`)
 .PHONY : rollback
 
 store-commit : ## Store current commit
