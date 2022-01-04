@@ -164,7 +164,7 @@ backup : ## Backup database and related data to directory with absolute path `${
 			--create \
 			--gzip \
 			--file=/backup/${files_archive_name} \
-			--directory=/app/src/ \
+			--directory=/app \
 			./files
 	docker container stop backup_${NAME}_files
 	docker container rm --volumes backup_${NAME}_files
@@ -202,7 +202,7 @@ restore : ## Restore database and related data from directory with absolute path
 		--volume ${BACKUP_DIRECTORY}:/backup \
 		debian:buster-slim \
 		bash -cx " \
-			cd /app/src/files && \
+			cd /app/files && \
 			rm \
 				--recursive \
 				--force \
