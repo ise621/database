@@ -1,0 +1,170 @@
+fragment DataPartial on Data {
+  uuid
+  timestamp
+  componentId
+  name
+  description
+  appliedMethod {
+    methodId
+    arguments {
+      name
+      value
+    }
+    sources {
+      name
+      value {
+        dataId
+        dataKind
+        dataTimestamp
+        databaseId
+      }
+    }
+  }
+  resourceTree {
+    root {
+      value {
+        description
+        hashValue
+        locator
+        dataFormatId
+      }
+    }
+    nonRootVertices {
+      appliedConversionMethod {
+        arguments {
+          name
+          value
+        }
+        methodId
+        sourceName
+      }
+      parentId
+      value {
+        archivedFilesMetaInformation {
+          dataFormatId
+          path
+        }
+        description
+        dataFormatId
+        hashValue
+        id
+        locator
+        uuid
+      }
+      vertexId
+    }
+  }
+  approvals {
+    approverId
+    keyFingerprint
+    query
+    response
+    signature
+    timestamp
+  }
+  createdAt
+  creatorId
+  locale
+  resources {
+    description
+    hashValue
+    locator
+    dataFormatId
+  }
+  warnings
+}
+
+query AllData($where: DataPropositionInput) {
+  allData(where: $where) {
+    nodes {
+      ...DataPartial
+    }
+  }
+}
+
+# query HasData($where: DataPropositionInput) {
+#   hasData(where: $where)
+# }
+
+fragment CalorimetricDataPartial on CalorimetricData {
+  ...DataPartial
+  gValues
+  uValues
+}
+
+query AllCalorimetricData($where: CalorimetricDataPropositionInput) {
+  allCalorimetricData(where: $where) {
+    nodes {
+      ...CalorimetricDataPartial
+    }
+  }
+}
+
+# query HasCalorimetricData($where: DataPropositionInput!) {
+#   hasCalorimetricData(where: $where)
+# }
+
+query AllCalorimetricData($where: CalorimetricDataPropositionInput) {
+  allCalorimetricData(where: $where) {
+    nodes {
+      ...CalorimetricDataPartial
+    }
+  }
+}
+
+# query HasCalorimetricData($where: DataPropositionInput!) {
+#   hasCalorimetricData(where: $where)
+# }
+
+fragment HygrothermalDataPartial on HygrothermalData {
+  ...DataPartial
+}
+
+query AllHygrothermalData($where: HygrothermalDataPropositionInput) {
+  allHygrothermalData(where: $where) {
+    nodes {
+      ...HygrothermalDataPartial
+    }
+  }
+}
+
+# query HasHygrothermalData($where: DataPropositionInput!) {
+#   hasHygrothermalData(where: $where)
+# }
+
+fragment OpticalDataPartial on OpticalData {
+  ...DataPartial
+  infraredEmittances
+  nearnormalHemisphericalSolarReflectances
+  nearnormalHemisphericalSolarTransmittances
+  nearnormalHemisphericalVisibleReflectances
+  nearnormalHemisphericalVisibleTransmittances
+}
+
+query AllOpticalData($where: OpticalDataPropositionInput) {
+  allOpticalData(where: $where) {
+    nodes {
+      ...OpticalDataPartial
+    }
+  }
+}
+
+# query HasOpticalData($where: DataPropositionInput!) {
+#   hasOpticalData(where: $where)
+# }
+
+fragment PhotovoltaicDataPartial on PhotovoltaicData {
+  ...DataPartial
+}
+
+query AllPhotovoltaicData($where: PhotovoltaicDataPropositionInput) {
+  allPhotovoltaicData(where: $where) {
+    nodes {
+      ...PhotovoltaicDataPartial
+    }
+  }
+}
+
+# query HasPhotovoltaicData($where: DataPropositionInput!) {
+#   hasPhotovoltaicData(where: $where)
+# }

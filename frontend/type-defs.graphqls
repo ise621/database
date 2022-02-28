@@ -1,0 +1,986 @@
+﻿schema {
+  query: Query
+  mutation: Mutation
+}
+
+interface Data {
+  appliedMethod: AppliedMethod!
+  approvals: [DataApproval!]!
+  componentId: Uuid!
+  createdAt: DateTime!
+  creatorId: Uuid!
+  description: String
+  locale: Locale!
+  name: String
+  resourceTree: GetHttpsResourceTree!
+  resources: [GetHttpsResource!]!
+  timestamp: DateTime!
+  uuid: Uuid!
+  warnings: [String!]!
+}
+
+"The node interface is implemented by entities that have a global unique identifier."
+interface Node {
+  id: ID!
+}
+
+type AppliedMethod {
+  arguments: [NamedMethodArgument!]!
+  methodId: Uuid!
+  sources: [NamedMethodSource!]!
+}
+
+type CalorimetricData implements Node & Data {
+  appliedMethod: AppliedMethod!
+  approvals: [DataApproval!]!
+  componentId: Uuid!
+  createdAt: DateTime!
+  creatorId: Uuid!
+  description: String
+  gValues: [Float!]!
+  id: ID!
+  locale: Locale!
+  name: String
+  resourceTree: GetHttpsResourceTree!
+  resources: [GetHttpsResource!]!
+  timestamp: DateTime!
+  uValues: [Float!]!
+  uuid: Uuid!
+  warnings: [String!]!
+}
+
+"A connection to a list of items."
+type CalorimetricDataConnection {
+  "A list of edges."
+  edges: [CalorimetricDataEdge!]
+  "A flattened list of the nodes."
+  nodes: [CalorimetricData!]
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+"An edge in a connection."
+type CalorimetricDataEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: CalorimetricData!
+}
+
+type CielabColor {
+  aStar: Float!
+  bStar: Float!
+  lStar: Float!
+}
+
+type CreateCalorimetricDataError {
+  code: CreateCalorimetricDataErrorCode!
+  message: String!
+  path: [String!]!
+}
+
+type CreateCalorimetricDataPayload {
+  calorimetricData: CalorimetricData
+  errors: [CreateCalorimetricDataError!]
+  query: Query!
+}
+
+type CreateGetHttpsResourceError {
+  code: CreateGetHttpsResourceErrorCode!
+  message: String!
+  path: [String!]!
+}
+
+type CreateGetHttpsResourcePayload {
+  errors: [CreateGetHttpsResourceError!]
+  getHttpsResource: GetHttpsResource
+  query: Query!
+}
+
+type CreateHygrothermalDataError {
+  code: CreateHygrothermalDataErrorCode!
+  message: String!
+  path: [String!]!
+}
+
+type CreateHygrothermalDataPayload {
+  errors: [CreateHygrothermalDataError!]
+  hygrothermalData: HygrothermalData
+  query: Query!
+}
+
+type CreateOpticalDataError {
+  code: CreateOpticalDataErrorCode!
+  message: String!
+  path: [String!]!
+}
+
+type CreateOpticalDataPayload {
+  errors: [CreateOpticalDataError!]
+  opticalData: OpticalData
+  query: Query!
+}
+
+type CreatePhotovoltaicDataError {
+  code: CreatePhotovoltaicDataErrorCode!
+  message: String!
+  path: [String!]!
+}
+
+type CreatePhotovoltaicDataPayload {
+  errors: [CreatePhotovoltaicDataError!]
+  photovoltaicData: PhotovoltaicData
+  query: Query!
+}
+
+type CrossDatabaseDataReference {
+  dataId: Uuid!
+  dataKind: DataKind!
+  dataTimestamp: DateTime!
+  databaseId: Uuid!
+}
+
+type DataApproval {
+  approverId: Uuid!
+  keyFingerprint: String!
+  query: String!
+  response: String!
+  signature: String!
+  timestamp: DateTime!
+}
+
+"A connection to a list of items."
+type DataConnection {
+  "A list of edges."
+  edges: [DataEdge!]
+  "A flattened list of the nodes."
+  nodes: [Data!]
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+"An edge in a connection."
+type DataEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Data!
+}
+
+type FileMetaInformation {
+  dataFormatId: Uuid!
+  formatId: Uuid!
+  path: [String!]!
+}
+
+type GetHttpsResource implements Node {
+  appliedConversionMethod: ToTreeVertexAppliedConversionMethod
+  archivedFilesMetaInformation: [FileMetaInformation!]!
+  children: [GetHttpsResource!]!
+  data: Data
+  dataFormatId: Uuid!
+  description: String!
+  formatId: Uuid!
+  hashValue: String!
+  id: ID!
+  locator: Url!
+  parent: GetHttpsResource
+  uuid: Uuid!
+}
+
+"A connection to a list of items."
+type GetHttpsResourceConnection {
+  "A list of edges."
+  edges: [GetHttpsResourceEdge!]
+  "A flattened list of the nodes."
+  nodes: [GetHttpsResource!]
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+"An edge in a connection."
+type GetHttpsResourceEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: GetHttpsResource!
+}
+
+type GetHttpsResourceTree {
+  nonRootVertices: [GetHttpsResourceTreeNonRootVertex!]!
+  root: GetHttpsResourceTreeRoot!
+}
+
+type GetHttpsResourceTreeNonRootVertex {
+  appliedConversionMethod: ToTreeVertexAppliedConversionMethod!
+  parentId: ID!
+  value: GetHttpsResource!
+  vertexId: ID!
+}
+
+type GetHttpsResourceTreeRoot {
+  value: GetHttpsResource!
+  vertexId: ID!
+}
+
+type HygrothermalData implements Node & Data {
+  appliedMethod: AppliedMethod!
+  approvals: [DataApproval!]!
+  componentId: Uuid!
+  createdAt: DateTime!
+  creatorId: Uuid!
+  description: String
+  id: ID!
+  locale: Locale!
+  name: String
+  resourceTree: GetHttpsResourceTree!
+  resources: [GetHttpsResource!]!
+  timestamp: DateTime!
+  uuid: Uuid!
+  warnings: [String!]!
+}
+
+"A connection to a list of items."
+type HygrothermalDataConnection {
+  "A list of edges."
+  edges: [HygrothermalDataEdge!]
+  "A flattened list of the nodes."
+  nodes: [HygrothermalData!]
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+"An edge in a connection."
+type HygrothermalDataEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: HygrothermalData!
+}
+
+type Mutation {
+  createCalorimetricData(input: CreateCalorimetricDataInput!): CreateCalorimetricDataPayload!
+  createGetHttpsResource(input: CreateGetHttpsResourceInput!): CreateGetHttpsResourcePayload!
+  createHygrothermalData(input: CreateHygrothermalDataInput!): CreateHygrothermalDataPayload!
+  createOpticalData(input: CreateOpticalDataInput!): CreateOpticalDataPayload!
+  createPhotovoltaicData(input: CreatePhotovoltaicDataInput!): CreatePhotovoltaicDataPayload!
+}
+
+type NamedMethodArgument {
+  name: String!
+  value: Any!
+}
+
+type NamedMethodSource {
+  name: String!
+  value: CrossDatabaseDataReference!
+}
+
+type OpenEndedDateTimeRange {
+  from: DateTime
+  until: DateTime
+}
+
+type OpticalData implements Node & Data {
+  appliedMethod: AppliedMethod!
+  approvals: [DataApproval!]!
+  cielabColors: [CielabColor!]!
+  colorRenderingIndices: [Float!]!
+  componentId: Uuid!
+  createdAt: DateTime!
+  creatorId: Uuid!
+  description: String
+  id: ID!
+  infraredEmittances: [Float!]!
+  locale: Locale!
+  name: String
+  nearnormalHemisphericalSolarReflectances: [Float!]!
+  nearnormalHemisphericalSolarTransmittances: [Float!]!
+  nearnormalHemisphericalVisibleReflectances: [Float!]!
+  nearnormalHemisphericalVisibleTransmittances: [Float!]!
+  resourceTree: GetHttpsResourceTree!
+  resources: [GetHttpsResource!]!
+  timestamp: DateTime!
+  uuid: Uuid!
+  warnings: [String!]!
+}
+
+"A connection to a list of items."
+type OpticalDataConnection {
+  "A list of edges."
+  edges: [OpticalDataEdge!]
+  "A flattened list of the nodes."
+  nodes: [OpticalData!]
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+"An edge in a connection."
+type OpticalDataEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: OpticalData!
+}
+
+"Information about pagination in a connection."
+type PageInfo {
+  "When paginating forwards, the cursor to continue."
+  endCursor: String
+  "Indicates whether more edges exist following the set defined by the clients arguments."
+  hasNextPage: Boolean!
+  "Indicates whether more edges exist prior the set defined by the clients arguments."
+  hasPreviousPage: Boolean!
+  "When paginating backwards, the cursor to continue."
+  startCursor: String
+}
+
+type PhotovoltaicData implements Node & Data {
+  appliedMethod: AppliedMethod!
+  approvals: [DataApproval!]!
+  componentId: Uuid!
+  createdAt: DateTime!
+  creatorId: Uuid!
+  description: String
+  id: ID!
+  locale: Locale!
+  name: String
+  resourceTree: GetHttpsResourceTree!
+  resources: [GetHttpsResource!]!
+  timestamp: DateTime!
+  uuid: Uuid!
+  warnings: [String!]!
+}
+
+"A connection to a list of items."
+type PhotovoltaicDataConnection {
+  "A list of edges."
+  edges: [PhotovoltaicDataEdge!]
+  "A flattened list of the nodes."
+  nodes: [PhotovoltaicData!]
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+"An edge in a connection."
+type PhotovoltaicDataEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: PhotovoltaicData!
+}
+
+type Query {
+  allCalorimetricData("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int locale: Locale order: [CalorimetricDataSortInput!] timestamp: DateTime where: CalorimetricDataPropositionInput): CalorimetricDataConnection
+  allData("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int locale: Locale order: [IDataSortInput!] timestamp: DateTime where: DataPropositionInput): DataConnection
+  allHygrothermalData("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int locale: Locale order: [HygrothermalDataSortInput!] timestamp: DateTime where: HygrothermalDataPropositionInput): HygrothermalDataConnection
+  allOpticalData("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int locale: Locale order: [OpticalDataSortInput!] timestamp: DateTime where: OpticalDataPropositionInput): OpticalDataConnection
+  allPhotovoltaicData("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int locale: Locale order: [PhotovoltaicDataSortInput!] timestamp: DateTime where: PhotovoltaicDataPropositionInput): PhotovoltaicDataConnection
+  calorimetricData(id: Uuid! locale: Locale timestamp: DateTime): CalorimetricData
+  data(id: Uuid! locale: Locale timestamp: DateTime): Data
+  getHttpsResource(id: Uuid!): GetHttpsResource
+  getHttpsResources("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int order: [GetHttpsResourceSortInput!] where: GetHttpsResourcePropositionInput): GetHttpsResourceConnection
+  hygrothermalData(id: Uuid! locale: Locale timestamp: DateTime): HygrothermalData
+  "Fetches an object given its ID."
+  node("ID of the object." id: ID!): Node
+  "Lookup nodes by a list of IDs."
+  nodes("The list of node IDs." ids: [ID!]!): [Node]!
+  opticalData(id: Uuid! locale: Locale timestamp: DateTime): OpticalData
+  photovoltaicData(id: Uuid! locale: Locale timestamp: DateTime): PhotovoltaicData
+}
+
+type ToTreeVertexAppliedConversionMethod {
+  arguments: [NamedMethodArgument!]!
+  methodId: Uuid!
+  sourceName: String!
+}
+
+input AppliedMethodInput {
+  arguments: [NamedMethodArgumentInput!]!
+  methodId: Uuid!
+  sources: [NamedMethodSourceInput!]!
+}
+
+input AppliedMethodPropositionInput {
+  and: [AppliedMethodPropositionInput!]
+  or: [AppliedMethodPropositionInput!]
+  methodId: UuidPropositionInput
+  arguments: ListNamedMethodArgumentFilterTypePropositionInput
+  sources: ListFilterInputTypeOfNamedMethodSourcePropositionInput
+}
+
+input AppliedMethodSortInput {
+  methodId: SortEnumType
+}
+
+input CalorimetricDataPropositionInput {
+  and: [CalorimetricDataPropositionInput!]
+  or: [CalorimetricDataPropositionInput!]
+  locale: StringPropositionInput
+  name: StringPropositionInput
+  description: StringPropositionInput
+  componentId: UuidPropositionInput
+  creatorId: UuidPropositionInput
+  createdAt: DateTimePropositionInput
+  appliedMethod: AppliedMethodPropositionInput
+  approvals: ListFilterInputTypeOfDataApprovalPropositionInput
+  resources: ListGetHttpsResourceFilterTypePropositionInput
+  warnings: StringsPropositionInput
+  id: UuidPropositionInput
+  gValues: FloatsPropositionInput
+  uValues: FloatsPropositionInput
+}
+
+input CalorimetricDataSortInput {
+  locale: SortEnumType
+  componentId: SortEnumType
+  name: SortEnumType
+  description: SortEnumType
+  creatorId: SortEnumType
+  createdAt: SortEnumType
+  appliedMethod: AppliedMethodSortInput
+  id: SortEnumType
+  xmin: SortEnumType
+}
+
+input CielabColorInput {
+  aStar: Float!
+  bStar: Float!
+  lStar: Float!
+}
+
+input CielabColorPropositionInput {
+  and: [CielabColorPropositionInput!]
+  or: [CielabColorPropositionInput!]
+  lStar: FloatPropositionInput
+  aStar: FloatPropositionInput
+  bStar: FloatPropositionInput
+}
+
+input CreateCalorimetricDataInput {
+  accessToken: String!
+  appliedMethod: AppliedMethodInput!
+  approvals: [DataApprovalInput!]!
+  componentId: Uuid!
+  createdAt: DateTime!
+  creatorId: Uuid!
+  description: String
+  gValues: [Float!]!
+  locale: String!
+  name: String
+  rootResource: RootGetHttpsResourceInput!
+  uValues: [Float!]!
+  warnings: [String!]!
+}
+
+input CreateGetHttpsResourceInput {
+  accessToken: String!
+  appliedConversionMethod: ToTreeVertexAppliedConversionMethodInput
+  archivedFilesMetaInformation: [FileMetaInformationInput!]!
+  dataFormatId: Uuid!
+  dataId: Uuid!
+  dataKind: DataKind!
+  description: String!
+  hashValue: String!
+  parentId: Uuid
+}
+
+input CreateHygrothermalDataInput {
+  accessToken: String!
+  appliedMethod: AppliedMethodInput!
+  approvals: [DataApprovalInput!]!
+  componentId: Uuid!
+  createdAt: DateTime!
+  creatorId: Uuid!
+  description: String
+  locale: String!
+  name: String
+  rootResource: RootGetHttpsResourceInput!
+  warnings: [String!]!
+}
+
+input CreateOpticalDataInput {
+  accessToken: String!
+  appliedMethod: AppliedMethodInput!
+  approvals: [DataApprovalInput!]!
+  cielabColors: [CielabColorInput!]!
+  colorRenderingIndices: [Float!]!
+  componentId: Uuid!
+  createdAt: DateTime!
+  creatorId: Uuid!
+  description: String
+  infraredEmittances: [Float!]!
+  locale: String!
+  name: String
+  nearnormalHemisphericalSolarReflectances: [Float!]!
+  nearnormalHemisphericalSolarTransmittances: [Float!]!
+  nearnormalHemisphericalVisibleReflectances: [Float!]!
+  nearnormalHemisphericalVisibleTransmittances: [Float!]!
+  rootResource: RootGetHttpsResourceInput!
+  warnings: [String!]!
+}
+
+input CreatePhotovoltaicDataInput {
+  accessToken: String!
+  appliedMethod: AppliedMethodInput!
+  approvals: [DataApprovalInput!]!
+  componentId: Uuid!
+  createdAt: DateTime!
+  creatorId: Uuid!
+  description: String
+  locale: String!
+  name: String
+  rootResource: RootGetHttpsResourceInput!
+  warnings: [String!]!
+}
+
+input CrossDatabaseDataReferenceInput {
+  dataId: Uuid!
+  dataKind: DataKind!
+  dataTimestamp: DateTime!
+  databaseId: Uuid!
+}
+
+input CrossDatabaseDataReferencePropositionInput {
+  and: [CrossDatabaseDataReferencePropositionInput!]
+  or: [CrossDatabaseDataReferencePropositionInput!]
+  dataId: UuidPropositionInput
+  dataTimestamp: DateTimePropositionInput
+  dataKind: DataKindPropositionInput
+  databaseId: UuidPropositionInput
+}
+
+input DataApprovalInput {
+  approverId: Uuid!
+  keyFingerprint: String!
+  query: String!
+  response: String!
+  signature: String!
+  timestamp: DateTime!
+}
+
+input DataApprovalPropositionInput {
+  and: [DataApprovalPropositionInput!]
+  or: [DataApprovalPropositionInput!]
+  timestamp: DateTimePropositionInput
+  signature: StringPropositionInput
+  keyFingerprint: StringPropositionInput
+  query: StringPropositionInput
+  response: StringPropositionInput
+  approverId: UuidPropositionInput
+}
+
+input DataKindPropositionInput {
+  equalTo: DataKind
+  notEqualTo: DataKind
+  in: [DataKind!]
+  notIn: [DataKind!]
+}
+
+input DataPropositionInput {
+  and: [DataPropositionInput!]
+  or: [DataPropositionInput!]
+  locale: StringPropositionInput
+  name: StringPropositionInput
+  description: StringPropositionInput
+  componentId: UuidPropositionInput
+  creatorId: UuidPropositionInput
+  createdAt: DateTimePropositionInput
+  appliedMethod: AppliedMethodPropositionInput
+  approvals: ListFilterInputTypeOfDataApprovalPropositionInput
+  resources: ListGetHttpsResourceFilterTypePropositionInput
+  warnings: StringsPropositionInput
+}
+
+input DateTimePropositionInput {
+  equalTo: DateTime
+  notEqualTo: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  greaterThan: DateTime
+  notGreaterThan: DateTime
+  greaterThanOrEqualTo: DateTime
+  notGreaterThanOrEqualTo: DateTime
+  lessThan: DateTime
+  notLessThanOrEqualTo: DateTime
+}
+
+input FileMetaInformationInput {
+  dataFormatId: Uuid!
+  path: [String!]!
+}
+
+input FileMetaInformationPropositionInput {
+  and: [FileMetaInformationPropositionInput!]
+  or: [FileMetaInformationPropositionInput!]
+  path: StringsPropositionInput
+  dataFormatId: UuidPropositionInput
+  formatId: UuidPropositionInput
+}
+
+input FloatPropositionInput {
+  equalTo: Float
+  notEqualTo: Float
+  in: [Float!]
+  notIn: [Float!]
+  greaterThan: Float
+  notGreaterThan: Float
+  greaterThanOrEqualTo: Float
+  notGreaterThanOrEqualTo: Float
+  lessThan: Float
+  notLessThanOrEqualTo: Float
+}
+
+input FloatsPropositionInput {
+  all: FloatPropositionInput
+  none: FloatPropositionInput
+  some: FloatPropositionInput
+  any: Boolean
+}
+
+input GetHttpsResourcePropositionInput {
+  and: [GetHttpsResourcePropositionInput!]
+  or: [GetHttpsResourcePropositionInput!]
+  id: UuidPropositionInput
+  description: StringPropositionInput
+  hashValue: StringPropositionInput
+  dataFormatId: UuidPropositionInput
+  appliedConversionMethod: ToTreeVertexAppliedConversionMethodPropositionInput
+  archivedFilesMetaInformation: ListFilterInputTypeOfFileMetaInformationPropositionInput
+  dataId: UuidPropositionInput
+  parentId: NullableOfUuidPropositionInput
+  parent: GetHttpsResourcePropositionInput
+}
+
+input GetHttpsResourceSortInput {
+  description: SortEnumType
+  hashValue: SortEnumType
+  dataFormatId: SortEnumType
+  formatId: SortEnumType
+  dataId: SortEnumType
+  data: IDataSortInput
+  calorimetricDataId: SortEnumType
+  calorimetricData: CalorimetricDataSortInput
+  hygrothermalDataId: SortEnumType
+  hygrothermalData: HygrothermalDataSortInput
+  opticalDataId: SortEnumType
+  opticalData: OpticalDataSortInput
+  photovoltaicDataId: SortEnumType
+  photovoltaicData: PhotovoltaicDataSortInput
+  parentId: SortEnumType
+  appliedConversionMethod: ToTreeVertexAppliedConversionMethodSortInput
+  parent: GetHttpsResourceSortInput
+  id: SortEnumType
+  xmin: SortEnumType
+}
+
+input HygrothermalDataPropositionInput {
+  and: [HygrothermalDataPropositionInput!]
+  or: [HygrothermalDataPropositionInput!]
+  locale: StringPropositionInput
+  name: StringPropositionInput
+  description: StringPropositionInput
+  componentId: UuidPropositionInput
+  creatorId: UuidPropositionInput
+  createdAt: DateTimePropositionInput
+  appliedMethod: AppliedMethodPropositionInput
+  approvals: ListFilterInputTypeOfDataApprovalPropositionInput
+  resources: ListGetHttpsResourceFilterTypePropositionInput
+  warnings: StringsPropositionInput
+  id: UuidPropositionInput
+}
+
+input HygrothermalDataSortInput {
+  locale: SortEnumType
+  componentId: SortEnumType
+  name: SortEnumType
+  description: SortEnumType
+  creatorId: SortEnumType
+  createdAt: SortEnumType
+  appliedMethod: AppliedMethodSortInput
+  id: SortEnumType
+  xmin: SortEnumType
+}
+
+input IDataSortInput {
+  componentId: SortEnumType
+  name: SortEnumType
+  description: SortEnumType
+  creatorId: SortEnumType
+  createdAt: SortEnumType
+  appliedMethod: AppliedMethodSortInput
+  locale: SortEnumType
+}
+
+input ListFilterInputTypeOfCielabColorPropositionInput {
+  all: CielabColorPropositionInput
+  none: CielabColorPropositionInput
+  some: CielabColorPropositionInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfDataApprovalPropositionInput {
+  all: DataApprovalPropositionInput
+  none: DataApprovalPropositionInput
+  some: DataApprovalPropositionInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfFileMetaInformationPropositionInput {
+  all: FileMetaInformationPropositionInput
+  none: FileMetaInformationPropositionInput
+  some: FileMetaInformationPropositionInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfNamedMethodSourcePropositionInput {
+  all: NamedMethodSourcePropositionInput
+  none: NamedMethodSourcePropositionInput
+  some: NamedMethodSourcePropositionInput
+  any: Boolean
+}
+
+input ListGetHttpsResourceFilterTypePropositionInput {
+  all: GetHttpsResourcePropositionInput
+  none: GetHttpsResourcePropositionInput
+  some: GetHttpsResourcePropositionInput
+  any: Boolean
+}
+
+input ListNamedMethodArgumentFilterTypePropositionInput {
+  all: NamedMethodArgumentPropositionInput
+  none: NamedMethodArgumentPropositionInput
+  some: NamedMethodArgumentPropositionInput
+  any: Boolean
+}
+
+input NamedMethodArgumentInput {
+  name: String!
+}
+
+input NamedMethodArgumentPropositionInput {
+  and: [NamedMethodArgumentPropositionInput!]
+  or: [NamedMethodArgumentPropositionInput!]
+  name: StringPropositionInput
+}
+
+input NamedMethodSourceInput {
+  name: String!
+  value: CrossDatabaseDataReferenceInput!
+}
+
+input NamedMethodSourcePropositionInput {
+  and: [NamedMethodSourcePropositionInput!]
+  or: [NamedMethodSourcePropositionInput!]
+  name: StringPropositionInput
+  value: CrossDatabaseDataReferencePropositionInput
+}
+
+input NullableOfUuidPropositionInput {
+  equalTo: Uuid
+  notEqualTo: Uuid
+  in: [Uuid]
+  notIn: [Uuid]
+  greaterThan: Uuid
+  notGreaterThan: Uuid
+  greaterThanOrEqualTo: Uuid
+  notGreaterThanOrEqualTo: Uuid
+  lessThan: Uuid
+  notLessThanOrEqualTo: Uuid
+}
+
+input OpticalDataPropositionInput {
+  and: [OpticalDataPropositionInput!]
+  or: [OpticalDataPropositionInput!]
+  locale: StringPropositionInput
+  name: StringPropositionInput
+  description: StringPropositionInput
+  componentId: UuidPropositionInput
+  creatorId: UuidPropositionInput
+  createdAt: DateTimePropositionInput
+  appliedMethod: AppliedMethodPropositionInput
+  approvals: ListFilterInputTypeOfDataApprovalPropositionInput
+  resources: ListGetHttpsResourceFilterTypePropositionInput
+  warnings: StringsPropositionInput
+  id: UuidPropositionInput
+  nearnormalHemisphericalSolarReflectances: FloatsPropositionInput
+  nearnormalHemisphericalSolarTransmittances: FloatsPropositionInput
+  nearnormalHemisphericalVisibleReflectances: FloatsPropositionInput
+  nearnormalHemisphericalVisibleTransmittances: FloatsPropositionInput
+  infraredEmittances: FloatsPropositionInput
+  colorRenderingIndices: FloatsPropositionInput
+  cielabColors: ListFilterInputTypeOfCielabColorPropositionInput
+}
+
+input OpticalDataSortInput {
+  locale: SortEnumType
+  componentId: SortEnumType
+  name: SortEnumType
+  description: SortEnumType
+  creatorId: SortEnumType
+  createdAt: SortEnumType
+  appliedMethod: AppliedMethodSortInput
+  id: SortEnumType
+  xmin: SortEnumType
+}
+
+input PhotovoltaicDataPropositionInput {
+  and: [PhotovoltaicDataPropositionInput!]
+  or: [PhotovoltaicDataPropositionInput!]
+  locale: StringPropositionInput
+  name: StringPropositionInput
+  description: StringPropositionInput
+  componentId: UuidPropositionInput
+  creatorId: UuidPropositionInput
+  createdAt: DateTimePropositionInput
+  appliedMethod: AppliedMethodPropositionInput
+  approvals: ListFilterInputTypeOfDataApprovalPropositionInput
+  resources: ListGetHttpsResourceFilterTypePropositionInput
+  warnings: StringsPropositionInput
+  id: UuidPropositionInput
+}
+
+input PhotovoltaicDataSortInput {
+  locale: SortEnumType
+  componentId: SortEnumType
+  name: SortEnumType
+  description: SortEnumType
+  creatorId: SortEnumType
+  createdAt: SortEnumType
+  appliedMethod: AppliedMethodSortInput
+  id: SortEnumType
+  xmin: SortEnumType
+}
+
+input RootGetHttpsResourceInput {
+  appliedConversionMethod: ToTreeVertexAppliedConversionMethodInput
+  archivedFilesMetaInformation: [FileMetaInformationInput!]!
+  dataFormatId: Uuid!
+  description: String!
+  hashValue: String!
+}
+
+input StringPropositionInput {
+  and: [StringPropositionInput!]
+  or: [StringPropositionInput!]
+  equalTo: String
+  notEqualTo: String
+  contains: String
+  doesNotContain: String
+  in: [String]
+  notIn: [String]
+  startsWith: String
+  doesNotStartWith: String
+  endsWith: String
+  doesNotEndWith: String
+}
+
+input StringsPropositionInput {
+  all: StringPropositionInput
+  none: StringPropositionInput
+  some: StringPropositionInput
+  any: Boolean
+}
+
+input ToTreeVertexAppliedConversionMethodInput {
+  arguments: [NamedMethodArgumentInput!]!
+  methodId: Uuid!
+  sourceName: String!
+}
+
+input ToTreeVertexAppliedConversionMethodPropositionInput {
+  and: [ToTreeVertexAppliedConversionMethodPropositionInput!]
+  or: [ToTreeVertexAppliedConversionMethodPropositionInput!]
+  methodId: UuidPropositionInput
+  arguments: ListNamedMethodArgumentFilterTypePropositionInput
+  sourceName: StringPropositionInput
+}
+
+input ToTreeVertexAppliedConversionMethodSortInput {
+  methodId: SortEnumType
+  sourceName: SortEnumType
+}
+
+input UuidPropositionInput {
+  equalTo: Uuid
+  notEqualTo: Uuid
+  in: [Uuid!]
+  notIn: [Uuid!]
+  greaterThan: Uuid
+  notGreaterThan: Uuid
+  greaterThanOrEqualTo: Uuid
+  notGreaterThanOrEqualTo: Uuid
+  lessThan: Uuid
+  notLessThanOrEqualTo: Uuid
+}
+
+enum ApplyPolicy {
+  BEFORE_RESOLVER
+  AFTER_RESOLVER
+}
+
+enum CreateCalorimetricDataErrorCode {
+  UNKNOWN
+  UNAUTHORIZED
+}
+
+enum CreateGetHttpsResourceErrorCode {
+  UNKNOWN
+  UNAUTHORIZED
+}
+
+enum CreateHygrothermalDataErrorCode {
+  UNKNOWN
+  UNAUTHORIZED
+}
+
+enum CreateOpticalDataErrorCode {
+  UNKNOWN
+  UNAUTHORIZED
+}
+
+enum CreatePhotovoltaicDataErrorCode {
+  UNKNOWN
+  UNAUTHORIZED
+}
+
+enum DataKind {
+  CALORIMETRIC_DATA
+  HYGROTHERMAL_DATA
+  OPTICAL_DATA
+  PHOTOVOLTAIC_DATA
+}
+
+enum SortEnumType {
+  ASC
+  DESC
+}
+
+directive @authorize("Defines when when the resolver shall be executed.By default the resolver is executed after the policy has determined that the current user is allowed to access the field." apply: ApplyPolicy! = BEFORE_RESOLVER "The name of the authorization policy that determines access to the annotated resource." policy: String "Roles that are allowed to access the annotated resource." roles: [String!]) repeatable on SCHEMA | OBJECT | FIELD_DEFINITION
+
+"The `@defer` directive may be provided for fragment spreads and inline fragments to inform the executor to delay the execution of the current fragment to indicate deprioritization of the current fragment. A query with `@defer` directive will cause the request to potentially return multiple responses, where non-deferred data is delivered in the initial response and data deferred is delivered in a subsequent response. `@include` and `@skip` take precedence over `@defer`."
+directive @defer("Deferred when true." if: Boolean "If this argument label has a value other than null, it will be passed on to the result of this defer directive. This label is intended to give client applications a way to identify to which fragment a deferred result belongs to." label: String) on FRAGMENT_SPREAD | INLINE_FRAGMENT
+
+"The `@specifiedBy` directive is used within the type system definition language to provide a URL for specifying the behavior of custom scalar definitions."
+directive @specifiedBy("The specifiedBy URL points to a human-readable specification. This field will only read a result for scalar types." url: String!) on SCALAR
+
+"The `@stream` directive may be provided for a field of `List` type so that the backend can leverage technology such as asynchronous iterators to provide a partial list in the initial response, and additional list items in subsequent responses. `@include` and `@skip` take precedence over `@stream`."
+directive @stream("Streamed when true." if: Boolean "The initial elements that shall be send down to the consumer." initialCount: Int! = 0 "If this argument label has a value other than null, it will be passed on to the result of this stream directive. This label is intended to give client applications a way to identify to which fragment a streamed result belongs to." label: String) on FIELD
+
+scalar Any
+
+"The `DateTime` scalar represents an ISO-8601 compliant date time type."
+scalar DateTime @specifiedBy(url: "https:\/\/www.graphql-scalars.com\/date-time")
+
+"BCP 47 compliant Language Tag string"
+scalar Locale
+
+scalar Url
+
+scalar Uuid
