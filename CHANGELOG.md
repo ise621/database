@@ -7,8 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [v1.0.0] - 2022-02-28
-
 ### Added
 
 -
@@ -95,6 +93,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Remove explicit content-type as it results in requests from banana cake pop responding with 404 in commit [90ee575397544158a603cd7946bd6fec5e4c1407](https://github.com/building-envelope-data/database/commit/90ee575397544158a603cd7946bd6fec5e4c1407)
 -
 -
 -
@@ -119,8 +118,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -
 -
 -
--
+
+## [v1.0.0] - 2022-02-28
 
 [Unreleased]: https://github.com/building-envelope-data/database/compare/v1.0.0...HEAD
 
-[v1.0.0]: https://github.com/building-envelope-data/database/compare/d45f78d150b58e016d63a827124b740765c4d350...v1.0.0
+[v1.0.0]: https://github.com/building-envelope-data/database/compare/352f44e492ca66d7835970cdf007b2897e686e30...v1.0.0
