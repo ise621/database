@@ -5,6 +5,7 @@
 /nginx/html/maintenance.html
 /commit
 /backup
+/tags*
 
 .env
 .vscode
