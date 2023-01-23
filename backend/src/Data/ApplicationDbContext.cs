@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Npgsql;
 using SchemaNameOptionsExtension = Database.Data.Extensions.SchemaNameOptionsExtension;
 
 namespace Database.Data
@@ -8,19 +7,11 @@ namespace Database.Data
     // Inspired by
     // [Authentication and authorization for SPAs](https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity-api-authorization?view=aspnetcore-3.0)
     // [Customize Identity Model](https://docs.microsoft.com/en-us/aspnet/core/security/authentication/customize-identity-model?view=aspnetcore-3.0)
-    [Owned]
     public sealed class ApplicationDbContext
           : DbContext
     {
         static ApplicationDbContext()
         {
-            RegisterEnumerations();
-        }
-
-        private static void RegisterEnumerations()
-        {
-            // https://www.npgsql.org/efcore/mapping/enum.html#mapping-your-enum
-            NpgsqlConnection.GlobalTypeMapper.MapEnum<Enumerations.DataKind>();
         }
 
         private static void CreateEnumerations(ModelBuilder builder)
@@ -43,7 +34,8 @@ namespace Database.Data
               .HasDefaultValueSql("gen_random_uuid()");
             // https://www.npgsql.org/efcore/modeling/concurrency.html#the-postgresql-xmin-system-column
             builder
-              .UseXminAsConcurrencyToken();
+              .Property(e => e.Version)
+              .IsRowVersion();
             return builder;
         }
 
@@ -86,6 +78,7 @@ namespace Database.Data
             ConfigureEntity(
                 builder.Entity<CalorimetricData>()
                 )
+              .OwnsOne(data => data.AppliedMethod, method => { method.OwnsMany(m => m.Arguments); method.OwnsMany(m => m.Sources); })
               .ToTable("calorimetric_data");
             ConfigureEntity(
                 builder.Entity<HygrothermalData>()
