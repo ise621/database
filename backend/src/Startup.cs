@@ -119,7 +119,7 @@ namespace Database
                 );
             // Database context as services are used by `Identity`.
             services.AddDbContext<Data.ApplicationDbContext>(
-                (services, options) =>
+                (serviceProvider, options) =>
                 {
                     if (!_environment.IsProduction())
                     {
@@ -127,7 +127,7 @@ namespace Database
                         .EnableSensitiveDataLogging()
                         .EnableDetailedErrors();
                     }
-                    services
+                    serviceProvider
                     .GetRequiredService<IDbContextFactory<Data.ApplicationDbContext>>()
                     .CreateDbContext();
                 },
