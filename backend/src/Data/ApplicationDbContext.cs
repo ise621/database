@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Npgsql;
 using SchemaNameOptionsExtension = Database.Data.Extensions.SchemaNameOptionsExtension;
 
 namespace Database.Data
@@ -12,6 +13,13 @@ namespace Database.Data
     {
         static ApplicationDbContext()
         {
+            RegisterEnumerations();
+        }
+
+        private static void RegisterEnumerations()
+        {
+            // https://www.npgsql.org/efcore/mapping/enum.html#mapping-your-enum
+            NpgsqlConnection.GlobalTypeMapper.MapEnum<Enumerations.DataKind>();
         }
 
         private static void CreateEnumerations(ModelBuilder builder)
