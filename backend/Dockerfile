@@ -317,4 +317,6 @@ RUN \
     ${HOME}/.nuget \
     ${HOME}/.dotnet
 
+ENV SHELL=/bin/bash
+
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
