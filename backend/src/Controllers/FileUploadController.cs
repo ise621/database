@@ -110,7 +110,7 @@ namespace Database.Controllers
                 ModelState.AddModelError("AccessToken", $"Access token must come first, got {firstContentDisposition?.Name} instead.");
                 return BadRequest(ModelState);
             }
-            var accessToken = await new StreamReader(section.Body).ReadToEndAsync().ConfigureAwait(false);
+            var accessToken = await new StreamReader(section.Body).ReadToEndAsync(cancellationToken).ConfigureAwait(false);
             if (accessToken != _accessToken)
             {
                 ModelState.AddModelError("AccessToken", $"The access token {accessToken} is invalid.");
