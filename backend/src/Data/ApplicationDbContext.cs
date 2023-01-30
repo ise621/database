@@ -8,18 +8,25 @@ namespace Database.Data
     // Inspired by
     // [Authentication and authorization for SPAs](https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity-api-authorization?view=aspnetcore-3.0)
     // [Customize Identity Model](https://docs.microsoft.com/en-us/aspnet/core/security/authentication/customize-identity-model?view=aspnetcore-3.0)
-    [Owned]
     public sealed class ApplicationDbContext
           : DbContext
     {
+        [System.Obsolete]
         static ApplicationDbContext()
         {
             RegisterEnumerations();
         }
 
+        [System.Obsolete]
         private static void RegisterEnumerations()
         {
             // https://www.npgsql.org/efcore/mapping/enum.html#mapping-your-enum
+            // Mapping enums like this is marked as obsolete. The preferred way
+            // is described in
+            // https://www.npgsql.org/doc/release-notes/7.0.html#managing-type-mappings-at-the-connection-level-is-no-longer-supported
+            // I tried to go the new way in `Startup#ConfigureDatabaseServices`.
+            // The problem was though that the tool `dotnet ef` did not pick up
+            // the registered enumerations.
             NpgsqlConnection.GlobalTypeMapper.MapEnum<Enumerations.DataKind>();
         }
 
@@ -43,7 +50,8 @@ namespace Database.Data
               .HasDefaultValueSql("gen_random_uuid()");
             // https://www.npgsql.org/efcore/modeling/concurrency.html#the-postgresql-xmin-system-column
             builder
-              .UseXminAsConcurrencyToken();
+              .Property(e => e.Version)
+              .IsRowVersion();
             return builder;
         }
 
@@ -86,6 +94,7 @@ namespace Database.Data
             ConfigureEntity(
                 builder.Entity<CalorimetricData>()
                 )
+              .OwnsOne(data => data.AppliedMethod, method => { method.OwnsMany(m => m.Arguments); method.OwnsMany(m => m.Sources); })
               .ToTable("calorimetric_data");
             ConfigureEntity(
                 builder.Entity<HygrothermalData>()

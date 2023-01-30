@@ -6,6 +6,6 @@ namespace Database.Data
     {
         Guid Id { get; }
 
-        uint xmin { get; } // https://www.npgsql.org/efcore/modeling/concurrency.html
+        uint Version { get; } // https://www.npgsql.org/efcore/modeling/concurrency.html
     }
 }

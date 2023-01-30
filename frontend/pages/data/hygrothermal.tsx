@@ -78,6 +78,7 @@ function Page() {
   const [globalErrorMessages, setGlobalErrorMessages] = useState(
     new Array<string>()
   );
+  const [messageApi, contextHolder] = message.useMessage();
   const [data, setData] = useState<HygrothermalData[]>([]);
   // Using `skip` is inspired by https://github.com/apollographql/apollo-client/issues/5268#issuecomment-749501801
   // An alternative would be `useLazy...` as told in https://github.com/apollographql/apollo-client/issues/5268#issuecomment-527727653
@@ -147,8 +148,8 @@ function Page() {
         if (error) {
           // TODO Handle properly.
           console.log(error);
-          message.error(
-            error.graphQLErrors.map((error) => error.message).join(" ")
+          messageApi.error(
+            error.graphQLErrors.map((error) => error.message)
           );
         }
         // TODO Casting to `HygrothermalData` is wrong and error prone!
@@ -169,6 +170,7 @@ function Page() {
 
   return (
     <Layout>
+      {contextHolder}
       <Typography.Title>Hygrothermal Data</Typography.Title>
       {/* TODO Display error messages in a list? */}
       {globalErrorMessages.length > 0 && (

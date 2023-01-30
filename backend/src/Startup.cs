@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Database.Configuration;
@@ -14,6 +16,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
+using Npgsql;
 using Serilog;
 
 namespace Database
@@ -29,7 +32,7 @@ namespace Database
             )
         {
             _environment = environment;
-            _appSettings = configuration.Get<AppSettings>();
+            _appSettings = configuration.Get<AppSettings>() ?? throw new Exception("Failed to get application settings from configuration.");
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -101,10 +104,14 @@ namespace Database
         {
             services.AddPooledDbContextFactory<Data.ApplicationDbContext>(options =>
                 {
+                    var dataSourceBuilder = new NpgsqlDataSourceBuilder(_appSettings.Database.ConnectionString);
+                    // Enumerations registered as below are not picked up by
+                    // the tool `dotnet ef` when creating migrations. We thus
+                    // register enumerations in `ApplicationDbContext`.
+                    // dataSourceBuilder.MapEnum<Enumerations.DataKind>();
                     options
-                    .UseNpgsql(_appSettings.Database.ConnectionString)
+                    .UseNpgsql(dataSourceBuilder.Build() /*, optionsBuilder => optionsBuilder.UseNodaTime() */)
                     .UseSchemaName(_appSettings.Database.SchemaName);
-                    /* .UseNodaTime() */ // https://www.npgsql.org/efcore/mapping/nodatime.html
                     if (!_environment.IsProduction())
                     {
                         options
@@ -115,7 +122,7 @@ namespace Database
                 );
             // Database context as services are used by `Identity`.
             services.AddDbContext<Data.ApplicationDbContext>(
-                (services, options) =>
+                (serviceProvider, options) =>
                 {
                     if (!_environment.IsProduction())
                     {
@@ -123,7 +130,7 @@ namespace Database
                         .EnableSensitiveDataLogging()
                         .EnableDetailedErrors();
                     }
-                    services
+                    serviceProvider
                     .GetRequiredService<IDbContextFactory<Data.ApplicationDbContext>>()
                     .CreateDbContext();
                 },
@@ -198,23 +205,53 @@ namespace Database
                 _.MapHealthChecks("/health",
                     new HealthCheckOptions
                     {
-                        ResponseWriter = JsonResponseWriter
+                        ResponseWriter = WriteJsonResponse
                     }
                 );
             });
         }
 
-        private async Task JsonResponseWriter(HttpContext context, HealthReport report)
+        // Inspired by https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks?view=aspnetcore-7.0#customize-output
+        private static Task WriteJsonResponse(HttpContext context, HealthReport healthReport)
         {
-            context.Response.ContentType = "application/json";
-            await JsonSerializer.SerializeAsync(
-                context.Response.Body,
-                report,
-                new JsonSerializerOptions
+            context.Response.ContentType = "application/json; charset=utf-8";
+
+            var options = new JsonWriterOptions { Indented = true };
+
+            using var memoryStream = new MemoryStream();
+            using (var jsonWriter = new Utf8JsonWriter(memoryStream, options))
+            {
+                jsonWriter.WriteStartObject();
+                jsonWriter.WriteString("status", healthReport.Status.ToString());
+                jsonWriter.WriteStartObject("results");
+
+                foreach (var healthReportEntry in healthReport.Entries)
                 {
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                    jsonWriter.WriteStartObject(healthReportEntry.Key);
+                    jsonWriter.WriteString("status",
+                        healthReportEntry.Value.Status.ToString());
+                    jsonWriter.WriteString("description",
+                        healthReportEntry.Value.Description);
+                    jsonWriter.WriteStartObject("data");
+
+                    foreach (var item in healthReportEntry.Value.Data)
+                    {
+                        jsonWriter.WritePropertyName(item.Key);
+
+                        JsonSerializer.Serialize(jsonWriter, item.Value,
+                            item.Value?.GetType() ?? typeof(object));
+                    }
+
+                    jsonWriter.WriteEndObject();
+                    jsonWriter.WriteEndObject();
                 }
-                ).ConfigureAwait(false);
+
+                jsonWriter.WriteEndObject();
+                jsonWriter.WriteEndObject();
+            }
+
+            return context.Response.WriteAsync(
+                Encoding.UTF8.GetString(memoryStream.ToArray()));
         }
     }
 }
