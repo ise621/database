@@ -166,9 +166,10 @@ backup : ## Backup database and related data to directory with absolute path `${
 		backend
 	docker run \
 		--rm \
+		--user $(shell id --user):$(shell id --group) \
 		--volumes-from backup_${NAME}_files \
 		--volume ${BACKUP_DIRECTORY}:/backup \
-		debian:buster-slim \
+		debian:bullseye-slim \
 		tar \
 			--verbose \
 			--create \
@@ -215,9 +216,10 @@ restore : ## Restore database and related data from directory with absolute path
 		backend
 	docker run \
 		--rm \
+		--user $(shell id --user):$(shell id --group) \
 		--volumes-from backup_${NAME}_files \
 		--volume ${BACKUP_DIRECTORY}:/backup \
-		debian:buster-slim \
+		debian:bullseye-slim \
 		bash -cx " \
 			cd /app/files && \
 			rm \
