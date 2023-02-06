@@ -11,12 +11,6 @@ namespace Database.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterDatabase()
-                .Annotation("Npgsql:Enum:public.data_kind", "calorimetric_data,hygrothermal_data,optical_data,photovoltaic_data")
-                .Annotation("Npgsql:PostgresExtension:pgcrypto", ",,")
-                .OldAnnotation("Npgsql:Enum:data_kind", "calorimetric_data,hygrothermal_data,optical_data,photovoltaic_data")
-                .OldAnnotation("Npgsql:PostgresExtension:pgcrypto", ",,");
-
             migrationBuilder.AlterColumn<DateTime>(
                 name: "Value_DataTimestamp",
                 schema: "database",
@@ -129,12 +123,6 @@ namespace Database.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterDatabase()
-                .Annotation("Npgsql:Enum:data_kind", "calorimetric_data,hygrothermal_data,optical_data,photovoltaic_data")
-                .Annotation("Npgsql:PostgresExtension:pgcrypto", ",,")
-                .OldAnnotation("Npgsql:Enum:public.data_kind", "calorimetric_data,hygrothermal_data,optical_data,photovoltaic_data")
-                .OldAnnotation("Npgsql:PostgresExtension:pgcrypto", ",,");
-
             migrationBuilder.AlterColumn<DateTime>(
                 name: "Value_DataTimestamp",
                 schema: "database",
