@@ -81,19 +81,22 @@ list-services : ## List all services specified in the docker-compose file (used 
 		--services
 .PHONY : list-services
 
+createdb : CONTAINER_NAME = create_${NAME}_database
 createdb : ## Create database
+	-docker container stop ${CONTAINER_NAME}
+	-docker container rm --volumes ${CONTAINER_NAME}
 	${docker_compose} run \
-		--name create_${NAME}_database \
+		--name ${CONTAINER_NAME} \
 		--detach \
 		database
-	while [ $$(docker inspect -f {{.State.Health.Status}} create_${NAME}_database) != "healthy" ]; do sleep 1; done
+	while [ $$(docker inspect -f {{.State.Health.Status}} ${CONTAINER_NAME}) != "healthy" ]; do sleep 1; done
 	docker exec \
-		create_${NAME}_database \
+		${CONTAINER_NAME} \
 		createdb \
 			--username postgres \
 			xbase
-	docker container stop create_${NAME}_database
-	docker container rm --volumes create_${NAME}_database
+	docker container stop ${CONTAINER_NAME}
+	docker container rm --volumes ${CONTAINER_NAME}
 .PHONY : createdb
 
 psql : ## Enter PostgreSQL interactive terminal in the running `database` service
@@ -144,29 +147,35 @@ docker-stats : ## Show Docker run-time metrics
 # Command `pg_dumpall`: https://www.postgresql.org/docs/13/app-pg-dumpall.html
 # Backup files with `tar` and `gzip` as suggested in https://docs.docker.com/storage/volumes/#backup-restore-or-migrate-data-volumes
 # We could have used `docker cp` as explained in https://docs.docker.com/engine/reference/commandline/cp/
+backup : DATABASE_CONTAINER_NAME = backup_${NAME}_database
+backup : FILES_CONTAINER_NAME = backup_${NAME}_files
 backup : ## Backup database and related data to directory with absolute path `${BACKUP_DIRECTORY}`, for example, `make --file Makefile.production BACKUP_DIRECTORY=/app/data/backups/$(date +"%Y-%m-%d_%H_%M_%S") backup`
 	mkdir --parents ${BACKUP_DIRECTORY}
+	-docker container stop ${DATABASE_CONTAINER_NAME}
+	-docker container rm --volumes ${DATABASE_CONTAINER_NAME}
 	${docker_compose} run \
-		--name backup_${NAME}_database \
+		--name ${DATABASE_CONTAINER_NAME} \
 		--detach \
 		database
-	while [ $$(docker inspect -f {{.State.Health.Status}} backup_${NAME}_database) != "healthy" ]; do sleep 1; done
+	while [ $$(docker inspect -f {{.State.Health.Status}} ${DATABASE_CONTAINER_NAME}) != "healthy" ]; do sleep 1; done
 	docker exec \
-		backup_${NAME}_database \
+		${DATABASE_CONTAINER_NAME} \
 		pg_dumpall \
 			--clean \
 			--username=postgres \
 		| gzip \
 		> ${BACKUP_DIRECTORY}/${dump_archive_name}
-	docker container stop backup_${NAME}_database
-	docker container rm --volumes backup_${NAME}_database
+	docker container stop ${DATABASE_CONTAINER_NAME}
+	docker container rm --volumes ${DATABASE_CONTAINER_NAME}
+	-docker container stop ${FILES_CONTAINER_NAME}
+	-docker container rm --volumes ${FILES_CONTAINER_NAME}
 	${docker_compose} run \
-		--name backup_${NAME}_files \
+		--name ${FILES_CONTAINER_NAME} \
 		--detach \
 		backend
 	docker run \
 		--rm \
-		--volumes-from backup_${NAME}_files \
+		--volumes-from ${FILES_CONTAINER_NAME} \
 		--volume ${BACKUP_DIRECTORY}:/backup \
 		debian:bullseye-slim \
 		tar \
@@ -176,8 +185,8 @@ backup : ## Backup database and related data to directory with absolute path `${
 			--file=/backup/${files_archive_name} \
 			--directory=/app \
 			./files
-	docker container stop backup_${NAME}_files
-	docker container rm --volumes backup_${NAME}_files
+	docker container stop ${FILES_CONTAINER_NAME}
+	docker container rm --volumes ${FILES_CONTAINER_NAME}
 .PHONY : backup
 
 # Inspired by https://stackoverflow.com/questions/25785/delete-all-but-the-most-recent-x-files-in-bash/34862475#34862475
@@ -195,30 +204,36 @@ prune-backups : ## Keep the most recent 7 backups, delete the rest
 			rm --recursive --dir --
 .PHONY : prune-backups
 
+restore : DATABASE_CONTAINER_NAME = restore_${NAME}_database
+restore : FILES_CONTAINER_NAME = restore_${NAME}_files
 restore : ## Restore database and related data from directory with absolute path `${BACKUP_DIRECTORY}`, for example, `make --file Makefile.production BACKUP_DIRECTORY=/app/data/backups/2021-04-22_15_43_35 restore`
+	-docker container stop ${DATABASE_CONTAINER_NAME}
+	-docker container rm --volumes ${DATABASE_CONTAINER_NAME}
 	${docker_compose} run \
-		--name restore_${NAME}_database \
+		--name ${DATABASE_CONTAINER_NAME} \
 		--detach \
 		database
-	while [ $$(docker inspect -f {{.State.Health.Status}} restore_${NAME}_database) != "healthy" ]; do sleep 1; done
+	while [ $$(docker inspect -f {{.State.Health.Status}} ${DATABASE_CONTAINER_NAME}) != "healthy" ]; do sleep 1; done
 	gunzip --stdout ${BACKUP_DIRECTORY}/${dump_archive_name} \
 	| docker exec \
 		--interactive \
-		restore_${NAME}_database \
+		${DATABASE_CONTAINER_NAME} \
 		psql \
 			--echo-all \
 			--file=- \
 			--username=postgres \
 			--dbname=postgres
-	docker container stop restore_${NAME}_database
-	docker container rm --volumes restore_${NAME}_database
+	docker container stop ${DATABASE_CONTAINER_NAME}
+	docker container rm --volumes ${DATABASE_CONTAINER_NAME}
+	-docker container stop ${FILES_CONTAINER_NAME}
+	-docker container rm --volumes ${FILES_CONTAINER_NAME}
 	${docker_compose} run \
-		--name backup_${NAME}_files \
+		--name ${FILES_CONTAINER_NAME} \
 		--detach \
 		backend
 	docker run \
 		--rm \
-		--volumes-from backup_${NAME}_files \
+		--volumes-from ${FILES_CONTAINER_NAME} \
 		--volume ${BACKUP_DIRECTORY}:/backup \
 		debian:bullseye-slim \
 		bash -cx " \
@@ -235,8 +250,8 @@ restore : ## Restore database and related data from directory with absolute path
 				--strip-components=2 \
 				--file=/backup/${files_archive_name} \
 		"
-	docker container stop backup_${NAME}_files
-	docker container rm --volumes backup_${NAME}_files
+	docker container stop ${FILES_CONTAINER_NAME}
+	docker container rm --volumes ${FILES_CONTAINER_NAME}
 .PHONY : restore
 
 begin-maintenance : ## Begin maintenance
@@ -276,23 +291,26 @@ checkout-target : ## Fetch and checkout `${TARGET}`
 
 migrate : FROM = $(file < ./backend/src/Migrations/previous)
 migrate : TO = $(file < ./backend/src/Migrations/current)
+migrate : CONTAINER_NAME = migrate_${NAME}_database
 migrate : ## Migrate database (note that other PostgreSQL instances using the same data volume must not be used while migrating and need to be restarted afterwards to make migration results visible)
+	-docker container stop ${CONTAINER_NAME}
+	-docker container rm --volumes ${CONTAINER_NAME}
 	${docker_compose} run \
-		--name migrate_${NAME}_database \
+		--name ${CONTAINER_NAME} \
 		--detach \
 		database
-	while [ $$(docker inspect -f {{.State.Health.Status}} migrate_${NAME}_database) != "healthy" ]; do sleep 1; done
+	while [ $$(docker inspect -f {{.State.Health.Status}} ${CONTAINER_NAME}) != "healthy" ]; do sleep 1; done
 	cat ./backend/src/Migrations/migrate_from_${FROM}_to_${TO}.sql \
 	| docker exec \
 		--interactive \
-		migrate_${NAME}_database \
+		${CONTAINER_NAME} \
 		psql \
 			--echo-all \
 			--file=- \
 			--username=postgres \
 			--dbname=xbase
-	docker container stop migrate_${NAME}_database
-	docker container rm --volumes migrate_${NAME}_database
+	docker container stop ${CONTAINER_NAME}
+	docker container rm --volumes ${CONTAINER_NAME}
 .PHONY : migrate
 
 # Note that NGINX is because of its dependencies taken down and up last and in
