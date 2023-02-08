@@ -57,6 +57,10 @@ The same works for frontend containers by running `make shellf`.
 
 ## Deployment
 
+For information on using Docker in production see
+[Configure and troubleshoot the Docker daemon](https://docs.docker.com/config/daemon/)
+and the pages following it.
+
 ### Setting up a Debian production machine
 
 1. Use the sibling project [machine](https://github.com/building-envelope-data/machine) and its
@@ -112,18 +116,14 @@ The same works for frontend containers by running `make shellf`.
    figure out what went wrong, apply the necessary fixes to the codebase,
    create a new release, and try to deploy that release instead.
 1. If it succeeds, deploy the new reverse proxy that handles sub-domains by
-   running `cd ./machine && make deploy && cd ..` and test whether everything
-   works as expected and if that is the case, repeat all stages but this one in
-   the directory `/app/production` (instead of `/app/staging`). Note that in
-   the staging environment sent emails can be viewed in the web browser under
-   `https://staging.solarbuildingenvelopes.com/email/` and emails to addresses in
-   the variable `RELAY_ALLOWED_EMAILS` in the `.env` file are delivered to the
-   respective inboxes (the variable's value is a comma separated list of email
-   addresses).
-
-For information on using Docker in production see
-[Configure and troubleshoot the Docker daemon](https://docs.docker.com/config/daemon/)
-and the pages following it.
+   running `cd /app/machine && make deploy` and test whether everything works
+   as expected and if that is the case, repeat all stages but this one in the
+   directory `/app/production` (instead of `/app/staging`). Note that in the
+   staging environment sent emails can be viewed in the web browser under
+   `https://staging.solarbuildingenvelopes.com/email/` and emails to addresses
+   in the variable `RELAY_ALLOWED_EMAILS` in the `.env` file are delivered to
+   the respective inboxes (the variable's value is a comma separated list of
+   email addresses).
 
 ## Useful Resources
 
