@@ -7,6 +7,7 @@ using Database.Configuration;
 using Database.Data.Extensions;
 using HotChocolate.AspNetCore;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -43,6 +44,9 @@ namespace Database
             ConfigureMessageSenderServices(services);
             ConfigureRequestResponseServices(services);
             ConfigureSessionServices(services);
+            services
+                .AddDataProtection()
+                .PersistKeysToDbContext<Data.ApplicationDbContext>();
             services.AddHttpClient();
             services
                 .AddHealthChecks()

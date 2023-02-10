@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Npgsql;
 using SchemaNameOptionsExtension = Database.Data.Extensions.SchemaNameOptionsExtension;
 
@@ -9,7 +10,7 @@ namespace Database.Data
     // [Authentication and authorization for SPAs](https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity-api-authorization?view=aspnetcore-3.0)
     // [Customize Identity Model](https://docs.microsoft.com/en-us/aspnet/core/security/authentication/customize-identity-model?view=aspnetcore-3.0)
     public sealed class ApplicationDbContext
-          : DbContext
+          : DbContext, IDataProtectionKeyContext
     {
         [System.Obsolete]
         static ApplicationDbContext()
@@ -70,6 +71,7 @@ namespace Database.Data
         public DbSet<HygrothermalData> HygrothermalData { get; private set; } = default!;
         public DbSet<OpticalData> OpticalData { get; private set; } = default!;
         public DbSet<PhotovoltaicData> PhotovoltaicData { get; private set; } = default!;
+        public DbSet<DataProtectionKey> DataProtectionKeys { get; private set; } = default!;
 
         public ApplicationDbContext(
             DbContextOptions<ApplicationDbContext> options
