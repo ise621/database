@@ -208,9 +208,7 @@ function Page() {
         if (error) {
           // TODO Handle properly.
           console.log(error);
-          messageApi.error(
-            error.graphQLErrors.map((error) => error.message)
-          );
+          messageApi.error(error.graphQLErrors.map((error) => error.message));
         }
         // TODO Casting to `CalorimetricData` is wrong and error prone!
         setData((data?.allCalorimetricData?.nodes || []) as CalorimetricData[]);
@@ -258,28 +256,28 @@ function Page() {
         loading={filtering}
         columns={[
           {
-            ...getUuidColumnProps<typeof data[0]>(
+            ...getUuidColumnProps<(typeof data)[0]>(
               onFilterTextChange,
               (x) => filterText.get(x),
               (_uuid) => "/" // TODO Link somewhere useful!
             ),
           },
           {
-            ...getNameColumnProps<typeof data[0]>(onFilterTextChange, (x) =>
+            ...getNameColumnProps<(typeof data)[0]>(onFilterTextChange, (x) =>
               filterText.get(x)
             ),
           },
           {
-            ...getDescriptionColumnProps<typeof data[0]>(
+            ...getDescriptionColumnProps<(typeof data)[0]>(
               onFilterTextChange,
               (x) => filterText.get(x)
             ),
           },
           {
-            ...getTimestampColumnProps<typeof data[0]>(),
+            ...getTimestampColumnProps<(typeof data)[0]>(),
           },
           {
-            ...getComponentUuidColumnProps<typeof data[0]>(
+            ...getComponentUuidColumnProps<(typeof data)[0]>(
               onFilterTextChange,
               (x) => filterText.get(x)
             ),
@@ -295,13 +293,13 @@ function Page() {
           //   ),
           // },
           {
-            ...getAppliedMethodColumnProps<typeof data[0]>(
+            ...getAppliedMethodColumnProps<(typeof data)[0]>(
               onFilterTextChange,
               (x) => filterText.get(x)
             ),
           },
           {
-            ...getResourceTreeColumnProps<typeof data[0]>(
+            ...getResourceTreeColumnProps<(typeof data)[0]>(
               onFilterTextChange,
               (x) => filterText.get(x)
             ),

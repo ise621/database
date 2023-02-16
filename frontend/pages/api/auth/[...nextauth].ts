@@ -147,8 +147,7 @@ const options = {
       name: "Metabase",
       type: "oauth",
       version: "2.0",
-      scope:
-        "openid email profile roles api:read api:write offline_access",
+      scope: "openid email profile roles api:read api:write offline_access",
       params: { grant_type: "authorization_code" },
       authorizationParams: {},
 
@@ -267,7 +266,7 @@ const options = {
      */
     async session(
       _session: {
-        user: { name?: string; email?: string; };
+        user: { name?: string; email?: string };
         accessToken?: string;
         expires: number;
       },
