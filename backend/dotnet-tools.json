@@ -73,6 +73,12 @@
       "commands": [
         "dotnet-project-licenses"
       ]
+    },
+    "strawberryshake.tools": {
+      "version": "13.0.2",
+      "commands": [
+        "dotnet-graphql"
+      ]
     }
   }
 }
