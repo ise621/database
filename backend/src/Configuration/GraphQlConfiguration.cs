@@ -96,6 +96,7 @@ namespace Database.Configuration
                   // Scalar Types
                   .AddType(new UuidType("Uuid", defaultFormat: 'D')) // https://chillicream.com/docs/hotchocolate/defining-a-schema/scalars#uuid-type
                   .AddType(new UrlType("Url"))
+                  .AddType(new JsonType("Any", BindingBehavior.Implicit)) // https://chillicream.com/blog/2023/02/08/new-in-hot-chocolate-13#json-scalar
                   .AddType(new GraphQl.LocaleType())
                   // Object Types
                   .AddType<GraphQl.CalorimetricDataX.CalorimetricDataType>()
@@ -144,7 +145,7 @@ namespace Database.Configuration
 
         // TODO Overriding and changing type names in this way is _super_ error-prone. However, using `descriptor.Configure<...FilterInputType<T>>(x => x.Name(name))` does not work. Why?
         // For the base implementation see https://github.com/ChilliCream/hotchocolate/blob/f0dff93a14cb7ddecc7b3a0530a687a5bc4bad71/src/HotChocolate/Data/src/Data/Filters/Convention/FilterConvention.cs#L129
-        public override NameString GetTypeName(Type runtimeType)
+        public override string GetTypeName(Type runtimeType)
         {
             var nameString = base.GetTypeName(runtimeType);
             if (!nameString.HasValue)
