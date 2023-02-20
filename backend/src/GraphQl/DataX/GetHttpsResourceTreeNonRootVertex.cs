@@ -7,7 +7,7 @@ namespace Database.GraphQl.DataX
     public sealed class GetHttpsResourceTreeNonRootVertex
     : IGetHttpsResourceTreeVertex
     {
-        [GraphQLType(typeof(NonNullType<IdType>))]
+        [GraphQLType<NonNullType<IdType>>]
         public string VertexId
         {
             get => Data.GetHttpsResource.ConstructVertexId(Value.Id);
@@ -15,7 +15,7 @@ namespace Database.GraphQl.DataX
 
         public Data.GetHttpsResource Value { get; }
 
-        [GraphQLType(typeof(NonNullType<IdType>))]
+        [GraphQLType<NonNullType<IdType>>]
         public string ParentId
         {
             get => Data.GetHttpsResource.ConstructVertexId(

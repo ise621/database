@@ -19,8 +19,8 @@ namespace Database.GraphQl.HygrothermalDataX
         [UseSorting]
         public IQueryable<Data.HygrothermalData> GetAllHygrothermalData(
             DateTime? timestamp,
-            [GraphQLType(typeof(LocaleType))] string? locale,
-            [ScopedService] Data.ApplicationDbContext context
+            [GraphQLType<LocaleType>] string? locale,
+            Data.ApplicationDbContext context
             )
         {
             // TODO Use `timestamp` and `locale`.
@@ -30,7 +30,7 @@ namespace Database.GraphQl.HygrothermalDataX
         public Task<Data.HygrothermalData?> GetHygrothermalDataAsync(
             Guid id,
             DateTime? timestamp,
-            [GraphQLType(typeof(LocaleType))] string? locale,
+            [GraphQLType<LocaleType>] string? locale,
             HygrothermalDataByIdDataLoader byId,
             CancellationToken cancellationToken
             )

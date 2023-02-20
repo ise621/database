@@ -88,9 +88,7 @@ namespace Database
         {
             try
             {
-                using var dbContext =
-                 services.GetRequiredService<IDbContextFactory<Data.ApplicationDbContext>>()
-                 .CreateDbContext();
+                using var dbContext = services.GetRequiredService<Data.ApplicationDbContext>();
                 if (dbContext.Database.EnsureCreated())
                 {
                     await Data.DbSeeder.DoAsync(services).ConfigureAwait(false);

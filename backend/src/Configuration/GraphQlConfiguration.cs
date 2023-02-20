@@ -24,6 +24,8 @@ namespace Database.Configuration
             )
         {
             services.AddGraphQLServer()
+            // Database
+            .RegisterDbContext<Data.ApplicationDbContext>(DbContextKind.Pooled)
             // Types
             .AddType<GraphQl.Common.OpenEndedDateTimeRangeType>()
             // Extensions
@@ -148,10 +150,6 @@ namespace Database.Configuration
         public override string GetTypeName(Type runtimeType)
         {
             var nameString = base.GetTypeName(runtimeType);
-            if (!nameString.HasValue)
-            {
-                return nameString;
-            }
             return
                 new Regex(@"IData").Replace(
                     new Regex(@"Double").Replace(
@@ -162,7 +160,7 @@ namespace Database.Configuration
                                         new Regex(@"^Comparable").Replace(
                                             new Regex(@"FilterInput$").Replace(
                                                 new Regex(@"OperationFilterInput").Replace(
-                                                    nameString.Value,
+                                                    nameString,
                                                     "PropositionInput"
                                                 ),
                                                 "PropositionInput"

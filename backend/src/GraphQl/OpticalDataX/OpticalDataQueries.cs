@@ -19,8 +19,8 @@ namespace Database.GraphQl.OpticalDataX
         [UseSorting]
         public IQueryable<Data.OpticalData> GetAllOpticalData(
             DateTime? timestamp,
-            [GraphQLType(typeof(LocaleType))] string? locale,
-            [ScopedService] Data.ApplicationDbContext context
+            [GraphQLType<LocaleType>] string? locale,
+            Data.ApplicationDbContext context
             )
         {
             // TODO Use `timestamp` and `locale`.
@@ -30,7 +30,7 @@ namespace Database.GraphQl.OpticalDataX
         public Task<Data.OpticalData?> GetOpticalDataAsync(
             Guid id,
             DateTime? timestamp,
-            [GraphQLType(typeof(LocaleType))] string? locale,
+            [GraphQLType<LocaleType>] string? locale,
             OpticalDataByIdDataLoader byId,
             CancellationToken cancellationToken
             )

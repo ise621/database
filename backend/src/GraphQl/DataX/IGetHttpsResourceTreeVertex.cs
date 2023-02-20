@@ -6,7 +6,7 @@ namespace Database.GraphQl.DataX
     [InterfaceType("GetHttpsResourceTreeVertex")]
     public interface IGetHttpsResourceTreeVertex
     {
-        [GraphQLType(typeof(IdType))]
+        [GraphQLType<IdType>]
         string VertexId { get; }
 
         Data.GetHttpsResource Value { get; }

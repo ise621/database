@@ -8,7 +8,7 @@ namespace Database.GraphQl.PhotovoltaicDataX
     public record CreatePhotovoltaicDataInput(
           string AccessToken,
           // TODO Why does specifying the type with an attribute not work here?
-          [GraphQLType(typeof(NonNullType<LocaleType>))] string Locale,
+          [GraphQLType<NonNullType<LocaleType>>] string Locale,
           Guid ComponentId,
           string? Name,
           string? Description,

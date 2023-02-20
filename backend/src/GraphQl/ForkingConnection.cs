@@ -29,8 +29,8 @@ namespace Database.GraphQl
         }
 
         public Task<IEnumerable<TEdge>> GetEdgesAsync(
-            [DataLoader] TSomeAssociationsByAssociateIdDataLoader someDataLoader,
-            [DataLoader] TOtherAssociationsByAssociateIdDataLoader otherDataLoader,
+            TSomeAssociationsByAssociateIdDataLoader someDataLoader,
+            TOtherAssociationsByAssociateIdDataLoader otherDataLoader,
             CancellationToken cancellationToken
             )
         {
