@@ -24,7 +24,7 @@ namespace Database.Configuration
             )
         {
             services.AddGraphQLServer()
-            // Database
+            // Services https://chillicream.com/docs/hotchocolate/v13/server/dependency-injection#registerservice
             .RegisterDbContext<Data.ApplicationDbContext>(DbContextKind.Pooled)
             // Types
             .AddType<GraphQl.Common.OpenEndedDateTimeRangeType>()
