@@ -19,7 +19,7 @@ namespace Database.GraphQl
         }
 
         public async Task<TNode> GetNodeAsync(
-            [DataLoader] TNodeByIdDataLoader byId,
+            TNodeByIdDataLoader byId,
             CancellationToken cancellationToken
             )
         {

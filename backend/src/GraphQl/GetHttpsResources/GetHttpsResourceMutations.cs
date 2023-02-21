@@ -20,7 +20,7 @@ namespace Database.GraphQl.GetHttpsResources
             CreateGetHttpsResourceInput input,
             // [GlobalState(nameof(ClaimsPrincipal))] ClaimsPrincipal claimsPrincipal,
             // [ScopedService] UserManager<Data.User> userManager,
-            [ScopedService] Data.ApplicationDbContext context,
+            Data.ApplicationDbContext context,
             [Service] AppSettings appSettings,
             CancellationToken cancellationToken
         )

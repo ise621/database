@@ -17,7 +17,7 @@ namespace Database.GraphQl.GetHttpsResources
         [UseFiltering]
         [UseSorting]
         public IQueryable<Data.GetHttpsResource> GetGetHttpsResources(
-            [ScopedService] Data.ApplicationDbContext context
+            Data.ApplicationDbContext context
             )
         {
             return context.GetHttpsResources;

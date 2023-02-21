@@ -12,8 +12,8 @@ interface Data {
   description: String
   locale: Locale!
   name: String
-  resourceTree: GetHttpsResourceTree!
   resources: [GetHttpsResource!]!
+  resourceTree: GetHttpsResourceTree!
   timestamp: DateTime!
   uuid: Uuid!
   warnings: [String!]!
@@ -41,11 +41,11 @@ type CalorimetricData implements Node & Data {
   id: ID!
   locale: Locale!
   name: String
-  resourceTree: GetHttpsResourceTree!
   resources: [GetHttpsResource!]!
+  resourceTree: GetHttpsResourceTree!
   timestamp: DateTime!
-  uValues: [Float!]!
   uuid: Uuid!
+  uValues: [Float!]!
   warnings: [String!]!
 }
 
@@ -57,6 +57,7 @@ type CalorimetricDataConnection {
   nodes: [CalorimetricData!]
   "Information to aid in pagination."
   pageInfo: PageInfo!
+  "Identifies the total count of items in the connection."
   totalCount: Int!
 }
 
@@ -135,10 +136,10 @@ type CreatePhotovoltaicDataPayload {
 }
 
 type CrossDatabaseDataReference {
+  databaseId: Uuid!
   dataId: Uuid!
   dataKind: DataKind!
   dataTimestamp: DateTime!
-  databaseId: Uuid!
 }
 
 type DataApproval {
@@ -158,6 +159,7 @@ type DataConnection {
   nodes: [Data!]
   "Information to aid in pagination."
   pageInfo: PageInfo!
+  "Identifies the total count of items in the connection."
   totalCount: Int!
 }
 
@@ -171,7 +173,6 @@ type DataEdge {
 
 type FileMetaInformation {
   dataFormatId: Uuid!
-  formatId: Uuid!
   path: [String!]!
 }
 
@@ -182,7 +183,6 @@ type GetHttpsResource implements Node {
   data: Data
   dataFormatId: Uuid!
   description: String!
-  formatId: Uuid!
   hashValue: String!
   id: ID!
   locator: Url!
@@ -198,6 +198,7 @@ type GetHttpsResourceConnection {
   nodes: [GetHttpsResource!]
   "Information to aid in pagination."
   pageInfo: PageInfo!
+  "Identifies the total count of items in the connection."
   totalCount: Int!
 }
 
@@ -236,8 +237,8 @@ type HygrothermalData implements Node & Data {
   id: ID!
   locale: Locale!
   name: String
-  resourceTree: GetHttpsResourceTree!
   resources: [GetHttpsResource!]!
+  resourceTree: GetHttpsResourceTree!
   timestamp: DateTime!
   uuid: Uuid!
   warnings: [String!]!
@@ -251,6 +252,7 @@ type HygrothermalDataConnection {
   nodes: [HygrothermalData!]
   "Information to aid in pagination."
   pageInfo: PageInfo!
+  "Identifies the total count of items in the connection."
   totalCount: Int!
 }
 
@@ -263,19 +265,11 @@ type HygrothermalDataEdge {
 }
 
 type Mutation {
-  createCalorimetricData(
-    input: CreateCalorimetricDataInput!
-  ): CreateCalorimetricDataPayload!
-  createGetHttpsResource(
-    input: CreateGetHttpsResourceInput!
-  ): CreateGetHttpsResourcePayload!
-  createHygrothermalData(
-    input: CreateHygrothermalDataInput!
-  ): CreateHygrothermalDataPayload!
+  createCalorimetricData(input: CreateCalorimetricDataInput!): CreateCalorimetricDataPayload!
+  createGetHttpsResource(input: CreateGetHttpsResourceInput!): CreateGetHttpsResourcePayload!
+  createHygrothermalData(input: CreateHygrothermalDataInput!): CreateHygrothermalDataPayload!
   createOpticalData(input: CreateOpticalDataInput!): CreateOpticalDataPayload!
-  createPhotovoltaicData(
-    input: CreatePhotovoltaicDataInput!
-  ): CreatePhotovoltaicDataPayload!
+  createPhotovoltaicData(input: CreatePhotovoltaicDataInput!): CreatePhotovoltaicDataPayload!
 }
 
 type NamedMethodArgument {
@@ -310,8 +304,8 @@ type OpticalData implements Node & Data {
   nearnormalHemisphericalSolarTransmittances: [Float!]!
   nearnormalHemisphericalVisibleReflectances: [Float!]!
   nearnormalHemisphericalVisibleTransmittances: [Float!]!
-  resourceTree: GetHttpsResourceTree!
   resources: [GetHttpsResource!]!
+  resourceTree: GetHttpsResourceTree!
   timestamp: DateTime!
   uuid: Uuid!
   warnings: [String!]!
@@ -325,6 +319,7 @@ type OpticalDataConnection {
   nodes: [OpticalData!]
   "Information to aid in pagination."
   pageInfo: PageInfo!
+  "Identifies the total count of items in the connection."
   totalCount: Int!
 }
 
@@ -358,8 +353,8 @@ type PhotovoltaicData implements Node & Data {
   id: ID!
   locale: Locale!
   name: String
-  resourceTree: GetHttpsResourceTree!
   resources: [GetHttpsResource!]!
+  resourceTree: GetHttpsResourceTree!
   timestamp: DateTime!
   uuid: Uuid!
   warnings: [String!]!
@@ -373,6 +368,7 @@ type PhotovoltaicDataConnection {
   nodes: [PhotovoltaicData!]
   "Information to aid in pagination."
   pageInfo: PageInfo!
+  "Identifies the total count of items in the connection."
   totalCount: Int!
 }
 
@@ -385,110 +381,22 @@ type PhotovoltaicDataEdge {
 }
 
 type Query {
-  allCalorimetricData(
-    "Returns the elements in the list that come after the specified cursor."
-    after: String
-    "Returns the elements in the list that come before the specified cursor."
-    before: String
-    "Returns the first _n_ elements from the list."
-    first: Int
-    "Returns the last _n_ elements from the list."
-    last: Int
-    locale: Locale
-    order: [CalorimetricDataSortInput!]
-    timestamp: DateTime
-    where: CalorimetricDataPropositionInput
-  ): CalorimetricDataConnection
-  allData(
-    "Returns the elements in the list that come after the specified cursor."
-    after: String
-    "Returns the elements in the list that come before the specified cursor."
-    before: String
-    "Returns the first _n_ elements from the list."
-    first: Int
-    "Returns the last _n_ elements from the list."
-    last: Int
-    locale: Locale
-    order: [IDataSortInput!]
-    timestamp: DateTime
-    where: DataPropositionInput
-  ): DataConnection
-  allHygrothermalData(
-    "Returns the elements in the list that come after the specified cursor."
-    after: String
-    "Returns the elements in the list that come before the specified cursor."
-    before: String
-    "Returns the first _n_ elements from the list."
-    first: Int
-    "Returns the last _n_ elements from the list."
-    last: Int
-    locale: Locale
-    order: [HygrothermalDataSortInput!]
-    timestamp: DateTime
-    where: HygrothermalDataPropositionInput
-  ): HygrothermalDataConnection
-  allOpticalData(
-    "Returns the elements in the list that come after the specified cursor."
-    after: String
-    "Returns the elements in the list that come before the specified cursor."
-    before: String
-    "Returns the first _n_ elements from the list."
-    first: Int
-    "Returns the last _n_ elements from the list."
-    last: Int
-    locale: Locale
-    order: [OpticalDataSortInput!]
-    timestamp: DateTime
-    where: OpticalDataPropositionInput
-  ): OpticalDataConnection
-  allPhotovoltaicData(
-    "Returns the elements in the list that come after the specified cursor."
-    after: String
-    "Returns the elements in the list that come before the specified cursor."
-    before: String
-    "Returns the first _n_ elements from the list."
-    first: Int
-    "Returns the last _n_ elements from the list."
-    last: Int
-    locale: Locale
-    order: [PhotovoltaicDataSortInput!]
-    timestamp: DateTime
-    where: PhotovoltaicDataPropositionInput
-  ): PhotovoltaicDataConnection
-  calorimetricData(
-    id: Uuid!
-    locale: Locale
-    timestamp: DateTime
-  ): CalorimetricData
-  data(id: Uuid!, locale: Locale, timestamp: DateTime): Data
+  allCalorimetricData("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int locale: Locale order: [CalorimetricDataSortInput!] timestamp: DateTime where: CalorimetricDataPropositionInput): CalorimetricDataConnection
+  allData("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int locale: Locale order: [IDataSortInput!] timestamp: DateTime where: DataPropositionInput): DataConnection
+  allHygrothermalData("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int locale: Locale order: [HygrothermalDataSortInput!] timestamp: DateTime where: HygrothermalDataPropositionInput): HygrothermalDataConnection
+  allOpticalData("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int locale: Locale order: [OpticalDataSortInput!] timestamp: DateTime where: OpticalDataPropositionInput): OpticalDataConnection
+  allPhotovoltaicData("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int locale: Locale order: [PhotovoltaicDataSortInput!] timestamp: DateTime where: PhotovoltaicDataPropositionInput): PhotovoltaicDataConnection
+  calorimetricData(id: Uuid! locale: Locale timestamp: DateTime): CalorimetricData
+  data(id: Uuid! locale: Locale timestamp: DateTime): Data
   getHttpsResource(id: Uuid!): GetHttpsResource
-  getHttpsResources(
-    "Returns the elements in the list that come after the specified cursor."
-    after: String
-    "Returns the elements in the list that come before the specified cursor."
-    before: String
-    "Returns the first _n_ elements from the list."
-    first: Int
-    "Returns the last _n_ elements from the list."
-    last: Int
-    order: [GetHttpsResourceSortInput!]
-    where: GetHttpsResourcePropositionInput
-  ): GetHttpsResourceConnection
-  hygrothermalData(
-    id: Uuid!
-    locale: Locale
-    timestamp: DateTime
-  ): HygrothermalData
+  getHttpsResources("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int order: [GetHttpsResourceSortInput!] where: GetHttpsResourcePropositionInput): GetHttpsResourceConnection
+  hygrothermalData(id: Uuid! locale: Locale timestamp: DateTime): HygrothermalData
   "Fetches an object given its ID."
   node("ID of the object." id: ID!): Node
   "Lookup nodes by a list of IDs."
   nodes("The list of node IDs." ids: [ID!]!): [Node]!
-  opticalData(id: Uuid!, locale: Locale, timestamp: DateTime): OpticalData
-  photovoltaicData(
-    id: Uuid!
-    locale: Locale
-    timestamp: DateTime
-  ): PhotovoltaicData
+  opticalData(id: Uuid! locale: Locale timestamp: DateTime): OpticalData
+  photovoltaicData(id: Uuid! locale: Locale timestamp: DateTime): PhotovoltaicData
 }
 
 type ToTreeVertexAppliedConversionMethod {
@@ -542,7 +450,7 @@ input CalorimetricDataSortInput {
   createdAt: SortEnumType
   appliedMethod: AppliedMethodSortInput
   id: SortEnumType
-  xmin: SortEnumType
+  version: SortEnumType
 }
 
 input CielabColorInput {
@@ -637,10 +545,10 @@ input CreatePhotovoltaicDataInput {
 }
 
 input CrossDatabaseDataReferenceInput {
+  databaseId: Uuid!
   dataId: Uuid!
   dataKind: DataKind!
   dataTimestamp: DateTime!
-  databaseId: Uuid!
 }
 
 input CrossDatabaseDataReferencePropositionInput {
@@ -717,7 +625,6 @@ input FileMetaInformationPropositionInput {
   or: [FileMetaInformationPropositionInput!]
   path: StringsPropositionInput
   dataFormatId: UuidPropositionInput
-  formatId: UuidPropositionInput
 }
 
 input FloatPropositionInput {
@@ -758,7 +665,6 @@ input GetHttpsResourceSortInput {
   description: SortEnumType
   hashValue: SortEnumType
   dataFormatId: SortEnumType
-  formatId: SortEnumType
   dataId: SortEnumType
   data: IDataSortInput
   calorimetricDataId: SortEnumType
@@ -773,7 +679,7 @@ input GetHttpsResourceSortInput {
   appliedConversionMethod: ToTreeVertexAppliedConversionMethodSortInput
   parent: GetHttpsResourceSortInput
   id: SortEnumType
-  xmin: SortEnumType
+  version: SortEnumType
 }
 
 input HygrothermalDataPropositionInput {
@@ -801,7 +707,7 @@ input HygrothermalDataSortInput {
   createdAt: SortEnumType
   appliedMethod: AppliedMethodSortInput
   id: SortEnumType
-  xmin: SortEnumType
+  version: SortEnumType
 }
 
 input IDataSortInput {
@@ -858,6 +764,7 @@ input ListNamedMethodArgumentFilterTypePropositionInput {
 
 input NamedMethodArgumentInput {
   name: String!
+  value: Any!
 }
 
 input NamedMethodArgumentPropositionInput {
@@ -923,7 +830,7 @@ input OpticalDataSortInput {
   createdAt: SortEnumType
   appliedMethod: AppliedMethodSortInput
   id: SortEnumType
-  xmin: SortEnumType
+  version: SortEnumType
 }
 
 input PhotovoltaicDataPropositionInput {
@@ -951,7 +858,7 @@ input PhotovoltaicDataSortInput {
   createdAt: SortEnumType
   appliedMethod: AppliedMethodSortInput
   id: SortEnumType
-  xmin: SortEnumType
+  version: SortEnumType
 }
 
 input RootGetHttpsResourceInput {
@@ -1019,6 +926,7 @@ input UuidPropositionInput {
 enum ApplyPolicy {
   BEFORE_RESOLVER
   AFTER_RESOLVER
+  VALIDATION
 }
 
 enum CreateCalorimetricDataErrorCode {
@@ -1058,43 +966,15 @@ enum SortEnumType {
   DESC
 }
 
-directive @authorize(
-  "Defines when when the resolver shall be executed.By default the resolver is executed after the policy has determined that the current user is allowed to access the field."
-  apply: ApplyPolicy! = BEFORE_RESOLVER
-  "The name of the authorization policy that determines access to the annotated resource."
-  policy: String
-  "Roles that are allowed to access the annotated resource."
-  roles: [String!]
-) repeatable on SCHEMA | OBJECT | FIELD_DEFINITION
-
-"The `@defer` directive may be provided for fragment spreads and inline fragments to inform the executor to delay the execution of the current fragment to indicate deprioritization of the current fragment. A query with `@defer` directive will cause the request to potentially return multiple responses, where non-deferred data is delivered in the initial response and data deferred is delivered in a subsequent response. `@include` and `@skip` take precedence over `@defer`."
-directive @defer(
-  "Deferred when true."
-  if: Boolean
-  "If this argument label has a value other than null, it will be passed on to the result of this defer directive. This label is intended to give client applications a way to identify to which fragment a deferred result belongs to."
-  label: String
-) on FRAGMENT_SPREAD | INLINE_FRAGMENT
+directive @authorize("Defines when when the authorize directive shall be applied.By default the authorize directives are applied during the validation phase." apply: ApplyPolicy! = VALIDATION "The name of the authorization policy that determines access to the annotated resource." policy: String "Roles that are allowed to access the annotated resource." roles: [String!]) repeatable on OBJECT | FIELD_DEFINITION
 
 "The `@specifiedBy` directive is used within the type system definition language to provide a URL for specifying the behavior of custom scalar definitions."
-directive @specifiedBy(
-  "The specifiedBy URL points to a human-readable specification. This field will only read a result for scalar types."
-  url: String!
-) on SCALAR
-
-"The `@stream` directive may be provided for a field of `List` type so that the backend can leverage technology such as asynchronous iterators to provide a partial list in the initial response, and additional list items in subsequent responses. `@include` and `@skip` take precedence over `@stream`."
-directive @stream(
-  "Streamed when true."
-  if: Boolean
-  "The initial elements that shall be send down to the consumer."
-  initialCount: Int! = 0
-  "If this argument label has a value other than null, it will be passed on to the result of this stream directive. This label is intended to give client applications a way to identify to which fragment a streamed result belongs to."
-  label: String
-) on FIELD
+directive @specifiedBy("The specifiedBy URL points to a human-readable specification. This field will only read a result for scalar types." url: String!) on SCALAR
 
 scalar Any
 
 "The `DateTime` scalar represents an ISO-8601 compliant date time type."
-scalar DateTime @specifiedBy(url: "https://www.graphql-scalars.com/date-time")
+scalar DateTime @specifiedBy(url: "https:\/\/www.graphql-scalars.com\/date-time")
 
 "BCP 47 compliant Language Tag string"
 scalar Locale

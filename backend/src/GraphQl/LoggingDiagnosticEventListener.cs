@@ -52,12 +52,12 @@ namespace Database.GraphQl
 
         public override void SubscriptionEventError(SubscriptionEventContext context, Exception exception)
         {
-            _logger.LogError(exception, $"During execution of the subscription operation {context.Subscription.Operation.Print()} the exception {exception} occurred.");
+            _logger.LogError(exception, $"During execution of the subscription operation {context.Subscription.Operation} the exception {exception} occurred.");
         }
 
         public override void SubscriptionTransportError(ISubscription subscription, Exception exception)
         {
-            _logger.LogError(exception, $"During execution of the subscription operation {subscription.Operation.Print()} the exception {exception} occurred.");
+            _logger.LogError(exception, $"During execution of the subscription operation {subscription.Operation} the exception {exception} occurred.");
         }
 
         public override void SyntaxError(

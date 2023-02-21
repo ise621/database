@@ -24,8 +24,8 @@ namespace Database.GraphQl.DataX
         [UseSorting]
         public IEnumerable<Data.IData> GetAllData(
             DateTime? timestamp,
-            [GraphQLType(typeof(LocaleType))] string? locale,
-            [ScopedService] Data.ApplicationDbContext context
+            [GraphQLType<LocaleType>] string? locale,
+            Data.ApplicationDbContext context
             )
         {
             // TODO Use `timestamp` and `locale`.
@@ -44,7 +44,7 @@ namespace Database.GraphQl.DataX
         public async Task<Data.IData?> GetDataAsync(
             Guid id,
             DateTime? timestamp,
-            [GraphQLType(typeof(LocaleType))] string? locale,
+            [GraphQLType<LocaleType>] string? locale,
             CalorimetricDataByIdDataLoader calorimetricDataById,
             HygrothermalDataByIdDataLoader hygrothermalDataById,
             OpticalDataByIdDataLoader opticalDataById,

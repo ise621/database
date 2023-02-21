@@ -19,8 +19,8 @@ namespace Database.GraphQl.PhotovoltaicDataX
         [UseSorting]
         public IQueryable<Data.PhotovoltaicData> GetAllPhotovoltaicData(
             DateTime? timestamp,
-            [GraphQLType(typeof(LocaleType))] string? locale,
-            [ScopedService] Data.ApplicationDbContext context
+            [GraphQLType<LocaleType>] string? locale,
+            Data.ApplicationDbContext context
             )
         {
             // TODO Use `timestamp` and `locale`.
@@ -30,7 +30,7 @@ namespace Database.GraphQl.PhotovoltaicDataX
         public Task<Data.PhotovoltaicData?> GetPhotovoltaicDataAsync(
             Guid id,
             DateTime? timestamp,
-            [GraphQLType(typeof(LocaleType))] string? locale,
+            [GraphQLType<LocaleType>] string? locale,
             PhotovoltaicDataByIdDataLoader byId,
             CancellationToken cancellationToken
             )

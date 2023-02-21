@@ -19,8 +19,8 @@ namespace Database.GraphQl.CalorimetricDataX
         [UseSorting]
         public IQueryable<Data.CalorimetricData> GetAllCalorimetricData(
             DateTime? timestamp,
-            [GraphQLType(typeof(LocaleType))] string? locale,
-            [ScopedService] Data.ApplicationDbContext context
+            [GraphQLType<LocaleType>] string? locale,
+            Data.ApplicationDbContext context
             )
         {
             // TODO Use `timestamp` and `locale`.
@@ -30,7 +30,7 @@ namespace Database.GraphQl.CalorimetricDataX
         public Task<Data.CalorimetricData?> GetCalorimetricDataAsync(
             Guid id,
             DateTime? timestamp,
-            [GraphQLType(typeof(LocaleType))] string? locale,
+            [GraphQLType<LocaleType>] string? locale,
             CalorimetricDataByIdDataLoader byId,
             CancellationToken cancellationToken
             )
