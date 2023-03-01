@@ -13,7 +13,6 @@ namespace Database.GraphQl.PhotovoltaicDataX
     [ExtendObjectType(nameof(Mutation))]
     public sealed class PhotovoltaicDataMutations
     {
-        [UseDbContext(typeof(Data.ApplicationDbContext))]
         // [UseUserManager]
         // [Authorize(Policy = Configuration.AuthConfiguration.WritePolicy)]
         public async Task<CreatePhotovoltaicDataPayload> CreatePhotovoltaicDataAsync(

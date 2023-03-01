@@ -13,7 +13,6 @@ namespace Database.GraphQl.HygrothermalDataX
     [ExtendObjectType(nameof(Mutation))]
     public sealed class HygrothermalDataMutations
     {
-        [UseDbContext(typeof(Data.ApplicationDbContext))]
         // [UseUserManager]
         // [Authorize(Policy = Configuration.AuthConfiguration.WritePolicy)]
         public async Task<CreateHygrothermalDataPayload> CreateHygrothermalDataAsync(

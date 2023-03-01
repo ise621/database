@@ -17,7 +17,6 @@ namespace Database.GraphQl.DataX
     [ExtendObjectType(nameof(Query))]
     public sealed class DataQueries
     {
-        [UseDbContext(typeof(Data.ApplicationDbContext))]
         [UsePaging]
         // [UseProjection] // We disabled projections because when requesting `id` all results had the same `id` and when also requesting `uuid`, the latter was always the empty UUID `000...`.
         [UseFiltering] // TODO Filtering does not work with unions.

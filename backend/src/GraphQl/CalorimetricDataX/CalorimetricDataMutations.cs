@@ -13,7 +13,6 @@ namespace Database.GraphQl.CalorimetricDataX
     [ExtendObjectType(nameof(Mutation))]
     public sealed class CalorimetricDataMutations
     {
-        [UseDbContext(typeof(Data.ApplicationDbContext))]
         // [UseUserManager]
         // [Authorize(Policy = Configuration.AuthConfiguration.WritePolicy)]
         public async Task<CreateCalorimetricDataPayload> CreateCalorimetricDataAsync(

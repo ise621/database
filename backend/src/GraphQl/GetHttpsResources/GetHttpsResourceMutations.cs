@@ -13,7 +13,6 @@ namespace Database.GraphQl.GetHttpsResources
     [ExtendObjectType(nameof(Mutation))]
     public sealed class GetHttpsResourceMutations
     {
-        [UseDbContext(typeof(Data.ApplicationDbContext))]
         // [UseUserManager]
         // [Authorize(Policy = Configuration.AuthConfiguration.WritePolicy)]
         public async Task<CreateGetHttpsResourcePayload> CreateGetHttpsResourceAsync(

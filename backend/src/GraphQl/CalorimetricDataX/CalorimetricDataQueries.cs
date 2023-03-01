@@ -12,7 +12,6 @@ namespace Database.GraphQl.CalorimetricDataX
     [ExtendObjectType(nameof(Query))]
     public sealed class CalorimetricDataQueries
     {
-        [UseDbContext(typeof(Data.ApplicationDbContext))]
         [UsePaging]
         // [UseProjection] // We disabled projections because when requesting `id` all results had the same `id` and when also requesting `uuid`, the latter was always the empty UUID `000...`.
         [UseFiltering]

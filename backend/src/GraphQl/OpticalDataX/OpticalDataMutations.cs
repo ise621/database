@@ -13,7 +13,6 @@ namespace Database.GraphQl.OpticalDataX
     [ExtendObjectType(nameof(Mutation))]
     public sealed class OpticalDataMutations
     {
-        [UseDbContext(typeof(Data.ApplicationDbContext))]
         // [UseUserManager]
         // [Authorize(Policy = Configuration.AuthConfiguration.WritePolicy)]
         public async Task<CreateOpticalDataPayload> CreateOpticalDataAsync(
