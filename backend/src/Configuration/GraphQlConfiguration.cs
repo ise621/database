@@ -23,8 +23,11 @@ namespace Database.Configuration
             IWebHostEnvironment environment
             )
         {
-            services.AddGraphQLServer()
-            // Services https://chillicream.com/docs/hotchocolate/v13/server/dependency-injection#registerservice
+            services
+            .AddMemoryCache()
+            .AddSha256DocumentHashProvider(HotChocolate.Language.HashFormat.Hex)
+            .AddGraphQLServer()
+            // Services https://chillicream.com/docs/hotchocolate/v13/integrations/entity-framework#registerdbcontext
             .RegisterDbContext<Data.ApplicationDbContext>(DbContextKind.Pooled)
             // Types
             .AddType<GraphQl.Common.OpenEndedDateTimeRangeType>()
@@ -120,7 +123,9 @@ namespace Database.Configuration
                           // TODO I actually want to infer connection names from fields (which is the default in HotChocolate). However, the current `database.graphql` schema that I hand-wrote still infers connection names from types.
                           InferConnectionNameFromField = false
                       }
-                  );
+                  )
+                  .UseAutomaticPersistedQueryPipeline()
+                  .AddInMemoryQueryStorage();
         }
     }
 
