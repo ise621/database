@@ -12,6 +12,7 @@
     "start": "next start -p 8080"
   },
   "dependencies": {
+    "@ant-design/pro-layout": "^7.10.3",
     "@apollo/client": "^3.7.0",
     "antd": "^5.0",
     "crypto-hash": "^2.0.1",

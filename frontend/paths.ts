@@ -4,9 +4,21 @@ export default {
   dataProtectionInformation: "/data-protection-information",
   data: "/data",
   calorimetricData: "/data/calorimetric",
+  calorimetricDatum(uuid: string) {
+    return `/data/calorimetric/${encodeURIComponent(uuid)}`;
+  },
   hygrothermalData: "/data/hygrothermal",
+  hygrothermalDatum(uuid: string) {
+    return `/data/hygrothermal/${encodeURIComponent(uuid)}`;
+  },
   opticalData: "/data/optical",
+  opticalDatum(uuid: string) {
+    return `/data/optical/${encodeURIComponent(uuid)}`;
+  },
   photovoltaicData: "/data/photovoltaic",
+  photovoltaicDatum(uuid: string) {
+    return `/data/photovoltaic/${encodeURIComponent(uuid)}`;
+  },
   createData: "/data/create",
   uploadFile: "/upload-file",
   metabase: {

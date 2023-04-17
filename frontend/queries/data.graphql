@@ -74,6 +74,12 @@ fragment DataPartial on Data {
   warnings
 }
 
+query Data($uuid: Uuid!) {
+  data(id: $uuid) {
+    ...DataPartial
+  }
+}
+
 query AllData($where: DataPropositionInput) {
   allData(where: $where) {
     nodes {
@@ -92,17 +98,11 @@ fragment CalorimetricDataPartial on CalorimetricData {
   uValues
 }
 
-query AllCalorimetricData($where: CalorimetricDataPropositionInput) {
-  allCalorimetricData(where: $where) {
-    nodes {
-      ...CalorimetricDataPartial
-    }
+query CalorimetricData($uuid: Uuid!) {
+  calorimetricData(id: $uuid) {
+    ...CalorimetricDataPartial
   }
 }
-
-# query HasCalorimetricData($where: DataPropositionInput!) {
-#   hasCalorimetricData(where: $where)
-# }
 
 query AllCalorimetricData($where: CalorimetricDataPropositionInput) {
   allCalorimetricData(where: $where) {
@@ -118,6 +118,12 @@ query AllCalorimetricData($where: CalorimetricDataPropositionInput) {
 
 fragment HygrothermalDataPartial on HygrothermalData {
   ...DataPartial
+}
+
+query HygrothermalData($uuid: Uuid!) {
+  hygrothermalData(id: $uuid) {
+    ...HygrothermalDataPartial
+  }
 }
 
 query AllHygrothermalData($where: HygrothermalDataPropositionInput) {
@@ -141,6 +147,12 @@ fragment OpticalDataPartial on OpticalData {
   nearnormalHemisphericalVisibleTransmittances
 }
 
+query OpticalData($uuid: Uuid!) {
+  opticalData(id: $uuid) {
+    ...OpticalDataPartial
+  }
+}
+
 query AllOpticalData($where: OpticalDataPropositionInput) {
   allOpticalData(where: $where) {
     nodes {
@@ -155,6 +167,12 @@ query AllOpticalData($where: OpticalDataPropositionInput) {
 
 fragment PhotovoltaicDataPartial on PhotovoltaicData {
   ...DataPartial
+}
+
+query PhotovoltaicData($uuid: Uuid!) {
+  photovoltaicData(id: $uuid) {
+    ...PhotovoltaicDataPartial
+  }
 }
 
 query AllPhotovoltaicData($where: PhotovoltaicDataPropositionInput) {

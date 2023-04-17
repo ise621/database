@@ -1,4 +1,4 @@
-import Layout from "../../components/Layout";
+import Layout from "../../../components/Layout";
 import {
   Table,
   message,
@@ -8,14 +8,14 @@ import {
   Typography,
   Descriptions,
 } from "antd";
-import { useAllOpticalDataQuery } from "../../queries/data.graphql";
+import { useAllCalorimetricDataQuery } from "../../../queries/data.graphql";
 import {
-  OpticalData,
+  CalorimetricData,
   Scalars,
-  OpticalDataPropositionInput,
-} from "../../__generated__/__types__";
+  CalorimetricDataPropositionInput,
+} from "../../../__generated__/__types__";
 import { useState } from "react";
-import { setMapValue } from "../../lib/freeTextFilter";
+import { setMapValue } from "../../../lib/freeTextFilter";
 import {
   getAppliedMethodColumnProps,
   getComponentUuidColumnProps,
@@ -24,15 +24,16 @@ import {
   getResourceTreeColumnProps,
   getTimestampColumnProps,
   getUuidColumnProps,
-} from "../../lib/table";
+} from "../../../lib/table";
 import {
   FloatPropositionComparator,
   FloatPropositionFormList,
-} from "../../components/FloatPropositionFormList";
+} from "../../../components/FloatPropositionFormList";
 import {
   UuidPropositionComparator,
   UuidPropositionFormList,
-} from "../../components/UuidPropositionFormList";
+} from "../../../components/UuidPropositionFormList";
+import paths from "../../../paths";
 
 const layout = {
   labelCol: { span: 8 },
@@ -49,8 +50,8 @@ enum Negator {
 
 const negateIfNecessary = (
   negator: Negator,
-  proposition: OpticalDataPropositionInput
-): OpticalDataPropositionInput => {
+  proposition: CalorimetricDataPropositionInput
+): CalorimetricDataPropositionInput => {
   switch (negator) {
     case Negator.Is:
       return proposition;
@@ -61,8 +62,8 @@ const negateIfNecessary = (
 };
 
 const conjunct = (
-  propositions: OpticalDataPropositionInput[]
-): OpticalDataPropositionInput => {
+  propositions: CalorimetricDataPropositionInput[]
+): CalorimetricDataPropositionInput => {
   if (propositions.length == 0) {
     return {};
   }
@@ -73,8 +74,8 @@ const conjunct = (
 };
 
 // const disjunct = (
-//   propositions: OpticalDataPropositionInput[]
-// ): OpticalDataPropositionInput => {
+//   propositions: CalorimetricDataPropositionInput[]
+// ): CalorimetricDataPropositionInput => {
 //   if (propositions.length == 0) {
 //     return {};
 //   }
@@ -91,12 +92,12 @@ function Page() {
     new Array<string>()
   );
   const [messageApi, contextHolder] = message.useMessage();
-  const [data, setData] = useState<OpticalData[]>([]);
+  const [data, setData] = useState<CalorimetricData[]>([]);
   // Using `skip` is inspired by https://github.com/apollographql/apollo-client/issues/5268#issuecomment-749501801
   // An alternative would be `useLazy...` as told in https://github.com/apollographql/apollo-client/issues/5268#issuecomment-527727653
   // `useLazy...` does not return a `Promise` though as `use...Query.refetch` does which is used below.
   // For error policies see https://www.apollographql.com/docs/react/v2/data/error-handling/#error-policies
-  const allOpticalDataQuery = useAllOpticalDataQuery({
+  const allCalorimetricDataQuery = useAllCalorimetricDataQuery({
     skip: true,
     errorPolicy: "all",
   });
@@ -107,11 +108,8 @@ function Page() {
   const onFinish = ({
     componentIds,
     dataFormatIds,
-    infraredEmittances,
-    nearnormalHemisphericalSolarReflectances,
-    nearnormalHemisphericalSolarTransmittances,
-    nearnormalHemisphericalVisibleReflectances,
-    nearnormalHemisphericalVisibleTransmittances,
+    gValues,
+    uValues,
   }: {
     componentIds:
       | {
@@ -127,35 +125,14 @@ function Page() {
           value: Scalars["Uuid"] | undefined;
         }[]
       | undefined;
-    infraredEmittances:
+    gValues:
       | {
           negator: Negator;
           comparator: FloatPropositionComparator;
           value: number | undefined;
         }[]
       | undefined;
-    nearnormalHemisphericalSolarReflectances:
-      | {
-          negator: Negator;
-          comparator: FloatPropositionComparator;
-          value: number | undefined;
-        }[]
-      | undefined;
-    nearnormalHemisphericalSolarTransmittances:
-      | {
-          negator: Negator;
-          comparator: FloatPropositionComparator;
-          value: number | undefined;
-        }[]
-      | undefined;
-    nearnormalHemisphericalVisibleReflectances:
-      | {
-          negator: Negator;
-          comparator: FloatPropositionComparator;
-          value: number | undefined;
-        }[]
-      | undefined;
-    nearnormalHemisphericalVisibleTransmittances:
+    uValues:
       | {
           negator: Negator;
           comparator: FloatPropositionComparator;
@@ -167,7 +144,7 @@ function Page() {
       try {
         setFiltering(true);
         // https://www.apollographql.com/docs/react/networking/authentication/#reset-store-on-logout
-        const propositions: OpticalDataPropositionInput[] = [];
+        const propositions: CalorimetricDataPropositionInput[] = [];
         if (componentIds) {
           for (let { negator, comparator, value } of componentIds) {
             propositions.push(
@@ -192,12 +169,12 @@ function Page() {
         }
         // Note that `0` evaluates to `false`, so below we cannot use
         // `if (value)`.
-        if (infraredEmittances) {
-          for (let { negator, comparator, value } of infraredEmittances) {
+        if (gValues) {
+          for (let { negator, comparator, value } of gValues) {
             if (value !== undefined && value !== null) {
               propositions.push(
                 negateIfNecessary(negator, {
-                  infraredEmittances: {
+                  gValues: {
                     some: {
                       [comparator]: value,
                     },
@@ -207,16 +184,12 @@ function Page() {
             }
           }
         }
-        if (nearnormalHemisphericalSolarReflectances) {
-          for (let {
-            negator,
-            comparator,
-            value,
-          } of nearnormalHemisphericalSolarReflectances) {
+        if (uValues) {
+          for (let { negator, comparator, value } of uValues) {
             if (value !== undefined && value !== null) {
               propositions.push(
                 negateIfNecessary(negator, {
-                  nearnormalHemisphericalSolarReflectances: {
+                  uValues: {
                     some: {
                       [comparator]: value,
                     },
@@ -226,64 +199,7 @@ function Page() {
             }
           }
         }
-        if (nearnormalHemisphericalSolarTransmittances) {
-          for (let {
-            negator,
-            comparator,
-            value,
-          } of nearnormalHemisphericalSolarTransmittances) {
-            if (value !== undefined && value !== null) {
-              propositions.push(
-                negateIfNecessary(negator, {
-                  nearnormalHemisphericalSolarTransmittances: {
-                    some: {
-                      [comparator]: value,
-                    },
-                  },
-                })
-              );
-            }
-          }
-        }
-        if (nearnormalHemisphericalVisibleReflectances) {
-          for (let {
-            negator,
-            comparator,
-            value,
-          } of nearnormalHemisphericalVisibleReflectances) {
-            if (value !== undefined && value !== null) {
-              propositions.push(
-                negateIfNecessary(negator, {
-                  nearnormalHemisphericalVisibleReflectances: {
-                    some: {
-                      [comparator]: value,
-                    },
-                  },
-                })
-              );
-            }
-          }
-        }
-        if (nearnormalHemisphericalVisibleTransmittances) {
-          for (let {
-            negator,
-            comparator,
-            value,
-          } of nearnormalHemisphericalVisibleTransmittances) {
-            if (value !== undefined && value !== null) {
-              propositions.push(
-                negateIfNecessary(negator, {
-                  nearnormalHemisphericalVisibleTransmittances: {
-                    some: {
-                      [comparator]: value,
-                    },
-                  },
-                })
-              );
-            }
-          }
-        }
-        const { error, data } = await allOpticalDataQuery.refetch(
+        const { error, data } = await allCalorimetricDataQuery.refetch(
           propositions.length == 0
             ? {}
             : {
@@ -295,8 +211,8 @@ function Page() {
           console.log(error);
           messageApi.error(error.graphQLErrors.map((error) => error.message));
         }
-        // TODO Casting to `OpticalData` is wrong and error prone!
-        setData((data?.allOpticalData?.nodes || []) as OpticalData[]);
+        // TODO Casting to `CalorimetricData` is wrong and error prone!
+        setData((data?.allCalorimetricData?.nodes || []) as CalorimetricData[]);
       } catch (error) {
         // TODO Handle properly.
         console.log("Failed:", error);
@@ -314,7 +230,7 @@ function Page() {
   return (
     <Layout>
       {contextHolder}
-      <Typography.Title>Optical Data</Typography.Title>
+      <Typography.Title>Calorimetric Data</Typography.Title>
       {/* TODO Display error messages in a list? */}
       {globalErrorMessages.length > 0 && (
         <Alert type="error" message={globalErrorMessages.join(" ")} />
@@ -328,26 +244,8 @@ function Page() {
       >
         <UuidPropositionFormList name="componentIds" label="Component Id" />
         <UuidPropositionFormList name="dataFormatIds" label="Data Format Id" />
-        <FloatPropositionFormList
-          name="infraredEmittances"
-          label="Infrared emittance"
-        />
-        <FloatPropositionFormList
-          name="nearnormalHemisphericalSolarReflectances"
-          label="Nearnormal hemispherical solar reflectance"
-        />
-        <FloatPropositionFormList
-          name="nearnormalHemisphericalSolarTransmittances"
-          label="Nearnormal hemispherical solar transmittance"
-        />
-        <FloatPropositionFormList
-          name="nearnormalHemisphericalVisibleReflectances"
-          label="Nearnormal hemispherical visible reflectance"
-        />
-        <FloatPropositionFormList
-          name="nearnormalHemisphericalVisibleTransmittances"
-          label="Nearnormal hemispherical visible transmittance"
-        />
+        <FloatPropositionFormList name="gValues" label="g Values" />
+        <FloatPropositionFormList name="uValues" label="u Values" />
 
         <Form.Item {...tailLayout}>
           <Button type="primary" htmlType="submit" loading={filtering}>
@@ -362,7 +260,7 @@ function Page() {
             ...getUuidColumnProps<(typeof data)[0]>(
               onFilterTextChange,
               (x) => filterText.get(x),
-              (_uuid) => "/" // TODO Link somewhere useful!
+              paths.calorimetricDatum
             ),
           },
           {
@@ -408,49 +306,15 @@ function Page() {
             ),
           },
           {
-            title: "Emittances, Reflectances, and Transmittances",
-            key: "nearnormalHemisphericalX",
+            title: "g and u Values",
+            key: "g-and-u-values",
             render: (_text, record, _index) => (
               <Descriptions column={1}>
-                <Descriptions.Item
-                  key="infraredEmittances"
-                  label="Infrared Emittances"
-                >
-                  {record.infraredEmittances
-                    .map((x) => x.toLocaleString("en"))
-                    .join(", ")}
+                <Descriptions.Item key="gValues" label="g Values">
+                  {record.gValues.map((x) => x.toLocaleString("en")).join(", ")}
                 </Descriptions.Item>
-                <Descriptions.Item
-                  key="nearnormalHemisphericalSolarReflectances"
-                  label="Nearnormal Hemispherical Solar Reflectances"
-                >
-                  {record.nearnormalHemisphericalSolarReflectances
-                    .map((x) => x.toLocaleString("en"))
-                    .join(", ")}
-                </Descriptions.Item>
-                <Descriptions.Item
-                  key="nearnormalHemisphericalSolarTransmittances"
-                  label="Nearnormal Hemispherical Solar Transmittances"
-                >
-                  {record.nearnormalHemisphericalSolarTransmittances
-                    .map((x) => x.toLocaleString("en"))
-                    .join(", ")}
-                </Descriptions.Item>
-                <Descriptions.Item
-                  key="nearnormalHemisphericalVisibleReflectances"
-                  label="Nearnormal Hemispherical Visible Reflectances"
-                >
-                  {record.nearnormalHemisphericalVisibleReflectances
-                    .map((x) => x.toLocaleString("en"))
-                    .join(", ")}
-                </Descriptions.Item>
-                <Descriptions.Item
-                  key="nearnormalHemisphericalVisibleTransmittances"
-                  label="Nearnormal Hemispherical Visible Transmittances"
-                >
-                  {record.nearnormalHemisphericalVisibleTransmittances
-                    .map((x) => x.toLocaleString("en"))
-                    .join(", ")}
+                <Descriptions.Item key="uValues" label="u Values">
+                  {record.uValues.map((x) => x.toLocaleString("en")).join(", ")}
                 </Descriptions.Item>
               </Descriptions>
             ),
