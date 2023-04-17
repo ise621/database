@@ -101,7 +101,7 @@ services:
       - ASPNETCORE_URLS=http://0.0.0.0:8080
       - ASPNETCORE_ENVIRONMENT=development
       - XBASE_Host=https://${HOST}:${HTTPS_PORT}
-      - XBASE_MetabaseHost=https://${METABASE_HOST}
+      - XBASE_MetabaseHost=https://${METABASE_HOST}:${METABASE_HTTPS_PORT}
       - XBASE_Email__SmtpHost=${SMTP_HOST}
       - XBASE_Email__SmtpPort=${SMTP_PORT}
       - XBASE_AccessToken=${ACCESS_TOKEN}
@@ -112,8 +112,7 @@ services:
       # - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/ssl/${SSL_CERTIFICATE_BASE_FILE_NAME}.pfx
     extra_hosts:
       - ${HOST}:host-gateway
-      # - ${ISE_HOST}:host-gateway
-      # - ${LBNL_HOST}:host-gateway
+      - ${METABASE_HOST}:host-gateway
     depends_on:
       - database
       - email
