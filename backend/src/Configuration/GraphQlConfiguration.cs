@@ -13,24 +13,48 @@ using HotChocolate.Data;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Database.GraphQl.Filters;
+using System.Net.Http;
 
 namespace Database.Configuration
 {
     public static class GraphQlConfiguration
     {
+        public static class WellKnownSchemaNames
+        {
+            public const string Metabase = "metabase";
+        }
+
         public static void ConfigureServices(
             IServiceCollection services,
-            IWebHostEnvironment environment
+            IWebHostEnvironment environment,
+            AppSettings appSettings
             )
         {
+            // Stitching Services
+            // https://chillicream.com/docs/hotchocolate/v13/distributed-schema/schema-stitching
+            var httpClientBuilder = services.AddHttpClient(
+                WellKnownSchemaNames.Metabase,
+                _ => _.BaseAddress = new Uri($"{appSettings.MetabaseHost}/graphql")
+            );
+            if (!environment.IsProduction())
+            {
+                httpClientBuilder.ConfigurePrimaryHttpMessageHandler(_ =>
+                    new HttpClientHandler
+                    {
+                        // ClientCertificateOptions = ClientCertificateOption.Manual,
+                        ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                    }
+                );
+            }
+            // Automatic-Persisted-Queries Services
             services
             .AddMemoryCache()
-            .AddSha256DocumentHashProvider(HotChocolate.Language.HashFormat.Hex)
+            .AddSha256DocumentHashProvider(HotChocolate.Language.HashFormat.Hex);
+            // GraphQL Server
+            services
             .AddGraphQLServer()
             // Services https://chillicream.com/docs/hotchocolate/v13/integrations/entity-framework#registerdbcontext
             .RegisterDbContext<Data.ApplicationDbContext>(DbContextKind.Pooled)
-            // Types
-            .AddType<GraphQl.Common.OpenEndedDateTimeRangeType>()
             // Extensions
             .AddProjections()
             .AddFiltering<CustomFilterConvention>()
@@ -60,72 +84,83 @@ namespace Database.Configuration
                     /* options.QueryCacheSize = ...; */
                     /* options.UseComplexityMultipliers = ...; */
                 }
+            )
+            // TODO Configure `https://github.com/ChilliCream/hotchocolate/blob/main/src/HotChocolate/Core/src/Validation/Options/ValidationOptions.cs`. But how?
+            // Subscriptions
+            /* .AddInMemorySubscriptions() */
+            // TODO Persisted queries
+            /* .AddFileSystemQueryStorage("./persisted_queries") */
+            /* .UsePersistedQueryPipeline(); */
+            .AddHttpRequestInterceptor(async (httpContext, requestExecutor, requestBuilder, cancellationToken) =>
+            {
+                // HotChocolate uses the default cookie authentication
+                // scheme `IdentityConstants.ApplicationScheme` by
+                // default.
+                var authenticateResult = await httpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme).ConfigureAwait(false);
+                if (authenticateResult.Succeeded && authenticateResult.Principal is not null)
+                {
+                    httpContext.User = authenticateResult.Principal;
+                }
+            })
+            .AddDiagnosticEventListener(_ =>
+                new GraphQl.LoggingDiagnosticEventListener(
+                    _.GetApplicationService<ILogger<GraphQl.LoggingDiagnosticEventListener>>()
                 )
-                  // TODO Configure `https://github.com/ChilliCream/hotchocolate/blob/main/src/HotChocolate/Core/src/Validation/Options/ValidationOptions.cs`. But how?
-                  // Subscriptions
-                  /* .AddInMemorySubscriptions() */
-                  // TODO Persisted queries
-                  /* .AddFileSystemQueryStorage("./persisted_queries") */
-                  /* .UsePersistedQueryPipeline(); */
-                  .AddHttpRequestInterceptor(async (httpContext, requestExecutor, requestBuilder, cancellationToken) =>
-                  {
-                      // HotChocolate uses the default cookie authentication
-                      // scheme `IdentityConstants.ApplicationScheme` by
-                      // default.
-                      var authenticateResult = await httpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme).ConfigureAwait(false);
-                      if (authenticateResult.Succeeded && authenticateResult.Principal is not null)
-                      {
-                          httpContext.User = authenticateResult.Principal;
-                      }
-                  })
-                  .AddDiagnosticEventListener(_ =>
-                      new GraphQl.LoggingDiagnosticEventListener(
-                          _.GetApplicationService<ILogger<GraphQl.LoggingDiagnosticEventListener>>()
-                      )
-                  )
-                  .AddQueryType(d => d.Name(nameof(GraphQl.Query)))
-                      .AddType<GraphQl.CalorimetricDataX.CalorimetricDataQueries>()
-                      .AddType<GraphQl.DataX.DataQueries>()
-                      .AddType<GraphQl.GetHttpsResources.GetHttpsResourceQueries>()
-                      .AddType<GraphQl.HygrothermalDataX.HygrothermalDataQueries>()
-                      .AddType<GraphQl.OpticalDataX.OpticalDataQueries>()
-                      .AddType<GraphQl.PhotovoltaicDataX.PhotovoltaicDataQueries>()
-                  .AddMutationType(d => d.Name(nameof(GraphQl.Mutation)))
-                      .AddType<GraphQl.CalorimetricDataX.CalorimetricDataMutations>()
-                      .AddType<GraphQl.GetHttpsResources.GetHttpsResourceMutations>()
-                      .AddType<GraphQl.HygrothermalDataX.HygrothermalDataMutations>()
-                      .AddType<GraphQl.OpticalDataX.OpticalDataMutations>()
-                      .AddType<GraphQl.PhotovoltaicDataX.PhotovoltaicDataMutations>()
-                  /* .AddSubscriptionType(d => d.Name(nameof(GraphQl.Subscription))) */
-                  /*     .AddType<ComponentSubscriptions>() */
-                  // Scalar Types
-                  .AddType(new UuidType("Uuid", defaultFormat: 'D')) // https://chillicream.com/docs/hotchocolate/defining-a-schema/scalars#uuid-type
-                  .AddType(new UrlType("Url"))
-                  .AddType(new JsonType("Any", BindingBehavior.Implicit)) // https://chillicream.com/blog/2023/02/08/new-in-hot-chocolate-13#json-scalar
-                  .AddType(new GraphQl.LocaleType())
-                  // Object Types
-                  .AddType<GraphQl.CalorimetricDataX.CalorimetricDataType>()
-                  .AddType<GraphQl.DataX.DataType>()
-                  .AddType<GraphQl.GetHttpsResources.GetHttpsResourceType>()
-                  .AddType<GraphQl.HygrothermalDataX.HygrothermalDataType>()
-                  .AddType<GraphQl.NamedMethodArgumentType>()
-                  .AddType<GraphQl.OpticalDataX.OpticalDataType>()
-                  .AddType<GraphQl.PhotovoltaicDataX.PhotovoltaicDataType>()
-                  // Data Loaders
-                  /* .AddDataLoader<GraphQl.Components.ComponentByIdDataLoader>() */
-                  // Paging
-                  .SetPagingOptions(
-                      new PagingOptions
-                      {
-                          MaxPageSize = int.MaxValue,
-                          DefaultPageSize = int.MaxValue,
-                          IncludeTotalCount = true,
-                          // TODO I actually want to infer connection names from fields (which is the default in HotChocolate). However, the current `database.graphql` schema that I hand-wrote still infers connection names from types.
-                          InferConnectionNameFromField = false
-                      }
-                  )
-                  .UseAutomaticPersistedQueryPipeline()
-                  .AddInMemoryQueryStorage();
+            )
+            // Scalar Types
+            .AddType(new UuidType("Uuid", defaultFormat: 'D')) // https://chillicream.com/docs/hotchocolate/defining-a-schema/scalars#uuid-type
+            .AddType(new UrlType("Url"))
+            .AddType(new JsonType("Any", BindingBehavior.Implicit)) // https://chillicream.com/blog/2023/02/08/new-in-hot-chocolate-13#json-scalar
+            .AddType(new GraphQl.LocaleType())
+            // Query Types
+            .AddQueryType(d => d.Name(nameof(GraphQl.Query)))
+                .AddType<GraphQl.CalorimetricDataX.CalorimetricDataQueries>()
+                .AddType<GraphQl.DataX.DataQueries>()
+                .AddType<GraphQl.GetHttpsResources.GetHttpsResourceQueries>()
+                .AddType<GraphQl.HygrothermalDataX.HygrothermalDataQueries>()
+                .AddType<GraphQl.OpticalDataX.OpticalDataQueries>()
+                .AddType<GraphQl.PhotovoltaicDataX.PhotovoltaicDataQueries>()
+            // Mutation Types
+            .AddMutationType(d => d.Name(nameof(GraphQl.Mutation)))
+                .AddType<GraphQl.CalorimetricDataX.CalorimetricDataMutations>()
+                .AddType<GraphQl.GetHttpsResources.GetHttpsResourceMutations>()
+                .AddType<GraphQl.HygrothermalDataX.HygrothermalDataMutations>()
+                .AddType<GraphQl.OpticalDataX.OpticalDataMutations>()
+                .AddType<GraphQl.PhotovoltaicDataX.PhotovoltaicDataMutations>()
+            /* .AddSubscriptionType(d => d.Name(nameof(GraphQl.Subscription))) */
+            /*     .AddType<ComponentSubscriptions>() */
+            // Object Types
+            .AddType<GraphQl.Common.OpenEndedDateTimeRangeType>()
+            .AddType<GraphQl.CalorimetricDataX.CalorimetricDataType>()
+            .AddType<GraphQl.DataX.DataType>()
+            .AddType<GraphQl.GetHttpsResources.GetHttpsResourceType>()
+            .AddType<GraphQl.HygrothermalDataX.HygrothermalDataType>()
+            .AddType<GraphQl.NamedMethodArgumentType>()
+            .AddType<GraphQl.OpticalDataX.OpticalDataType>()
+            .AddType<GraphQl.PhotovoltaicDataX.PhotovoltaicDataType>()
+            // Data Loaders
+            /* .AddDataLoader<GraphQl.Components.ComponentByIdDataLoader>() */
+            // Paging
+            .SetPagingOptions(
+                new PagingOptions
+                {
+                    MaxPageSize = int.MaxValue,
+                    DefaultPageSize = int.MaxValue,
+                    IncludeTotalCount = true,
+                    // TODO I actually want to infer connection names from fields (which is the default in HotChocolate). However, the current `database.graphql` schema that I hand-wrote still infers connection names from types.
+                    InferConnectionNameFromField = false
+                }
+            )
+            // Stitching
+            // .AddRemoteSchema(WellKnownSchemaNames.Metabase, ignoreRootTypes: true)
+            // .AddTypeExtensionsFromString(@"
+            //     extend type OpticalData {
+            //         component: Component @delegate(schema: 'Metabase', path: 'component(uuid: $fields:ComponentId)')
+            //     }
+            // ")
+            // Automatic Peristed Queries
+            .UseAutomaticPersistedQueryPipeline()
+            .AddInMemoryQueryStorage();
         }
     }
 

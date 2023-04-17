@@ -39,7 +39,7 @@ namespace Database
         public void ConfigureServices(IServiceCollection services)
         {
             AuthConfiguration.ConfigureServices(services, _appSettings);
-            GraphQlConfiguration.ConfigureServices(services, _environment);
+            GraphQlConfiguration.ConfigureServices(services, _environment, _appSettings);
             ConfigureDatabaseServices(services);
             ConfigureMessageSenderServices(services);
             ConfigureRequestResponseServices(services);
