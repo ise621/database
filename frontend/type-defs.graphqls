@@ -397,6 +397,7 @@ type Query {
   nodes("The list of node IDs." ids: [ID!]!): [Node]!
   opticalData(id: Uuid! locale: Locale timestamp: DateTime): OpticalData
   photovoltaicData(id: Uuid! locale: Locale timestamp: DateTime): PhotovoltaicData
+  verificationCode: String!
 }
 
 type ToTreeVertexAppliedConversionMethod {

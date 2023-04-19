@@ -13,6 +13,9 @@ namespace Database
         public string AccessToken { get; set; }
         = "";
 
+        public string VerificationCode { get; set; }
+        = "";
+
         public LoggingSettings Logging { get; set; }
         = new LoggingSettings();
 

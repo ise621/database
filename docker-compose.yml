@@ -106,6 +106,7 @@ services:
       - XBASE_Email__SmtpPort=${SMTP_PORT}
       - XBASE_AccessToken=${ACCESS_TOKEN}
       - XBASE_OpenIdConnectClientSecret=${OPEN_ID_CONNECT_CLIENT_SECRET}
+      - XBASE_VerificationCode=${VERIFICATION_CODE}
       - DOTNET_USE_POLLING_FILE_WATCHER=1
       # https://docs.microsoft.com/en-us/aspnet/core/security/docker-compose-https#starting-a-container-with-https-support-using-docker-compose
       # - ASPNETCORE_Kestrel__Certificates__Default__Password=${SSL_CERTIFICATE_PASSWORD}

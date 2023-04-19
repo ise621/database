@@ -114,6 +114,7 @@ namespace Database.Configuration
             .AddType(new GraphQl.LocaleType())
             // Query Types
             .AddQueryType(d => d.Name(nameof(GraphQl.Query)))
+                .AddType<GraphQl.VerificationCodeQueries>()
                 .AddType<GraphQl.CalorimetricDataX.CalorimetricDataQueries>()
                 .AddType<GraphQl.DataX.DataQueries>()
                 .AddType<GraphQl.GetHttpsResources.GetHttpsResourceQueries>()

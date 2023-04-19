@@ -73,6 +73,7 @@ services:
       - XBASE_Email__SmtpPort=${SMTP_PORT}
       - XBASE_AccessToken=${ACCESS_TOKEN}
       - XBASE_OpenIdConnectClientSecret=${OPEN_ID_CONNECT_CLIENT_SECRET}
+      - XBASE_VerificationCode=${VERIFICATION_CODE}
     volumes:
       - backend_logs:/app/logs
       - files:/app/files
