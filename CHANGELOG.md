@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
--
--
--
+- Add GraphQL query `verificationCode` [5dd0a94bcfbd3de69a3b29f0a07be406617fbf83](https://github.com/building-envelope-data/database/commit/5dd0a94bcfbd3de69a3b29f0a07be406617fbf83)
+- Add pages for individual data entries [6e1a5a484b2054e0eca168fe58b4860caef8d872](https://github.com/building-envelope-data/database/commit/6e1a5a484b2054e0eca168fe58b4860caef8d872)
+- Enable automatic persisted queries [f1f7a73f3001bc89d429b103b360ccd36ea32e0d](https://github.com/building-envelope-data/database/commit/f1f7a73f3001bc89d429b103b360ccd36ea32e0d)
 -
 -
 -
@@ -38,8 +38,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Upgrade packages to latest compatible versions in backend and frontend [#29](https://github.com/building-envelope-data/database/pull/29)
--
--
+- Persist data protection keys in database [bbac9c7e84a21dcc67bc5a9446032b862af51b5b](https://github.com/building-envelope-data/database/commit/bbac9c7e84a21dcc67bc5a9446032b862af51b5b)
+- Build Docker images with BuildKit [4ce5fa2c4dbe67de14f5e1c9be22896921349b50](https://github.com/building-envelope-data/database/commit/4ce5fa2c4dbe67de14f5e1c9be22896921349b50)
 -
 -
 -
