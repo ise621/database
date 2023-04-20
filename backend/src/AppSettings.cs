@@ -25,6 +25,18 @@ namespace Database
             = false;
         }
 
+        public JsonWebTokenSettings JsonWebToken { get; set; }
+        = new JsonWebTokenSettings();
+
+        public sealed class JsonWebTokenSettings
+        {
+            public string EncryptionCertificatePassword { get; set; }
+            = "";
+
+            public string SigningCertificatePassword { get; set; }
+            = "";
+        }
+
         public EmailSettings Email { get; set; }
         = new EmailSettings();
 
