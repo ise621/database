@@ -131,12 +131,11 @@ namespace Database.Configuration
                  .AddSigningCertificate(signingCertificate);
 
                 // Register the ASP.NET Core host and configure the ASP.NET Core-specific options.
-                var aspNetCoreBuilder =
-                    _.UseAspNetCore()
-                     .EnableStatusCodePagesIntegration()
-                     .EnableRedirectionEndpointPassthrough()
-                     .EnablePostLogoutRedirectionEndpointPassthrough();
-                // TODO aspNetCoreBuilder.DisableTransportSecurityRequirement();
+                _.UseAspNetCore()
+                 .EnableStatusCodePagesIntegration()
+                 .EnableRedirectionEndpointPassthrough()
+                 .EnablePostLogoutRedirectionEndpointPassthrough();
+                // .DisableTransportSecurityRequirement();
 
                 // Register the System.Net.Http integration and use the identity of the current
                 // assembly as a more specific user agent, which can be useful when dealing with
