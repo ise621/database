@@ -148,7 +148,7 @@ shelln : up ## Enter shell in an existing `nginx` container (after starting all 
 	${docker_compose} exec \
 		nginx \
 		bash
-.PHONY : shelld
+.PHONY : shelln
 
 psql : ## Enter PostgreSQL interactive terminal in the running `database` container
 	${docker_compose} exec \
@@ -199,6 +199,30 @@ prepare-release : ## Prepare release
 # Generate Certificates #
 # --------------------- #
 
+# TODO Pass passwords in a more secure way!
+jwt-certificates : ## Create JWT encryption and signing certificates if necessary
+	DOCKER_BUILDKIT=1 \
+		docker build \
+			--pull \
+			--build-arg GROUP_ID=$(shell id --group) \
+			--build-arg USER_ID=$(shell id --user) \
+			--tag ${NAME}_bootstrap \
+			--file ./backend/Dockerfile-bootstrap \
+			./backend
+	docker run \
+		--rm \
+		--user $(shell id --user):$(shell id --group) \
+		--mount type=bind,source="$(shell pwd)/backend",target=/app \
+		${NAME}_bootstrap \
+		bash -cx " \
+			dotnet-script \
+				create-certificates.csx \
+				-- \
+				${JSON_WEB_TOKEN_ENCRYPTION_CERTIFICATE_PASSWORD} \
+				${JSON_WEB_TOKEN_SIGNING_CERTIFICATE_PASSWORD} \
+		"
+.PHONY : jwt-certificates
+
 # For an introduction to how HTTPS works see https://howhttps.works
 ssl : ## Generate and trust certificate authority, and generate SSL certificates
 	make generate-certificate-authority
@@ -213,6 +237,7 @@ ssl : ## Generate and trust certificate authority, and generate SSL certificates
 generate-certificate-authority : ## Generate certificate authority ECDSA private key and self-signed certificate
 	mkdir --parents ./ssl/
 		docker run \
+		--rm \
 		--user $(shell id --user):$(shell id --group) \
 		--mount type=bind,source="$(shell pwd)/ssl",target=/ssl \
 		nginx:1.23 \
@@ -320,6 +345,7 @@ trust-certificate-authority : ## Trust the authority's SSL certificate
 generate-ssl-certificate : ## Generate ECDSA private key and SSL certificate signed by our certificate authority
 	mkdir --parents ./ssl/
 	docker run \
+		--rm \
 		--user $(shell id --user):$(shell id --group) \
 		--mount type=bind,source="$(shell pwd)/ssl",target=/ssl \
 		nginx:1.23 \
@@ -408,3 +434,11 @@ generate-ssl-certificate : ## Generate ECDSA private key and SSL certificate sig
 fetch-ssl-certificate : ## Fetch the SSL certificate of the server
 	openssl s_client ${HOST}:${HTTPS_PORT}
 .PHONY : fetch-ssl-certificate
+
+ssl-certificate : ## Print the SSL certificate
+	openssl x509 -text -noout -in ./ssl/${SSL_CERTIFICATE_BASE_FILE_NAME}.crt
+.PHONY : ssl-certificate
+
+certificate-authority : ## View the certificate authority
+	openssl x509 -text -noout -in ./ssl/${CERTIFICATE_AUTHORITY_BASE_FILE_NAME}.crt
+.PHONY : certificate-authority

@@ -11,6 +11,7 @@ services:
     # https://www.postgresql.org/docs/current/runtime-config.html
     command: [
       "-c", "max_connections=100"
+      # "-c", "log_statement=all"
     ]
     healthcheck:
       # pg_isready: https://www.postgresql.org/docs/13/app-pg-isready.html
@@ -77,7 +78,6 @@ services:
       retries: 3
     volumes:
       - ./backend:/app
-      - backend_logs:/app/src/logs
       - files:/app/src/files
       - backend_vscode_server_extensions:/home/me/.vscode-server/extensions
       - backend_vscode_server_insiders_extensions:/home/me/.vscode-server-insiders/extensions
@@ -86,6 +86,7 @@ services:
       # temporary files into the corresponding directory on the host file
       # system that was bound by the `/app` binding.
       # - /app/node_modules
+      - /app/src/logs
       - /app/src/bin
       - /app/src/obj
       - /app/test/bin
@@ -102,6 +103,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=development
       - XBASE_Host=https://${HOST}:${HTTPS_PORT}
       - XBASE_MetabaseHost=https://${METABASE_HOST}:${METABASE_HTTPS_PORT}
+      - XBASE_JsonWebToken__EncryptionCertificatePassword=${JSON_WEB_TOKEN_ENCRYPTION_CERTIFICATE_PASSWORD}
+      - XBASE_JsonWebToken__SigningCertificatePassword=${JSON_WEB_TOKEN_SIGNING_CERTIFICATE_PASSWORD}
       - XBASE_Email__SmtpHost=${SMTP_HOST}
       - XBASE_Email__SmtpPort=${SMTP_PORT}
       - XBASE_AccessToken=${ACCESS_TOKEN}
@@ -184,6 +187,5 @@ volumes:
   data:
   emails:
   files:
-  backend_logs:
   backend_vscode_server_extensions:
   backend_vscode_server_insiders_extensions:

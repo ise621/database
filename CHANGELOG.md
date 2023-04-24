@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add GraphQL query `verificationCode` [5dd0a94bcfbd3de69a3b29f0a07be406617fbf83](https://github.com/building-envelope-data/database/commit/5dd0a94bcfbd3de69a3b29f0a07be406617fbf83)
 - Add pages for individual data entries [6e1a5a484b2054e0eca168fe58b4860caef8d872](https://github.com/building-envelope-data/database/commit/6e1a5a484b2054e0eca168fe58b4860caef8d872)
 - Enable automatic persisted queries [f1f7a73f3001bc89d429b103b360ccd36ea32e0d](https://github.com/building-envelope-data/database/commit/f1f7a73f3001bc89d429b103b360ccd36ea32e0d)
--
+- Login through the OpenId Connect endpoints of the metabase [#44](https://github.com/building-envelope-data/database/pull/44)
 -
 -
 -

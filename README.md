@@ -34,7 +34,13 @@ If you have a question for which you don't find the answer in this repository, p
    [GNU Make](https://www.gnu.org/software/make/).
 1. List all GNU Make targets by running `make help`.
 1. Generate and trust a self-signed certificate authority and SSL certificates
-   by running `make ssl`.
+   by running `make ssl`. If you are locally working the the metabase and the
+   database and if you need them to communicate over HTTPS, then instead of
+   running `make ssl`, make the `CERTIFICATE_AUTHORITY_*` variable values in
+   the `.env` file match the ones from the metabase, copy the certificate
+   authority files from the directories `./ssl`, `./backend/ssl`, and
+   `./frontend/ssl` of the metabase project into the respective directories in
+   the database project, and run the command `make generate-ssl-certificate`.
 1. Start all services and follow their logs by running `make up logs`.
 1. To see the web frontend navigate to
    `https://local.solarbuildingenvelopes.com:5051` in your web browser, to see
