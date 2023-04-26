@@ -48,6 +48,7 @@ namespace Database
                 .AddDataProtection()
                 .PersistKeysToDbContext<Data.ApplicationDbContext>();
             services.AddHttpClient();
+            services.AddHttpContextAccessor();
             services
                 .AddHealthChecks()
                 .AddDbContextCheck<Data.ApplicationDbContext>();

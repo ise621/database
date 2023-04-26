@@ -1,0 +1,47 @@
+fragment DatabasePartial on Database {
+  uuid
+  name
+  description
+  locator
+  # operator {
+  #   node {
+  #     uuid
+  #     name
+  #   }
+  # }
+  verificationState
+  verificationCode
+  canCurrentUserUpdateNode
+  canCurrentUserVerifyNode
+}
+
+query Database {
+  database {
+    ...DatabasePartial
+  }
+}
+
+mutation UpdateDatabase(
+  $databaseId: Uuid!
+  $name: String!
+  $description: String!
+  $locator: Url!
+) {
+  updateDatabase(
+    input: {
+      databaseId: $databaseId
+      name: $name
+      description: $description
+      locator: $locator
+    }
+  ) {
+    database {
+      ...DatabasePartial
+    }
+    errors {
+      code
+      message
+      path
+    }
+  }
+}

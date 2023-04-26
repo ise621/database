@@ -1,0 +1,21 @@
+query UpdateDatabase(
+    $input: UpdateDatabaseInput!
+) {
+    updateDatabase(input: $input) {
+        database {
+            uuid
+            name
+            description
+            locator
+            verificationState
+            verificationCode
+            canCurrentUserUpdateNode
+            canCurrentUserVerifyNode
+        }
+        errors {
+            code
+            message
+            path
+        }
+    }
+}
