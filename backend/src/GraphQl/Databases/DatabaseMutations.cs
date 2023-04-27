@@ -38,11 +38,15 @@ namespace Database.GraphQl.Databases
                 cancellationToken
             ).ConfigureAwait(false))?.Data
             ?? new UpdateDatabasePayload(
-                new UpdateDatabaseError(
-                    UpdateDatabaseErrorCode.UNKNOWN,
-                    "Unknown error.",
-                    Array.Empty<string>()
-                )
+                null,
+                new []
+                {
+                    new UpdateDatabaseError(
+                        UpdateDatabaseErrorCode.UNKNOWN,
+                        "Unknown error.",
+                        Array.Empty<string>()
+                    )
+                }
                 );
         }
     }
