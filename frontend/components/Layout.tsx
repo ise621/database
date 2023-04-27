@@ -31,6 +31,10 @@ const navItems = [
     path: paths.photovoltaicData,
     label: "Photovoltaic Data",
   },
+  {
+    path: paths.database,
+    label: "Database",
+  },
 ];
 
 export type LayoutProps = {
