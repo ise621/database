@@ -17,6 +17,9 @@ namespace Database.Configuration
     // https://github.com/openiddict/openiddict-samples/blob/855c31f91d6bf5cde735ef3f96fcc3c015b51d79/samples/Velusia/Velusia.Client/Startup.cs
     public abstract class AuthConfiguration
     {
+        public static string ReadApiScope { get; } = "api:read";
+        public static string WriteApiScope { get; } = "api:write";
+
         public static void ConfigureServices(
             IServiceCollection services,
             IWebHostEnvironment environment,
@@ -158,7 +161,9 @@ namespace Database.Configuration
                         Scopes = {
                             OpenIddictConstants.Scopes.Email,
                             OpenIddictConstants.Scopes.Profile,
-                            OpenIddictConstants.Scopes.Roles
+                            OpenIddictConstants.Scopes.Roles,
+                            ReadApiScope,
+                            WriteApiScope
                         },
 
                         // Note: to mitigate mix-up attacks, it's recommended to use a unique redirection endpoint
