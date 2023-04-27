@@ -1,4 +1,4 @@
-query UpdateDatabase(
+mutation UpdateDatabase(
     $input: UpdateDatabaseInput!
 ) {
     updateDatabase(input: $input) {
