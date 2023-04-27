@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { Button, Menu } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import paths from "../paths";
+import { useCurrentUserQuery } from "../queries/currentUser.graphql";
 
 type NavItemProps = {
   path: string;
@@ -27,6 +28,7 @@ const moderatorItems = [
 
 export default function NavBar({ items }: NavBarProps) {
   const router = useRouter();
+  const currentUser = useCurrentUserQuery()?.data?.currentUser;
 
   return (
     <Menu mode="horizontal" selectedKeys={[router.pathname]} theme="dark">
@@ -35,23 +37,30 @@ export default function NavBar({ items }: NavBarProps) {
           <Link href={path}>{label}</Link>
         </Menu.Item>
       ))}
-      <Menu.SubMenu key="moderator" icon={<UserOutlined />}>
+      {currentUser ? (
+        <Menu.SubMenu
+          key="moderator"
+          title={currentUser ? currentUser.name : null}
+          icon={<UserOutlined />}
+        >
+          <Menu.Item key={paths.logout}>
+            <form action={paths.logout} method="post">
+              <Button type="primary" htmlType="submit">
+                Logout
+              </Button>
+            </form>
+          </Menu.Item>
+          {moderatorItems.map(({ path, label }) => (
+            <Menu.Item key={path}>
+              <Link href={path}>{label}</Link>
+            </Menu.Item>
+          ))}
+        </Menu.SubMenu>
+      ) : (
         <Menu.Item key={paths.login}>
           <Link href={paths.login}>Login</Link>
         </Menu.Item>
-        <Menu.Item key={paths.logout}>
-          <form action={paths.logout} method="post">
-            <Button type="primary" htmlType="submit">
-              Logout
-            </Button>
-          </form>
-        </Menu.Item>
-        {moderatorItems.map(({ path, label }) => (
-          <Menu.Item key={path}>
-            <Link href={path}>{label}</Link>
-          </Menu.Item>
-        ))}
-      </Menu.SubMenu>
+      )}
     </Menu>
   );
 }

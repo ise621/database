@@ -1,0 +1,10 @@
+fragment CurrentUserPartial on User {
+  email
+  name
+}
+
+query CurrentUser {
+  currentUser {
+    ...CurrentUserPartial
+  }
+}

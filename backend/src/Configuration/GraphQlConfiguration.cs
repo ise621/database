@@ -121,6 +121,7 @@ namespace Database.Configuration
                 .AddType<GraphQl.HygrothermalDataX.HygrothermalDataQueries>()
                 .AddType<GraphQl.OpticalDataX.OpticalDataQueries>()
                 .AddType<GraphQl.PhotovoltaicDataX.PhotovoltaicDataQueries>()
+                .AddType<GraphQl.Users.UserQueries>()
                 .AddType<GraphQl.VerificationCodeQueries>()
             // Mutation Types
             .AddMutationType(d => d.Name(nameof(GraphQl.Mutation)))
@@ -141,6 +142,7 @@ namespace Database.Configuration
             .AddType<GraphQl.NamedMethodArgumentType>()
             .AddType<GraphQl.OpticalDataX.OpticalDataType>()
             .AddType<GraphQl.PhotovoltaicDataX.PhotovoltaicDataType>()
+            .AddType<GraphQl.Users.UserType>()
             // Data Loaders
             /* .AddDataLoader<GraphQl.Components.ComponentByIdDataLoader>() */
             // Paging

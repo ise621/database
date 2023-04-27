@@ -7,9 +7,9 @@ using Microsoft.Extensions.Hosting;
 using Quartz;
 using Database.Data;
 using System.Security.Cryptography.X509Certificates;
-using static OpenIddict.Abstractions.OpenIddictConstants;
 using System.Reflection;
 using System.IO;
+using OpenIddict.Abstractions;
 
 namespace Database.Configuration
 {
@@ -154,9 +154,11 @@ namespace Database.Configuration
                         ClientId = "testlab-solar-facades",
                         ClientSecret = appSettings.OpenIdConnectClientSecret,
 
+                        // https://auth0.com/docs/get-started/apis/scopes/openid-connect-scopes#standard-claims
                         Scopes = {
-                            Scopes.Email,
-                            Scopes.Roles
+                            OpenIddictConstants.Scopes.Email,
+                            OpenIddictConstants.Scopes.Profile,
+                            OpenIddictConstants.Scopes.Roles
                         },
 
                         // Note: to mitigate mix-up attacks, it's recommended to use a unique redirection endpoint
