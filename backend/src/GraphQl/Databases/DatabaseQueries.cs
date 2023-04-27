@@ -39,6 +39,7 @@ namespace Database.GraphQl.Databases
                             {
                                 locator = new
                                 {
+                                    // TODO This is error-prone.
                                     eq = new Uri(new Uri(appSettings.Host), "/graphql")
                                 }
                             }
