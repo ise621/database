@@ -114,16 +114,19 @@ namespace Database.Configuration
             .AddType(new GraphQl.LocaleType())
             // Query Types
             .AddQueryType(d => d.Name(nameof(GraphQl.Query)))
-                .AddType<GraphQl.VerificationCodeQueries>()
                 .AddType<GraphQl.CalorimetricDataX.CalorimetricDataQueries>()
+                .AddType<GraphQl.Databases.DatabaseQueries>()
                 .AddType<GraphQl.DataX.DataQueries>()
                 .AddType<GraphQl.GetHttpsResources.GetHttpsResourceQueries>()
                 .AddType<GraphQl.HygrothermalDataX.HygrothermalDataQueries>()
                 .AddType<GraphQl.OpticalDataX.OpticalDataQueries>()
                 .AddType<GraphQl.PhotovoltaicDataX.PhotovoltaicDataQueries>()
+                .AddType<GraphQl.Users.UserQueries>()
+                .AddType<GraphQl.VerificationCodeQueries>()
             // Mutation Types
             .AddMutationType(d => d.Name(nameof(GraphQl.Mutation)))
                 .AddType<GraphQl.CalorimetricDataX.CalorimetricDataMutations>()
+                .AddType<GraphQl.Databases.DatabaseMutations>()
                 .AddType<GraphQl.GetHttpsResources.GetHttpsResourceMutations>()
                 .AddType<GraphQl.HygrothermalDataX.HygrothermalDataMutations>()
                 .AddType<GraphQl.OpticalDataX.OpticalDataMutations>()
@@ -139,6 +142,7 @@ namespace Database.Configuration
             .AddType<GraphQl.NamedMethodArgumentType>()
             .AddType<GraphQl.OpticalDataX.OpticalDataType>()
             .AddType<GraphQl.PhotovoltaicDataX.PhotovoltaicDataType>()
+            .AddType<GraphQl.Users.UserType>()
             // Data Loaders
             /* .AddDataLoader<GraphQl.Components.ComponentByIdDataLoader>() */
             // Paging

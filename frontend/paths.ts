@@ -2,6 +2,7 @@ export default {
   home: "/",
   legalNotice: "/legal-notice",
   dataProtectionInformation: "/data-protection-information",
+  database: "/database",
   data: "/data",
   calorimetricData: "/data/calorimetric",
   calorimetricDatum(uuid: string) {
@@ -21,6 +22,8 @@ export default {
   },
   createData: "/data/create",
   uploadFile: "/upload-file",
+  login: "/connect/login",
+  logout: "/connect/logout",
   metabase: {
     component(uuid: string) {
       return `${

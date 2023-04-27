@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OpenIddict.Client.AspNetCore;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
@@ -16,10 +18,15 @@ namespace Database.Controllers
     public class AuthenticationController : Controller
     {
         private readonly string _issuer;
+        private readonly Data.ApplicationDbContext _context;
 
-        public AuthenticationController(AppSettings appSettings)
+        public AuthenticationController(
+            AppSettings appSettings,
+            Data.ApplicationDbContext context
+            )
         {
             _issuer = appSettings.MetabaseHost;
+            _context = context;
         }
 
         [HttpGet("~/connect/login")]
@@ -43,7 +50,8 @@ namespace Database.Controllers
             );
         }
 
-        [HttpPost("~/connect/logout"), ValidateAntiForgeryToken]
+        [HttpPost("~/connect/logout")]
+        // TODO Add `[ValidateAntiForgeryToken]`. For details see https://learn.microsoft.com/en-us/aspnet/core/security/anti-request-forgery?view=aspnetcore-7.0#javascript-ajax-and-spas
         public async Task<ActionResult> LogOut(string? returnUrl)
         {
             // Retrieve the identity stored in the local authentication cookie. If it's not available,
@@ -82,7 +90,7 @@ namespace Database.Controllers
         // but for users who prefer using a different action per provider,
         // the following action can be split into separate actions.
         [HttpGet("~/connect/callback/login/{provider}"), HttpPost("~/connect/callback/login/{provider}"), IgnoreAntiforgeryToken]
-        public async Task<ActionResult> LogInCallback()
+        public async Task<ActionResult> LogInCallback(CancellationToken cancellationToken)
         {
             // Retrieve the authorization data validated by OpenIddict as part of the callback handling.
             var result = await HttpContext.AuthenticateAsync(OpenIddictClientAspNetCoreDefaults.AuthenticationScheme);
@@ -121,14 +129,21 @@ namespace Database.Controllers
             //
             // By default, all claims extracted during the authorization dance are available. The claims collection stored
             // in the cookie can be filtered out or mapped to different names depending on the claim name or its issuer.
+            //
+            // The claims are fetched from the userinfo endpoint of the
+            // authorization provider.
             var claims = new List<Claim>(
                 result.Principal.Claims
                 .Select(claim => claim switch
                 {
+                    // https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims
                     // Map the standard "sub" and custom "id" claims to ClaimTypes.NameIdentifier, which is
                     // the default claim type used by .NET and is required by the antiforgery components.
                     { Type: Claims.Subject }
                         => new Claim(ClaimTypes.NameIdentifier, claim.Value, claim.ValueType, claim.Issuer),
+                    // Map the standard "email" claim to ClaimTypes.Email.
+                    { Type: Claims.Email }
+                        => new Claim(ClaimTypes.Email, claim.Value, claim.ValueType, claim.Issuer),
                     // Map the standard "name" claim to ClaimTypes.Name.
                     { Type: Claims.Name }
                         => new Claim(ClaimTypes.Name, claim.Value, claim.ValueType, claim.Issuer),
@@ -137,7 +152,7 @@ namespace Database.Controllers
                 .Where(claim => claim switch
                 {
                     // Preserve the basic claims that are necessary for the application to work correctly.
-                    { Type: ClaimTypes.NameIdentifier or ClaimTypes.Name } => true,
+                    { Type: ClaimTypes.NameIdentifier or ClaimTypes.Email or ClaimTypes.Name } => true,
                     // Don't preserve the other claims.
                     _ => false
                 }));
@@ -170,6 +185,40 @@ namespace Database.Controllers
                     _ => false
                 }));
             }
+            // Add the user to the database if he/she does not exist.
+            var subject =
+                identity.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)?.Value
+                ?? throw new InvalidOperationException($"Impossible! The claim {ClaimTypes.NameIdentifier}, which is the subject of the token, is missing for the identity with name {identity.Name}.");
+            var email =
+                identity.FindFirst(c => c.Type == ClaimTypes.Email)?.Value
+                ?? throw new InvalidOperationException($"Impossible! The claim {ClaimTypes.Email} is missing for the identity with subject {subject}.");
+            var name =
+                identity.FindFirst(c => c.Type == ClaimTypes.Name)?.Value
+                ?? throw new InvalidOperationException($"Impossible! The claim {ClaimTypes.Name} is missing for the identity with subject {subject}.");
+            var user = await
+                _context.Users.AsQueryable()
+                .SingleOrDefaultAsync(
+                    u => u.Subject == subject,
+                    cancellationToken
+                );
+            if (user is null)
+            {
+                _context.Users.Add(
+                    new Data.User(
+                        subject: subject,
+                        email: email,
+                        name: name
+                    )
+                );
+            }
+            else
+            {
+                user.Update(
+                    email: email,
+                    name: name
+                );
+            }
+            await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             // Ask the cookie authentication handler to return a new cookie and redirect
             // the user agent to the return URL stored in the authentication properties.
             return SignIn(

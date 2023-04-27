@@ -7,9 +7,9 @@ using Microsoft.Extensions.Hosting;
 using Quartz;
 using Database.Data;
 using System.Security.Cryptography.X509Certificates;
-using static OpenIddict.Abstractions.OpenIddictConstants;
 using System.Reflection;
 using System.IO;
+using OpenIddict.Abstractions;
 
 namespace Database.Configuration
 {
@@ -17,6 +17,9 @@ namespace Database.Configuration
     // https://github.com/openiddict/openiddict-samples/blob/855c31f91d6bf5cde735ef3f96fcc3c015b51d79/samples/Velusia/Velusia.Client/Startup.cs
     public abstract class AuthConfiguration
     {
+        public static string ReadApiScope { get; } = "api:read";
+        public static string WriteApiScope { get; } = "api:write";
+
         public static void ConfigureServices(
             IServiceCollection services,
             IWebHostEnvironment environment,
@@ -154,9 +157,13 @@ namespace Database.Configuration
                         ClientId = "testlab-solar-facades",
                         ClientSecret = appSettings.OpenIdConnectClientSecret,
 
+                        // https://auth0.com/docs/get-started/apis/scopes/openid-connect-scopes#standard-claims
                         Scopes = {
-                            Scopes.Email,
-                            Scopes.Roles
+                            OpenIddictConstants.Scopes.Email,
+                            OpenIddictConstants.Scopes.Profile,
+                            OpenIddictConstants.Scopes.Roles,
+                            ReadApiScope,
+                            WriteApiScope
                         },
 
                         // Note: to mitigate mix-up attacks, it's recommended to use a unique redirection endpoint

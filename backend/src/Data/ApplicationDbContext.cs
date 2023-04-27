@@ -67,11 +67,12 @@ namespace Database.Data
 
         // https://docs.microsoft.com/en-us/ef/core/miscellaneous/nullable-reference-types#dbcontext-and-dbset
         public DbSet<GetHttpsResource> GetHttpsResources { get; private set; } = default!;
+        public DbSet<DataProtectionKey> DataProtectionKeys { get; private set; } = default!;
         public DbSet<CalorimetricData> CalorimetricData { get; private set; } = default!;
         public DbSet<HygrothermalData> HygrothermalData { get; private set; } = default!;
         public DbSet<OpticalData> OpticalData { get; private set; } = default!;
         public DbSet<PhotovoltaicData> PhotovoltaicData { get; private set; } = default!;
-        public DbSet<DataProtectionKey> DataProtectionKeys { get; private set; } = default!;
+        public DbSet<User> Users { get; private set; } = default!;
 
         public ApplicationDbContext(
             DbContextOptions<ApplicationDbContext> options
@@ -96,7 +97,14 @@ namespace Database.Data
             ConfigureEntity(
                 builder.Entity<CalorimetricData>()
                 )
-              .OwnsOne(data => data.AppliedMethod, method => { method.OwnsMany(m => m.Arguments); method.OwnsMany(m => m.Sources); })
+              .OwnsOne(
+                  data => data.AppliedMethod,
+                  method =>
+                  {
+                      method.OwnsMany(m => m.Arguments);
+                      method.OwnsMany(m => m.Sources);
+                  }
+              )
               .ToTable("calorimetric_data");
             ConfigureEntity(
                 builder.Entity<HygrothermalData>()
@@ -110,6 +118,10 @@ namespace Database.Data
                 builder.Entity<PhotovoltaicData>()
                 )
               .ToTable("photovoltaic_data");
+            ConfigureEntity(
+                builder.Entity<User>()
+                )
+              .ToTable("user");
         }
     }
 }
