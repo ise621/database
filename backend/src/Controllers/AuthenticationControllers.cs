@@ -129,6 +129,9 @@ namespace Database.Controllers
             //
             // By default, all claims extracted during the authorization dance are available. The claims collection stored
             // in the cookie can be filtered out or mapped to different names depending on the claim name or its issuer.
+            //
+            // The claims are fetched from the userinfo endpoint of the
+            // authorization provider.
             var claims = new List<Claim>(
                 result.Principal.Claims
                 .Select(claim => claim switch
