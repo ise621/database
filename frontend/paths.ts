@@ -21,6 +21,8 @@ export default {
   },
   createData: "/data/create",
   uploadFile: "/upload-file",
+  login: "/connect/login",
+  logout: "/connect/logout",
   metabase: {
     component(uuid: string) {
       return `${
