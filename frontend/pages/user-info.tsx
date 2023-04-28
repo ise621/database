@@ -37,29 +37,41 @@ function Page() {
         backIcon={false}
       >
         <Descriptions size="small" column={1}>
-          <Descriptions.Item label="Email">
-            {currentUserInfo.email} (
-            {currentUserInfo.emailVerified === true ? "Verified" : "Unverified"}
-            )
-          </Descriptions.Item>
-          <Descriptions.Item label="Phone Number">
-            {currentUserInfo.phoneNumber} (
-            {currentUserInfo.phoneNumberVerified === true
-              ? "Verified"
-              : "Unverified"}
-            )
-          </Descriptions.Item>
-          <Descriptions.Item label="Address">
-            {currentUserInfo.address?.formatted}
-          </Descriptions.Item>
-          <Descriptions.Item label="Website">
-            <Typography.Link href={currentUserInfo.website}>
-              {currentUserInfo.website}
-            </Typography.Link>
-          </Descriptions.Item>
-          <Descriptions.Item label="Roles">
-            {currentUserInfo.roles}
-          </Descriptions.Item>
+          {currentUserInfo.email && (
+            <Descriptions.Item label="Email">
+              {currentUserInfo.email} (
+              {currentUserInfo.emailVerified === true
+                ? "Verified"
+                : "Unverified"}
+              )
+            </Descriptions.Item>
+          )}
+          {currentUserInfo.phoneNumber && (
+            <Descriptions.Item label="Phone Number">
+              {currentUserInfo.phoneNumber} (
+              {currentUserInfo.phoneNumberVerified === true
+                ? "Verified"
+                : "Unverified"}
+              )
+            </Descriptions.Item>
+          )}
+          {currentUserInfo.address && (
+            <Descriptions.Item label="Address">
+              {currentUserInfo.address.formatted}
+            </Descriptions.Item>
+          )}
+          {currentUserInfo.website && (
+            <Descriptions.Item label="Website">
+              <Typography.Link href={currentUserInfo.website}>
+                {currentUserInfo.website}
+              </Typography.Link>
+            </Descriptions.Item>
+          )}
+          {currentUserInfo.roles && (
+            <Descriptions.Item label="Roles">
+              {currentUserInfo.roles}
+            </Descriptions.Item>
+          )}
         </Descriptions>
       </PageHeader>
     </Layout>
