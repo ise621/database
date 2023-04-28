@@ -38,11 +38,16 @@ function Page() {
       >
         <Descriptions size="small" column={1}>
           <Descriptions.Item label="Email">
-            {currentUserInfo.email} (Verified: {currentUserInfo.emailVerified})
+            {currentUserInfo.email} (
+            {currentUserInfo.emailVerified === true ? "Verified" : "Unverified"}
+            )
           </Descriptions.Item>
           <Descriptions.Item label="Phone Number">
-            {currentUserInfo.phoneNumber} (Verified:{" "}
-            {currentUserInfo.phoneNumberVerified})
+            {currentUserInfo.phoneNumber} (
+            {currentUserInfo.phoneNumberVerified === true
+              ? "Verified"
+              : "Unverified"}
+            )
           </Descriptions.Item>
           <Descriptions.Item label="Address">
             {currentUserInfo.address?.formatted}
