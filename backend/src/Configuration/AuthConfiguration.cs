@@ -58,12 +58,12 @@ namespace Database.Configuration
             IServiceCollection services
         )
         {
+            // Dot not use the single authentication scheme as the default scheme
+            // https://learn.microsoft.com/en-us/aspnet/core/security/authentication/?view=aspnetcore-7.0#defaultscheme
+            AppContext.SetSwitch("Microsoft.AspNetCore.Authentication.SuppressAutoDefaultScheme", isEnabled: true);
             // Inspired by https://github.com/openiddict/openiddict-samples/blob/01cb2ce4600cab15867e34826b0287622e6dd71b/samples/Velusia/Velusia.Client/Startup.cs
             services
-            .AddAuthentication(_ =>
-            {
-                _.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            })
+            .AddAuthentication()
             .AddCookie(_ =>
             {
                 _.AccessDeniedPath = "/unauthorized";
