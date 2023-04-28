@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Database.GraphQl
 {
-    public record RootGetHttpsResourceInput(
+    public sealed record RootGetHttpsResourceInput(
           string Description,
           string HashValue,
           Guid DataFormatId,

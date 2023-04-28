@@ -2,7 +2,7 @@ using System;
 
 namespace Database.GraphQl.Databases
 {
-    public record UpdateDatabaseInput(
+    public sealed record UpdateDatabaseInput(
           Guid DatabaseId,
           string Name,
           string Description,

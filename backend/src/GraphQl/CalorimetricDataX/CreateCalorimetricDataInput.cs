@@ -5,7 +5,7 @@ using HotChocolate.Types;
 
 namespace Database.GraphQl.CalorimetricDataX
 {
-    public record CreateCalorimetricDataInput(
+    public sealed record CreateCalorimetricDataInput(
           string AccessToken,
           // TODO Why does specifying the type with an attribute not work here?
           [GraphQLType<NonNullType<LocaleType>>] string Locale,

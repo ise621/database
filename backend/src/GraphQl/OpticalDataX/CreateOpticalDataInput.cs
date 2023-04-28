@@ -5,7 +5,7 @@ using HotChocolate.Types;
 
 namespace Database.GraphQl.OpticalDataX
 {
-    public record CreateOpticalDataInput(
+    public sealed record CreateOpticalDataInput(
           string AccessToken,
           // TODO Why does specifying the type with an attribute not work here?
           [GraphQLType<NonNullType<LocaleType>>] string Locale,
