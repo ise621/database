@@ -17,6 +17,10 @@ export type NavBarProps = {
 
 const moderatorItems = [
   {
+    path: paths.userInfo,
+    label: "User Info",
+  },
+  {
     path: paths.createData,
     label: "Create Data",
   },

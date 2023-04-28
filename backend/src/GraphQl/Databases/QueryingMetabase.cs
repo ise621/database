@@ -78,16 +78,14 @@ namespace Database.GraphQl.Databases
             using var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage, cancellationToken).ConfigureAwait(false);
             if (httpResponseMessage.StatusCode != HttpStatusCode.OK)
             {
-                throw new HttpRequestException($"The status code is not {HttpStatusCode.OK}.", null, httpResponseMessage.StatusCode);
+                throw new HttpRequestException($"The status code is not {HttpStatusCode.OK} but {httpResponseMessage.StatusCode}.", null, httpResponseMessage.StatusCode);
             }
             // We could use `httpResponseMessage.Content.ReadFromJsonAsync<GraphQL.GraphQLResponse<TGraphQlResponse>>` which would make debugging more difficult though, https://docs.microsoft.com/en-us/dotnet/api/system.net.http.json.httpcontentjsonextensions.readfromjsonasync?view=net-5.0#System_Net_Http_Json_HttpContentJsonExtensions_ReadFromJsonAsync__1_System_Net_Http_HttpContent_System_Text_Json_JsonSerializerOptions_System_Threading_CancellationToken_
             using var graphQlResponseStream =
                 await httpResponseMessage.Content
                 .ReadAsStreamAsync(cancellationToken)
                 .ConfigureAwait(false);
-            // Console.WriteLine("aaaaaaaaaaaaaa");
             // Console.WriteLine(new StreamReader(graphQlResponseStream).ReadToEnd());
-            // {"data":{"databases":{"nodes":[{"uuid":"70fe99ed-f212-4666-adde-6e0877f3e518","name":"A","description":"B","locator":"https://local.solarbuildingenvelopes.com:5051/graphql","verificationState":"VERIFIED","verificationCode":"","canCurrentUserUpdateNode":false,"canCurrentUserVerifyNode":false},{"uuid":"6313a485-3767-4352-b75c-2a8e431cc4a9","name":"X","description":"Y","locator":"https://local.solarbuildingenvelopes.com:5051/graphql","verificationState":"VERIFIED","verificationCode":"njckM853NWOJnH\u002BXyDXIQMwEdHteu9JIlQVgGp97ewZOTYzx3sVip3HcTRS9QfWdBUPnYAeKZg76BbTMEUwMZQ==","canCurrentUserUpdateNode":false,"canCurrentUserVerifyNode":false}]}}}
             var deserializedGraphQlResponse =
                 await JsonSerializer.DeserializeAsync<GraphQL.GraphQLResponse<TGraphQlResponse>>(
                     graphQlResponseStream,

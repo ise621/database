@@ -2,6 +2,7 @@ export default {
   home: "/",
   legalNotice: "/legal-notice",
   dataProtectionInformation: "/data-protection-information",
+  userInfo: "/user-info",
   database: "/database",
   data: "/data",
   calorimetricData: "/data/calorimetric",
