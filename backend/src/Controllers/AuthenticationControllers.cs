@@ -60,7 +60,8 @@ namespace Database.Controllers
             if (result is not { Succeeded: true })
             {
                 // Only allow local return URLs to prevent open redirect attacks.
-                return Redirect(SanitizeReturnUrl(returnUrl));
+                // https://learn.microsoft.com/en-us/aspnet/core/security/preventing-open-redirects
+                return LocalRedirect(SanitizeReturnUrl(returnUrl));
             }
             // Remove the local authentication cookie before triggering a redirection to the remote server.
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -229,7 +230,10 @@ namespace Database.Controllers
             // In this sample, the local authentication cookie is always removed before the user agent is redirected
             // to the authorization server. Applications that prefer delaying the removal of the local cookie can
             // remove the corresponding code from the logout action and remove the authentication cookie in this action.
-            return Redirect(
+            //
+            // Only allow local return URLs to prevent open redirect attacks.
+            // https://learn.microsoft.com/en-us/aspnet/core/security/preventing-open-redirects
+            return LocalRedirect(
                 SanitizeReturnUrl(result.Properties?.RedirectUri)
             );
         }
