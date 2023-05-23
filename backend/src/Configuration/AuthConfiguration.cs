@@ -28,7 +28,7 @@ namespace Database.Configuration
         {
             var encryptionCertificate = LoadCertificate("jwt-encryption-certificate.pfx", appSettings.JsonWebToken.EncryptionCertificatePassword);
             var signingCertificate = LoadCertificate("jwt-signing-certificate.pfx", appSettings.JsonWebToken.SigningCertificatePassword);
-            ConfigureAuthenticiationAndAuthorizationServices(services);
+            ConfigureAuthenticationAndAuthorizationServices(services);
             ConfigureTaskScheduling(services, environment);
             ConfigureOpenIddictServices(services, appSettings, encryptionCertificate, signingCertificate);
         }
@@ -54,7 +54,7 @@ namespace Database.Configuration
             );
         }
 
-        private static void ConfigureAuthenticiationAndAuthorizationServices(
+        private static void ConfigureAuthenticationAndAuthorizationServices(
             IServiceCollection services
         )
         {
