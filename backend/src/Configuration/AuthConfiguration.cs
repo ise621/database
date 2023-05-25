@@ -1,6 +1,5 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Hosting;
 using OpenIddict.Client;
 using Microsoft.Extensions.Hosting;
@@ -17,6 +16,7 @@ namespace Database.Configuration
     // https://github.com/openiddict/openiddict-samples/blob/855c31f91d6bf5cde735ef3f96fcc3c015b51d79/samples/Velusia/Velusia.Client/Startup.cs
     public abstract class AuthConfiguration
     {
+        public const string ClientId = "testlab-solar-facades";
         public static string ReadApiScope { get; } = "api:read";
         public static string WriteApiScope { get; } = "api:write";
 
@@ -63,7 +63,18 @@ namespace Database.Configuration
             AppContext.SetSwitch("Microsoft.AspNetCore.Authentication.SuppressAutoDefaultScheme", isEnabled: true);
             // Inspired by https://github.com/openiddict/openiddict-samples/blob/01cb2ce4600cab15867e34826b0287622e6dd71b/samples/Velusia/Velusia.Client/Startup.cs
             services
-            .AddAuthentication()
+            .AddAuthentication(_ =>
+            {
+                // To make the various authentication control flows obvious, do
+                // not use default schemes for anything and always be explicit
+                // instead.
+                _.DefaultAuthenticateScheme = null;
+                _.DefaultChallengeScheme = null;
+                _.DefaultForbidScheme = null;
+                _.DefaultScheme = null;
+                _.DefaultSignInScheme = null;
+                _.DefaultSignOutScheme = null;
+            })
             .AddCookie(_ =>
             {
                 _.AccessDeniedPath = "/unauthorized";
@@ -124,6 +135,25 @@ namespace Database.Configuration
                 // Enable Quartz.NET integration.
                 _.UseQuartz();
             })
+            .AddValidation(_ =>
+            {
+                // The validation handler uses OpenID Connect discovery to
+                // retrieve the issuer signing keys used to validate tokens.
+                _.SetIssuer(new Uri(appSettings.MetabaseHost, UriKind.Absolute));
+                // Configure the audience accepted by this resource server.
+                _.AddAudiences(ClientId);
+                // Configure the validation handler to use introspection and
+                // register the client credentials used when communicating with
+                // the remote introspection endpoint.
+                // https://www.oauth.com/oauth2-servers/token-introspection-endpoint/
+                _.UseIntrospection()
+                .SetClientId(ClientId)
+                .SetClientSecret(appSettings.OpenIdConnectClientSecret);
+                // Register the ASP.NET Core host.
+                _.UseAspNetCore();
+                // Register the System.Net.Http integration.
+                _.UseSystemNetHttp();
+            })
             .AddClient(_ =>
             {
                 _.AllowAuthorizationCodeFlow();
@@ -154,7 +184,7 @@ namespace Database.Configuration
 
                         // Note: these settings must match the application details
                         // inserted in the database at the server level.
-                        ClientId = "testlab-solar-facades",
+                        ClientId = ClientId,
                         ClientSecret = appSettings.OpenIdConnectClientSecret,
 
                         // https://auth0.com/docs/get-started/apis/scopes/openid-connect-scopes#standard-claims
