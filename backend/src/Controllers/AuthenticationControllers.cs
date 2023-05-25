@@ -51,7 +51,7 @@ namespace Database.Controllers
         }
 
         [HttpPost("~/connect/logout")]
-        // TODO Add `[ValidateAntiForgeryToken]`. For details see https://learn.microsoft.com/en-us/aspnet/core/security/anti-request-forgery?view=aspnetcore-7.0#javascript-ajax-and-spas
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> LogOut(string? returnUrl)
         {
             // Retrieve the identity stored in the local authentication cookie. If it's not available,
