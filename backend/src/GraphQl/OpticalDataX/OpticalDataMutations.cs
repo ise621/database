@@ -17,7 +17,7 @@ namespace Database.GraphQl.OpticalDataX
         // [Authorize(Policy = Configuration.AuthConfiguration.WritePolicy)]
         public async Task<CreateOpticalDataPayload> CreateOpticalDataAsync(
             CreateOpticalDataInput input,
-            // [GlobalState(nameof(ClaimsPrincipal))] ClaimsPrincipal claimsPrincipal,
+            // ClaimsPrincipal claimsPrincipal,
             // [ScopedService] UserManager<Data.User> userManager,
             Data.ApplicationDbContext context,
             [Service] AppSettings appSettings,

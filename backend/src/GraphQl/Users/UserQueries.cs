@@ -26,7 +26,7 @@ namespace Database.GraphQl.Users
     public sealed class UserQueries
     {
         public async Task<Data.User?> GetCurrentUserAsync(
-            [GlobalState(nameof(ClaimsPrincipal))] ClaimsPrincipal claimsPrincipal,
+            ClaimsPrincipal claimsPrincipal,
             Data.ApplicationDbContext context,
             CancellationToken cancellationToken
         )
