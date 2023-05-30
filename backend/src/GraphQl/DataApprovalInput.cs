@@ -2,7 +2,7 @@ using System;
 
 namespace Database.GraphQl
 {
-    public record DataApprovalInput(
+    public sealed record DataApprovalInput(
           DateTime Timestamp,
           string Signature,
           string KeyFingerprint,

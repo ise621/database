@@ -14,6 +14,7 @@ using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Database.GraphQl.Filters;
 using System.Net.Http;
+using OpenIddict.Validation.AspNetCore;
 
 namespace Database.Configuration
 {
@@ -93,13 +94,18 @@ namespace Database.Configuration
             /* .UsePersistedQueryPipeline(); */
             .AddHttpRequestInterceptor(async (httpContext, requestExecutor, requestBuilder, cancellationToken) =>
             {
-                // HotChocolate uses the default cookie authentication
-                // scheme `IdentityConstants.ApplicationScheme` by
-                // default.
-                var authenticateResult = await httpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme).ConfigureAwait(false);
-                if (authenticateResult.Succeeded && authenticateResult.Principal is not null)
+                // HotChocolate uses the default authentication scheme, which we
+                // set to `null` in `AuthConfiguration` to force users to be
+                // explicit about what scheme to use when making it easier to
+                // grasp the various authentication flows.
+                try
                 {
-                    httpContext.User = authenticateResult.Principal;
+                    await HttpContextAuthentication.Authenticate(httpContext);
+                }
+                catch (Exception e)
+                {
+                    // TODO Log to a `ILogger<GraphQlConfiguration>` instead.
+                    Console.WriteLine(e);
                 }
             })
             .AddDiagnosticEventListener(_ =>

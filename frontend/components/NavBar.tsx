@@ -5,6 +5,7 @@ import { Button, Menu } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import paths from "../paths";
 import { useCurrentUserQuery } from "../queries/currentUser.graphql";
+import { getXsrfToken } from "../lib/apollo";
 
 type NavItemProps = {
   path: string;
@@ -16,6 +17,10 @@ export type NavBarProps = {
 };
 
 const moderatorItems = [
+  {
+    path: paths.userInfo,
+    label: "User Info",
+  },
   {
     path: paths.createData,
     label: "Create Data",
@@ -43,18 +48,27 @@ export default function NavBar({ items }: NavBarProps) {
           title={currentUser ? currentUser.name : null}
           icon={<UserOutlined />}
         >
-          <Menu.Item key={paths.logout}>
-            <form action={paths.logout} method="post">
-              <Button type="primary" htmlType="submit">
-                Logout
-              </Button>
-            </form>
-          </Menu.Item>
           {moderatorItems.map(({ path, label }) => (
             <Menu.Item key={path}>
               <Link href={path}>{label}</Link>
             </Menu.Item>
           ))}
+          <Menu.Item key={paths.logout}>
+            <form action={paths.logout} method="post">
+              <input
+                name="__RequestVerificationToken"
+                type="hidden"
+                value={
+                  typeof window !== "undefined"
+                    ? getXsrfToken() ?? undefined
+                    : ""
+                }
+              />
+              <Button type="primary" htmlType="submit">
+                Logout
+              </Button>
+            </form>
+          </Menu.Item>
         </Menu.SubMenu>
       ) : (
         <Menu.Item key={paths.login}>

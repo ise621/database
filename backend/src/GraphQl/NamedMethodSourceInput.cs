@@ -1,6 +1,6 @@
 namespace Database.GraphQl
 {
-    public record NamedMethodSourceInput(
+    public sealed record NamedMethodSourceInput(
             string Name,
             CrossDatabaseDataReferenceInput Value
     );

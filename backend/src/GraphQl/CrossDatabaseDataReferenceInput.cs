@@ -3,7 +3,7 @@ using Database.Enumerations;
 
 namespace Database.GraphQl
 {
-    public record CrossDatabaseDataReferenceInput(
+    public sealed record CrossDatabaseDataReferenceInput(
         Guid DataId,
         DateTime DataTimestamp,
         DataKind DataKind,

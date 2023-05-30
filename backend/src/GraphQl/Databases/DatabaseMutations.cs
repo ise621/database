@@ -19,10 +19,10 @@ namespace Database.GraphQl.Databases
             CancellationToken cancellationToken
             )
         {
-            return (await QueryingMetabase.QueryMetabase<UpdateDatabasePayload>(
+            return (await Metabase.QueryingMetabase.QueryGraphQl<UpdateDatabasePayload>(
                 appSettings,
                 new GraphQL.GraphQLRequest(
-                    query: await QueryingMetabase.ConstructQuery(
+                    query: await Metabase.QueryingMetabase.ConstructGraphQlQuery(
                         new[] {
                             "UpdateDatabase.graphql"
                         }

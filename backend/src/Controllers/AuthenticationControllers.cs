@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OpenIddict.Client.AspNetCore;
@@ -51,7 +52,7 @@ namespace Database.Controllers
         }
 
         [HttpPost("~/connect/logout")]
-        // TODO Add `[ValidateAntiForgeryToken]`. For details see https://learn.microsoft.com/en-us/aspnet/core/security/anti-request-forgery?view=aspnetcore-7.0#javascript-ajax-and-spas
+        [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme), ValidateAntiForgeryToken]
         public async Task<ActionResult> LogOut(string? returnUrl)
         {
             // Retrieve the identity stored in the local authentication cookie. If it's not available,
@@ -60,7 +61,8 @@ namespace Database.Controllers
             if (result is not { Succeeded: true })
             {
                 // Only allow local return URLs to prevent open redirect attacks.
-                return Redirect(SanitizeReturnUrl(returnUrl));
+                // https://learn.microsoft.com/en-us/aspnet/core/security/preventing-open-redirects
+                return LocalRedirect(SanitizeReturnUrl(returnUrl));
             }
             // Remove the local authentication cookie before triggering a redirection to the remote server.
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -141,9 +143,6 @@ namespace Database.Controllers
                     // the default claim type used by .NET and is required by the antiforgery components.
                     { Type: Claims.Subject }
                         => new Claim(ClaimTypes.NameIdentifier, claim.Value, claim.ValueType, claim.Issuer),
-                    // Map the standard "email" claim to ClaimTypes.Email.
-                    { Type: Claims.Email }
-                        => new Claim(ClaimTypes.Email, claim.Value, claim.ValueType, claim.Issuer),
                     // Map the standard "name" claim to ClaimTypes.Name.
                     { Type: Claims.Name }
                         => new Claim(ClaimTypes.Name, claim.Value, claim.ValueType, claim.Issuer),
@@ -152,7 +151,7 @@ namespace Database.Controllers
                 .Where(claim => claim switch
                 {
                     // Preserve the basic claims that are necessary for the application to work correctly.
-                    { Type: ClaimTypes.NameIdentifier or ClaimTypes.Email or ClaimTypes.Name } => true,
+                    { Type: ClaimTypes.NameIdentifier or ClaimTypes.Name } => true,
                     // Don't preserve the other claims.
                     _ => false
                 }));
@@ -189,9 +188,6 @@ namespace Database.Controllers
             var subject =
                 identity.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)?.Value
                 ?? throw new InvalidOperationException($"Impossible! The claim {ClaimTypes.NameIdentifier}, which is the subject of the token, is missing for the identity with name {identity.Name}.");
-            var email =
-                identity.FindFirst(c => c.Type == ClaimTypes.Email)?.Value
-                ?? throw new InvalidOperationException($"Impossible! The claim {ClaimTypes.Email} is missing for the identity with subject {subject}.");
             var name =
                 identity.FindFirst(c => c.Type == ClaimTypes.Name)?.Value
                 ?? throw new InvalidOperationException($"Impossible! The claim {ClaimTypes.Name} is missing for the identity with subject {subject}.");
@@ -206,17 +202,13 @@ namespace Database.Controllers
                 _context.Users.Add(
                     new Data.User(
                         subject: subject,
-                        email: email,
                         name: name
                     )
                 );
             }
             else
             {
-                user.Update(
-                    email: email,
-                    name: name
-                );
+                user.Update(name: name);
             }
             await _context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             // Ask the cookie authentication handler to return a new cookie and redirect
@@ -239,7 +231,10 @@ namespace Database.Controllers
             // In this sample, the local authentication cookie is always removed before the user agent is redirected
             // to the authorization server. Applications that prefer delaying the removal of the local cookie can
             // remove the corresponding code from the logout action and remove the authentication cookie in this action.
-            return Redirect(
+            //
+            // Only allow local return URLs to prevent open redirect attacks.
+            // https://learn.microsoft.com/en-us/aspnet/core/security/preventing-open-redirects
+            return LocalRedirect(
                 SanitizeReturnUrl(result.Properties?.RedirectUri)
             );
         }

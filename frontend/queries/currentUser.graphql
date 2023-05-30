@@ -1,10 +1,25 @@
 fragment CurrentUserPartial on User {
-  email
   name
 }
 
 query CurrentUser {
   currentUser {
     ...CurrentUserPartial
+  }
+}
+
+query CurrentUserInfo {
+  currentUserInfo {
+    address {
+      formatted
+    }
+    email
+    emailVerified
+    name
+    phoneNumber
+    phoneNumberVerified
+    roles
+    sub
+    website
   }
 }

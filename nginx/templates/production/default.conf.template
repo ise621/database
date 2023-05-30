@@ -84,6 +84,11 @@ server {
     limit_req  zone=one burst=10 nodelay;
   }
 
+  location /antiforgery {
+    proxy_pass http://backend;
+    limit_req  zone=one burst=10 nodelay;
+  }
+
   location /api {
     proxy_pass http://backend;
     limit_req  zone=one burst=10 nodelay;
@@ -114,6 +119,7 @@ server {
     proxy_pass http://email;
     proxy_set_header Upgrade $http_upgrade;
     proxy_set_header Connection $connection_upgrade;
+    proxy_cache_bypass $http_upgrade;
     limit_req zone=one burst=20 nodelay;
   }
 

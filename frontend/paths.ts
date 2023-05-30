@@ -2,6 +2,8 @@ export default {
   home: "/",
   legalNotice: "/legal-notice",
   dataProtectionInformation: "/data-protection-information",
+  antiforgeryToken: "/antiforgery/token",
+  userInfo: "/user-info",
   database: "/database",
   data: "/data",
   calorimetricData: "/data/calorimetric",

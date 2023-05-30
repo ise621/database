@@ -40,7 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Upgrade packages to latest compatible versions in backend and frontend [#29](https://github.com/building-envelope-data/database/pull/29)
 - Persist data protection keys in database [bbac9c7e84a21dcc67bc5a9446032b862af51b5b](https://github.com/building-envelope-data/database/commit/bbac9c7e84a21dcc67bc5a9446032b862af51b5b)
 - Build Docker images with BuildKit [4ce5fa2c4dbe67de14f5e1c9be22896921349b50](https://github.com/building-envelope-data/database/commit/4ce5fa2c4dbe67de14f5e1c9be22896921349b50)
--
+- Improve OpenId Connect usage and security [#46](https://github.com/building-envelope-data/database/pull/46)
 -
 -
 -
