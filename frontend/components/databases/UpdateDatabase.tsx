@@ -2,7 +2,6 @@ import * as React from "react";
 import { Alert, Form, Input, Button, Modal } from "antd";
 import {
   useUpdateDatabaseMutation,
-  DatabasesDocument,
   DatabaseDocument,
 } from "../../queries/databases.graphql";
 import { Scalars } from "../../__generated__/__types__";
@@ -46,9 +45,6 @@ export default function UpdateDatabase({
         variables: {
           uuid: databaseId,
         },
-      },
-      {
-        query: DatabasesDocument,
       },
     ],
   });
