@@ -93,11 +93,17 @@ and the pages following it.
 
 ### Creating a release
 
-1. [Draft a new release](https://github.com/building-envelope-data/database/actions/workflows/draft-new-release.yml)
-   with a new version according to [Semantic Versioning](https://semver.org) by
-   running the GitHub action which, in particular, creates a new branch named
-   `release/v*.*.*`, where `*.*.*` is the version, and a corresponding pull
-   request.
+1. Draft a new release with a new version according to
+   [Semantic Versioning](https://semver.org) by running the GitHub action
+   [Draft a new release](https://github.com/building-envelope-data/database/actions/workflows/draft-new-release.yml)
+   which, creates a new branch named `release/v*.*.*`,
+   creates a corresponding pull request, updates the
+   [Changelog](https://github.com/building-envelope-data/database/blob/develop/CHANGELOG.md),
+   and bumps the version in
+   [`package.json`](https://github.com/building-envelope-data/database/blob/develop/frontend/package.json),
+   where `*.*.*` is the version. Note that this is **not** the same as "Draft
+   a new release" on
+   [Releases](https://github.com/building-envelope-data/database/releases).
 1. Fetch the release branch by running `git fetch` and check it out by running
    `git checkout release/v*.*.*`, where `*.*.*` is the version.
 1. Prepare the release by running `make prepare-release` in your shell, review,
@@ -133,6 +139,4 @@ and the pages following it.
 
 ## Useful Resources
 
-- [Fullstack Authentication Example with Next.js and NextAuth.js](https://github.com/prisma/prisma-examples/tree/latest/typescript/rest-nextjs-api-routes-auth)
-- [NextAuth.js Example App](https://github.com/nextauthjs/next-auth-example)
 - [Set up a GraphQL client with Apollo](https://hasura.io/learn/graphql/typescript-react-apollo/apollo-client/)
