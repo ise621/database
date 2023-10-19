@@ -1,6 +1,10 @@
 # Database
 
-This repository presents an example of a database which can be part of the network of [buildingenvelopedata.org](https://www.buildingenvelopedata.org/). Before deploying this repository, [machine](https://github.com/building-envelope-data/machine) can be used to set up the machine. The database uses [this API specification](https://github.com/building-envelope-data/api).
+This repository presents the reference implementation of a product data server as part of the product data network [buildingenvelopedata.org](https://www.buildingenvelopedata.org/). Before deploying this repository, [machine](https://github.com/building-envelope-data/machine) can be used to set up the machine.
+
+The [API specificatiom of the product data servers](https://github.com/building-envelope-data/api/apis/database.graphql) is available in the repository [api](https://github.com/building-envelope-data/api). There is also a [visualization of the API of a product data server](https://graphql-kit.com/graphql-voyager/?url=https://www.solarbuildingenvelopes.com/graphql/).
+
+This repository is deployed as the [product data server of TestLab Solar Facades of Fraunhofer ISE](https://www.solarbuildingenvelopes.com).
 
 If you have a question for which you don't find the answer in this repository, please raise a [new issue](https://github.com/building-envelope-data/database/issues/new) and add the tag `question`! All ways to contribute are presented by [CONTRIBUTING.md](https://github.com/building-envelope-data/database/blob/develop/CONTRIBUTING.md). The basis for our collaboration is decribed by our [Code of Conduct](https://github.com/building-envelope-data/database/blob/develop/CODE_OF_CONDUCT.md).
 
