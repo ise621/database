@@ -2,7 +2,7 @@
 
 This repository presents the reference implementation of a product data server as part of the product data network [buildingenvelopedata.org](https://www.buildingenvelopedata.org/). Before deploying this repository, [machine](https://github.com/building-envelope-data/machine) can be used to set up the machine.
 
-The [API specificatiom of the product data servers](https://github.com/building-envelope-data/api/apis/database.graphql) is available in the repository [api](https://github.com/building-envelope-data/api). There is also a [visualization of the API of a product data server](https://graphql-kit.com/graphql-voyager/?url=https://www.solarbuildingenvelopes.com/graphql/).
+The [API specification of the product data servers](https://github.com/building-envelope-data/api/blob/develop/apis/database.graphql) is available in the repository [api](https://github.com/building-envelope-data/api). There is also a [visualization of the API of a product data server](https://graphql-kit.com/graphql-voyager/?url=https://www.solarbuildingenvelopes.com/graphql/).
 
 This repository is deployed as the [product data server of TestLab Solar Facades of Fraunhofer ISE](https://www.solarbuildingenvelopes.com).
 
