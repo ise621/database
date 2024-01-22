@@ -118,10 +118,8 @@ namespace Database
             services.AddPooledDbContextFactory<Data.ApplicationDbContext>(options =>
                 {
                     var dataSourceBuilder = new NpgsqlDataSourceBuilder(_appSettings.Database.ConnectionString);
-                    // Enumerations registered as below are not picked up by
-                    // the tool `dotnet ef` when creating migrations. We thus
-                    // register enumerations in `ApplicationDbContext`.
-                    // dataSourceBuilder.MapEnum<Enumerations.DataKind>();
+                    // https://www.npgsql.org/efcore/mapping/enum.html#mapping-your-enum
+                    dataSourceBuilder.MapEnum<Enumerations.DataKind>();
                     options
                     .UseNpgsql(dataSourceBuilder.Build() /*, optionsBuilder => optionsBuilder.UseNodaTime() */)
                     .UseSchemaName(_appSettings.Database.SchemaName)

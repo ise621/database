@@ -45,6 +45,8 @@ If you have a question for which you don't find the answer in this repository, p
    authority files from the directories `./ssl`, `./backend/ssl`, and
    `./frontend/ssl` of the metabase project into the respective directories in
    the database project, and run the command `make generate-ssl-certificate`.
+1. Generate JSON Web Token (JWT) encryption and signing certificates by running
+   `make jwt-certificates`.
 1. Start all services and follow their logs by running `make up logs`.
 1. To see the web frontend navigate to
    `https://local.solarbuildingenvelopes.com:5051` in your web browser, to see
