@@ -85,7 +85,8 @@ namespace Database.GraphQl.OpticalDataX
                         keyFingerprint: a.KeyFingerprint,
                         query: a.Query,
                         response: a.Response,
-                        approverId: a.ApproverId
+                        approverId: a.ApproverId,
+                        statement: a.Statement
                     )
                 ).ToList(),
                 // approval: input.Approval

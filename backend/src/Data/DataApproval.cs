@@ -1,5 +1,6 @@
 using System;
 using Microsoft.EntityFrameworkCore;
+using Database.Data;
 
 namespace Database.Data
 {
@@ -13,6 +14,7 @@ namespace Database.Data
         public string Query { get; private set; }
         public string Response { get; private set; }
         public Guid ApproverId { get; private set; }
+        public IReference Statement { get; private set; }
 
         public DataApproval(
           DateTime timestamp,
@@ -20,7 +22,8 @@ namespace Database.Data
           string keyFingerprint,
           string query,
           string response,
-          Guid approverId
+          Guid approverId,
+          IReference statement
         )
         {
             Timestamp = timestamp;
@@ -29,6 +32,7 @@ namespace Database.Data
             Query = query;
             Response = response;
             ApproverId = approverId;
+            Statement = statement;
         }
     }
 }

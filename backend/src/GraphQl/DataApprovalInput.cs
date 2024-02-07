@@ -1,4 +1,5 @@
 using System;
+using Database.Data;
 
 namespace Database.GraphQl
 {
@@ -8,6 +9,7 @@ namespace Database.GraphQl
           string KeyFingerprint,
           string Query,
           string Response,
-          Guid ApproverId
+          Guid ApproverId,
+          IReference Statement
     );
 }
