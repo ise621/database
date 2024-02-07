@@ -38,6 +38,7 @@ public sealed class ApplicationDbContext
         // Create enumerations in public schema because that is where
         // `NpgsqlDataSourceBuilder.MapEnum` expects them to be by default.
         builder.HasPostgresEnum<DataKind>("public");
+        builder.HasPostgresEnum<Enumerations.Standardizer>("public");
     }
 
     private static
