@@ -1,6 +1,8 @@
 using System;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using Database.Data;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Database.Data;
 
@@ -14,8 +16,7 @@ public sealed class DataApproval
         string keyFingerprint,
         string query,
         string response,
-        Guid approverId,
-        IReference statement
+        Guid approverId
     )
     {
         Timestamp = timestamp;
@@ -24,7 +25,6 @@ public sealed class DataApproval
         Query = query;
         Response = response;
         ApproverId = approverId;
-        Statement = statement;
     }
 
     public Guid ApproverId { get; private set; }
@@ -33,5 +33,12 @@ public sealed class DataApproval
     public string KeyFingerprint { get; private set; }
     public string Query { get; private set; }
     public string Response { get; private set; }
-    public IReference Statement { get; private set; }
+    public Publication? Publication { get; set; }
+    public Standard? Standard { get; set; }
+    [NotMapped]
+    public IReference? Statement
+    {
+        get => Standard is not null ? Standard : Publication;
+        set {if(value is Standard)  Standard = (Standard)value; else Publication = (Publication)value;}
+    }
 }

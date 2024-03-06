@@ -1,5 +1,7 @@
 using System;
 using Database.Data;
+using Database.GraphQl.Publications;
+using Database.GraphQl.Standards;
 
 namespace Database.GraphQl;
 
@@ -9,6 +11,7 @@ public sealed record DataApprovalInput(
     string KeyFingerprint,
     string Query,
     string Response,
-    Guid ApproverId
-    IReference Statement
+    Guid ApproverId,
+    CreateStandardInput? Standard,
+    CreatePublicationInput? Publication
 );
