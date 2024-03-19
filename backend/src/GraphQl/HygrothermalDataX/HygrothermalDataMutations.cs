@@ -86,7 +86,26 @@ namespace Database.GraphQl.HygrothermalDataX
                         query: a.Query,
                         response: a.Response,
                         approverId: a.ApproverId,
-                        statement: a.Statement
+                        publication : a.Publication is null ? null :
+                                new Data.Publication(
+                                title: a.Publication.Title,
+                                @abstract: a.Publication.Abstract,
+                                section: a.Publication.Section,
+                                authors: a.Publication.Authors,
+                                doi: a.Publication.Doi,
+                                arXiv: a.Publication.ArXiv,
+                                urn: a.Publication.Urn,
+                                webAddress: a.Publication.WebAddress
+                        ),
+                        standard : a.Standard is null ? null :
+                                new Data.Standard(
+                                title: a.Standard.Title,
+                                @abstract: a.Standard.Abstract,
+                                section: a.Standard.Section,
+                                year: a.Standard.Year,
+                                standardizers: a.Standard.Standardizers,
+                                locator: a.Standard.Locator
+                        )
                     )
                 ).ToList()
             // approval: input.Approval

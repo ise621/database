@@ -1,5 +1,7 @@
 using System;
 using Database.Data;
+using Database.GraphQl.Publications;
+using Database.GraphQl.Standards;
 
 namespace Database.GraphQl
 {
@@ -10,6 +12,7 @@ namespace Database.GraphQl
           string Query,
           string Response,
           Guid ApproverId,
-          IReference Statement
+          CreateStandardInput? Standard,
+          CreatePublicationInput? Publication
     );
 }

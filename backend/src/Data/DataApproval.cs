@@ -22,7 +22,7 @@ namespace Database.Data
         public IReference? Statement
         {
             get => Standard is not null ? Standard : Publication;
-            set {if(value is Standard)  Standard = (Standard)value; else Publication = (Publication)value;}
+            // set {if(value is Standard)  Standard = (Standard)value; else Publication = (Publication)value;}
         }
 
         public DataApproval(
@@ -32,7 +32,9 @@ namespace Database.Data
           string query,
           string response,
           Guid approverId,
-          IReference statement
+          Publication publication,
+          Standard standard
+          
         )
         {
             Timestamp = timestamp;
@@ -41,7 +43,8 @@ namespace Database.Data
             Query = query;
             Response = response;
             ApproverId = approverId;
-            Statement = statement;
+            Publication = publication;
+            Standard = standard;
         }
     }
 }
