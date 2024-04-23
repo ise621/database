@@ -1,6 +1,5 @@
-namespace Database.GraphQl
+namespace Database.GraphQl;
+
+public abstract class Payload
 {
-    public abstract class Payload
-    {
-    }
 }

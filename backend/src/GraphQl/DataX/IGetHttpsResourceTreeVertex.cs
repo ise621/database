@@ -1,14 +1,13 @@
+using Database.Data;
 using HotChocolate;
 using HotChocolate.Types;
 
-namespace Database.GraphQl.DataX
-{
-    [InterfaceType("GetHttpsResourceTreeVertex")]
-    public interface IGetHttpsResourceTreeVertex
-    {
-        [GraphQLType<IdType>]
-        string VertexId { get; }
+namespace Database.GraphQl.DataX;
 
-        Data.GetHttpsResource Value { get; }
-    }
+[InterfaceType("GetHttpsResourceTreeVertex")]
+public interface IGetHttpsResourceTreeVertex
+{
+    [GraphQLType<IdType>] string VertexId { get; }
+
+    GetHttpsResource Value { get; }
 }

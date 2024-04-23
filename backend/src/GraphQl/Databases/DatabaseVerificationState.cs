@@ -1,8 +1,7 @@
-namespace Database.GraphQl.Databases
+namespace Database.GraphQl.Databases;
+
+public enum DatabaseVerificationState
 {
-    public enum DatabaseVerificationState
-    {
-        PENDING,
-        VERIFIED,
-    }
+    PENDING,
+    VERIFIED
 }

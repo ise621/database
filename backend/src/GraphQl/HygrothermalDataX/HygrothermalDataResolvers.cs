@@ -1,33 +1,32 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Database.Data;
 using Database.GraphQl.DataX;
 using HotChocolate;
 
-namespace Database.GraphQl.HygrothermalDataX
+namespace Database.GraphQl.HygrothermalDataX;
+
+public sealed class HygrothermalDataResolvers
 {
-    public sealed class HygrothermalDataResolvers
+    public Task<GetHttpsResource[]> GetGetHttpsResources(
+        [Parent] HygrothermalData hygrothermalData,
+        GetHttpsResourcesByDataIdDataLoader byId,
+        CancellationToken cancellationToken
+    )
     {
-        public Task<Data.GetHttpsResource[]> GetGetHttpsResources(
-            [Parent] Data.HygrothermalData hygrothermalData,
-            GetHttpsResourcesByDataIdDataLoader byId,
-            CancellationToken cancellationToken
+        return byId.LoadAsync(hygrothermalData.Id, cancellationToken);
+    }
 
-        )
-        {
-            return byId.LoadAsync(hygrothermalData.Id, cancellationToken);
-        }
+    public GetHttpsResourceTree GetGetHttpsResourceTree(
+        [Parent] HygrothermalData hygrothermalData
+    )
+    {
+        return new GetHttpsResourceTree(hygrothermalData);
+    }
 
-        public GetHttpsResourceTree GetGetHttpsResourceTree(
-            [Parent] Data.HygrothermalData hygrothermalData
-        )
-        {
-            return new GetHttpsResourceTree(hygrothermalData);
-        }
-
-        public DateTime GetTimestamp()
-        {
-            return DateTime.UtcNow;
-        }
+    public DateTime GetTimestamp()
+    {
+        return DateTime.UtcNow;
     }
 }

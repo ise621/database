@@ -1,24 +1,24 @@
-using GreenDonut;
+using Database.Data;
 using Database.GraphQl.Entities;
+using GreenDonut;
 using Microsoft.EntityFrameworkCore;
 
-namespace Database.GraphQl.GetHttpsResources
+namespace Database.GraphQl.GetHttpsResources;
+
+public sealed class GetHttpsResourceByIdDataLoader
+    : EntityByIdDataLoader<GetHttpsResource>
 {
-    public sealed class GetHttpsResourceByIdDataLoader
-      : EntityByIdDataLoader<Data.GetHttpsResource>
+    public GetHttpsResourceByIdDataLoader(
+        IBatchScheduler batchScheduler,
+        DataLoaderOptions options,
+        IDbContextFactory<ApplicationDbContext> dbContextFactory
+    )
+        : base(
+            batchScheduler,
+            options,
+            dbContextFactory,
+            dbContext => dbContext.GetHttpsResources
+        )
     {
-        public GetHttpsResourceByIdDataLoader(
-            IBatchScheduler batchScheduler,
-            DataLoaderOptions options,
-            IDbContextFactory<Data.ApplicationDbContext> dbContextFactory
-            )
-            : base(
-                batchScheduler,
-                options,
-                dbContextFactory,
-                dbContext => dbContext.GetHttpsResources
-                )
-        {
-        }
     }
 }

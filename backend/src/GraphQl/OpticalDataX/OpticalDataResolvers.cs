@@ -1,33 +1,32 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Database.Data;
 using Database.GraphQl.DataX;
 using HotChocolate;
 
-namespace Database.GraphQl.OpticalDataX
+namespace Database.GraphQl.OpticalDataX;
+
+public sealed class OpticalDataResolvers
 {
-    public sealed class OpticalDataResolvers
+    public Task<GetHttpsResource[]> GetGetHttpsResources(
+        [Parent] OpticalData opticalData,
+        GetHttpsResourcesByDataIdDataLoader byId,
+        CancellationToken cancellationToken
+    )
     {
-        public Task<Data.GetHttpsResource[]> GetGetHttpsResources(
-            [Parent] Data.OpticalData opticalData,
-            GetHttpsResourcesByDataIdDataLoader byId,
-            CancellationToken cancellationToken
+        return byId.LoadAsync(opticalData.Id, cancellationToken);
+    }
 
-        )
-        {
-            return byId.LoadAsync(opticalData.Id, cancellationToken);
-        }
+    public GetHttpsResourceTree GetGetHttpsResourceTree(
+        [Parent] OpticalData opticalData
+    )
+    {
+        return new GetHttpsResourceTree(opticalData);
+    }
 
-        public GetHttpsResourceTree GetGetHttpsResourceTree(
-            [Parent] Data.OpticalData opticalData
-        )
-        {
-            return new GetHttpsResourceTree(opticalData);
-        }
-
-        public DateTime GetTimestamp()
-        {
-            return DateTime.UtcNow;
-        }
+    public DateTime GetTimestamp()
+    {
+        return DateTime.UtcNow;
     }
 }

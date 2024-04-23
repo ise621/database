@@ -1,8 +1,7 @@
-namespace Database.GraphQl.OpticalDataX
+namespace Database.GraphQl.OpticalDataX;
+
+public enum CreateOpticalDataErrorCode
 {
-    public enum CreateOpticalDataErrorCode
-    {
-        UNKNOWN,
-        UNAUTHORIZED
-    }
+    UNKNOWN,
+    UNAUTHORIZED
 }

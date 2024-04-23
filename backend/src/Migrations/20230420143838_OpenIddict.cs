@@ -8,6 +8,8 @@ namespace Database.Migrations
     /// <inheritdoc />
     public partial class OpenIddict : Migration
     {
+        private static readonly string[] _applicationIdStatusSubjectAndTypeIndexColumns = new[] { "ApplicationId", "Status", "Subject", "Type" };
+
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -128,7 +130,7 @@ namespace Database.Migrations
                 name: "IX_OpenIddictAuthorizations_ApplicationId_Status_Subject_Type",
                 schema: "database",
                 table: "OpenIddictAuthorizations",
-                columns: new[] { "ApplicationId", "Status", "Subject", "Type" });
+                columns: _applicationIdStatusSubjectAndTypeIndexColumns);
 
             migrationBuilder.CreateIndex(
                 name: "IX_OpenIddictScopes_Name",
@@ -141,7 +143,7 @@ namespace Database.Migrations
                 name: "IX_OpenIddictTokens_ApplicationId_Status_Subject_Type",
                 schema: "database",
                 table: "OpenIddictTokens",
-                columns: new[] { "ApplicationId", "Status", "Subject", "Type" });
+                columns: _applicationIdStatusSubjectAndTypeIndexColumns);
 
             migrationBuilder.CreateIndex(
                 name: "IX_OpenIddictTokens_AuthorizationId",

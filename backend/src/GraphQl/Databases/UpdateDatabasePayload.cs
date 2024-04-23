@@ -1,16 +1,15 @@
 using System.Collections.Generic;
 
-namespace Database.GraphQl.Databases
+namespace Database.GraphQl.Databases;
+
+public sealed class UpdateDatabasePayload
+    : DatabasePayload<UpdateDatabaseError>
 {
-    public sealed class UpdateDatabasePayload
-      : DatabasePayload<UpdateDatabaseError>
+    public UpdateDatabasePayload(
+        Database? database,
+        IReadOnlyCollection<UpdateDatabaseError>? errors
+    )
+        : base(database, errors)
     {
-        public UpdateDatabasePayload(
-            Database? database,
-            IReadOnlyCollection<UpdateDatabaseError>? errors
-            )
-            : base(database, errors)
-        {
-        }
     }
 }

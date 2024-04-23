@@ -1,24 +1,24 @@
-using GreenDonut;
+using Database.Data;
 using Database.GraphQl.Entities;
+using GreenDonut;
 using Microsoft.EntityFrameworkCore;
 
-namespace Database.GraphQl.HygrothermalDataX
+namespace Database.GraphQl.HygrothermalDataX;
+
+public sealed class HygrothermalDataByIdDataLoader
+    : EntityByIdDataLoader<HygrothermalData>
 {
-    public sealed class HygrothermalDataByIdDataLoader
-      : EntityByIdDataLoader<Data.HygrothermalData>
+    public HygrothermalDataByIdDataLoader(
+        IBatchScheduler batchScheduler,
+        DataLoaderOptions options,
+        IDbContextFactory<ApplicationDbContext> dbContextFactory
+    )
+        : base(
+            batchScheduler,
+            options,
+            dbContextFactory,
+            dbContext => dbContext.HygrothermalData
+        )
     {
-        public HygrothermalDataByIdDataLoader(
-            IBatchScheduler batchScheduler,
-            DataLoaderOptions options,
-            IDbContextFactory<Data.ApplicationDbContext> dbContextFactory
-            )
-            : base(
-                batchScheduler,
-                options,
-                dbContextFactory,
-                dbContext => dbContext.HygrothermalData
-                )
-        {
-        }
     }
 }

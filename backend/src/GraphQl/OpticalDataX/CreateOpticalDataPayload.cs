@@ -1,20 +1,21 @@
-namespace Database.GraphQl.OpticalDataX
-{
-    public sealed class CreateOpticalDataPayload
-      : OpticalDataPayload<CreateOpticalDataError>
-    {
-        public CreateOpticalDataPayload(
-            Data.OpticalData opticalData
-            )
-              : base(opticalData)
-        {
-        }
+using Database.Data;
 
-        public CreateOpticalDataPayload(
-          CreateOpticalDataError error
-        )
+namespace Database.GraphQl.OpticalDataX;
+
+public sealed class CreateOpticalDataPayload
+    : OpticalDataPayload<CreateOpticalDataError>
+{
+    public CreateOpticalDataPayload(
+        OpticalData opticalData
+    )
+        : base(opticalData)
+    {
+    }
+
+    public CreateOpticalDataPayload(
+        CreateOpticalDataError error
+    )
         : base(error)
-        {
-        }
+    {
     }
 }
