@@ -1,8 +1,6 @@
 using System;
-using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-using Database.Data;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace Database.Data;
 
@@ -39,6 +37,10 @@ public sealed class DataApproval
     public IReference? Statement
     {
         get => Standard is not null ? Standard : Publication;
-        set {if(value is Standard)  Standard = (Standard)value; else Publication = (Publication)value;}
+        set
+        {
+            if (value is Standard) Standard = (Standard)value;
+            else Publication = (Publication)value;
+        }
     }
 }

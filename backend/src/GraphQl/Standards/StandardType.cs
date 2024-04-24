@@ -1,14 +1,14 @@
+using Database.Data;
 using HotChocolate.Types;
 
-namespace Database.GraphQl.Standards
+namespace Database.GraphQl.Standards;
+
+public sealed class StandardType
+    : ObjectType<Standard>
 {
-    public sealed class StandardType
-      : ObjectType<Data.Standard>
+    protected override void Configure(
+        IObjectTypeDescriptor<Standard> descriptor
+    )
     {
-        protected override void Configure(
-            IObjectTypeDescriptor<Data.Standard> descriptor
-            )
-        {
-        }
     }
 }

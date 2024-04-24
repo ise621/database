@@ -1,13 +1,13 @@
+using Database.Data;
 using HotChocolate.Types;
 
-namespace Database.GraphQl.References
+namespace Database.GraphQl.References;
+
+public sealed class ReferenceType
+    : InterfaceType<IReference>
 {
-    public sealed class ReferenceType
-        : InterfaceType<Data.IReference>
+    protected override void Configure(IInterfaceTypeDescriptor<IReference> descriptor)
     {
-        protected override void Configure(IInterfaceTypeDescriptor<Data.IReference> descriptor)
-        {
-            descriptor.Name(nameof(Data.IReference)[1..]);
-        }
+        descriptor.Name(nameof(IReference)[1..]);
     }
 }
