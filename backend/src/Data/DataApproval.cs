@@ -33,14 +33,5 @@ public sealed class DataApproval
     public string Response { get; private set; }
     public Publication? Publication { get; set; }
     public Standard? Standard { get; set; }
-    [NotMapped]
-    public IReference? Statement
-    {
-        get => Standard is not null ? Standard : Publication;
-        set
-        {
-            if (value is Standard) Standard = (Standard)value;
-            else Publication = (Publication)value;
-        }
-    }
+    [NotMapped] public IReference? Statement => Standard is not null ? Standard : Publication;
 }
