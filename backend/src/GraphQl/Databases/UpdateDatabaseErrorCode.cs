@@ -1,9 +1,11 @@
-namespace Database.GraphQl.Databases
+using System.Diagnostics.CodeAnalysis;
+
+namespace Database.GraphQl.Databases;
+
+[SuppressMessage("Naming", "CA1707")]
+public enum UpdateDatabaseErrorCode
 {
-    public enum UpdateDatabaseErrorCode
-    {
-        UNKNOWN,
-        UNAUTHORIZED,
-        UNKNOWN_DATABASE
-    }
+    UNKNOWN,
+    UNAUTHORIZED,
+    UNKNOWN_DATABASE
 }

@@ -1,8 +1,7 @@
-namespace Database.GraphQl.GetHttpsResources
+namespace Database.GraphQl.GetHttpsResources;
+
+public enum CreateGetHttpsResourceErrorCode
 {
-    public enum CreateGetHttpsResourceErrorCode
-    {
-        UNKNOWN,
-        UNAUTHORIZED
-    }
+    UNKNOWN,
+    UNAUTHORIZED
 }

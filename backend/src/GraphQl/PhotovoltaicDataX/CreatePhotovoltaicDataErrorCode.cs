@@ -1,8 +1,7 @@
-namespace Database.GraphQl.PhotovoltaicDataX
+namespace Database.GraphQl.PhotovoltaicDataX;
+
+public enum CreatePhotovoltaicDataErrorCode
 {
-    public enum CreatePhotovoltaicDataErrorCode
-    {
-        UNKNOWN,
-        UNAUTHORIZED
-    }
+    UNKNOWN,
+    UNAUTHORIZED
 }

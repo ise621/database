@@ -1,16 +1,15 @@
 using HotChocolate;
 using HotChocolate.Types;
 
-namespace Database.GraphQl
+namespace Database.GraphQl;
+
+[ExtendObjectType(nameof(Query))]
+public sealed class VerificationCodeQueries
 {
-    [ExtendObjectType(nameof(Query))]
-    public sealed class VerificationCodeQueries
+    public string GetVerificationCode(
+        [Service] AppSettings appSettings
+    )
     {
-        public string GetVerificationCode(
-           [Service] AppSettings appSettings
-           )
-        {
-            return appSettings.VerificationCode;
-        }
+        return appSettings.VerificationCode;
     }
 }

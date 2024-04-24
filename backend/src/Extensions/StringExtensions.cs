@@ -1,28 +1,30 @@
-namespace Database.Extensions
+using System;
+using System.Text;
+
+namespace Database.Extensions;
+
+public static class StringExtensions
 {
-    public static class StringExtensions
+    public static string FirstCharToLower(this string str)
     {
-        public static string FirstCharToLower(this string str)
-        {
-            return string.IsNullOrEmpty(str)
-                || !char.IsLetter(str, 0)
-                || char.IsLower(str, 0)
-                ? str
-                : char.ToLowerInvariant(str[0]) + str[1..];
-        }
+        return string.IsNullOrEmpty(str)
+               || !char.IsLetter(str, 0)
+               || char.IsLower(str, 0)
+            ? str
+            : char.ToLowerInvariant(str[0]) + str[1..];
+    }
 
-        public static string Base64Encode(this string plainText)
-        {
-            return System.Convert.ToBase64String(
-                System.Text.Encoding.UTF8.GetBytes(plainText)
-                );
-        }
+    public static string Base64Encode(this string plainText)
+    {
+        return Convert.ToBase64String(
+            Encoding.UTF8.GetBytes(plainText)
+        );
+    }
 
-        public static string Base64Decode(this string base64EncodedData)
-        {
-            return System.Text.Encoding.UTF8.GetString(
-                System.Convert.FromBase64String(base64EncodedData)
-                );
-        }
+    public static string Base64Decode(this string base64EncodedData)
+    {
+        return Encoding.UTF8.GetString(
+            Convert.FromBase64String(base64EncodedData)
+        );
     }
 }

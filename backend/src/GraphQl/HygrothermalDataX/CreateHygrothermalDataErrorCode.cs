@@ -1,8 +1,7 @@
-namespace Database.GraphQl.HygrothermalDataX
+namespace Database.GraphQl.HygrothermalDataX;
+
+public enum CreateHygrothermalDataErrorCode
 {
-    public enum CreateHygrothermalDataErrorCode
-    {
-        UNKNOWN,
-        UNAUTHORIZED
-    }
+    UNKNOWN,
+    UNAUTHORIZED
 }

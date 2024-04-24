@@ -1,8 +1,8 @@
 // Inspired by `HotChocolate.Data.Filters.DefaultFilterOperations`.
-namespace Database.GraphQl.Filters
+
+namespace Database.GraphQl.Filters;
+
+public static class AdditionalFilterOperations
 {
-    public static class AdditionalFilterOperations
-    {
-        public const int Not = 100;
-    }
+    public const int Not = 100;
 }

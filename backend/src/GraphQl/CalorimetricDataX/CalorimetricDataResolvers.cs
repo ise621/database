@@ -1,33 +1,32 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Database.Data;
 using Database.GraphQl.DataX;
 using HotChocolate;
 
-namespace Database.GraphQl.CalorimetricDataX
+namespace Database.GraphQl.CalorimetricDataX;
+
+public sealed class CalorimetricDataResolvers
 {
-    public sealed class CalorimetricDataResolvers
+    public Task<GetHttpsResource[]> GetGetHttpsResources(
+        [Parent] CalorimetricData calorimetricData,
+        GetHttpsResourcesByDataIdDataLoader byId,
+        CancellationToken cancellationToken
+    )
     {
-        public Task<Data.GetHttpsResource[]> GetGetHttpsResources(
-            [Parent] Data.CalorimetricData calorimetricData,
-            GetHttpsResourcesByDataIdDataLoader byId,
-            CancellationToken cancellationToken
+        return byId.LoadAsync(calorimetricData.Id, cancellationToken);
+    }
 
-        )
-        {
-            return byId.LoadAsync(calorimetricData.Id, cancellationToken);
-        }
+    public GetHttpsResourceTree GetGetHttpsResourceTree(
+        [Parent] CalorimetricData calorimetricData
+    )
+    {
+        return new GetHttpsResourceTree(calorimetricData);
+    }
 
-        public GetHttpsResourceTree GetGetHttpsResourceTree(
-            [Parent] Data.CalorimetricData calorimetricData
-        )
-        {
-            return new GetHttpsResourceTree(calorimetricData);
-        }
-
-        public DateTime GetTimestamp()
-        {
-            return DateTime.UtcNow;
-        }
+    public DateTime GetTimestamp()
+    {
+        return DateTime.UtcNow;
     }
 }

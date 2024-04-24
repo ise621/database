@@ -4,6 +4,7 @@
 /src/files/
 /trace.*
 /.secrets
+/.mono
 
 /secrets
 /ssl

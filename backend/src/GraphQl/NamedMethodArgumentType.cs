@@ -1,24 +1,24 @@
+using Database.Data;
 using HotChocolate.Types;
 
-namespace Database.GraphQl
+namespace Database.GraphQl;
+
+public sealed class NamedMethodArgumentType
+    : ObjectType<NamedMethodArgument>
 {
-    public sealed class NamedMethodArgumentType
-      : ObjectType<Data.NamedMethodArgument>
+    protected override void Configure(
+        IObjectTypeDescriptor<NamedMethodArgument> descriptor
+    )
     {
-        protected override void Configure(
-            IObjectTypeDescriptor<Data.NamedMethodArgument> descriptor
-            )
-        {
-            // Note that in the GraphQL configuration we map the scalar "Any"
-            // to `JsonType`.
-            descriptor
-                .Field(x => x.Value)
-                .Type<NonNullType<JsonType>>()
-                .Resolve(context =>
-                    context.Parent<Data.NamedMethodArgument>()
+        // Note that in the GraphQL configuration we map the scalar "Any"
+        // to `JsonType`.
+        descriptor
+            .Field(x => x.Value)
+            .Type<NonNullType<JsonType>>()
+            .Resolve(context =>
+                context.Parent<NamedMethodArgument>()
                     .Value
                     .RootElement
-                );
-        }
+            );
     }
 }

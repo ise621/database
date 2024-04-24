@@ -1,14 +1,13 @@
-namespace Database.Tests
+using NUnitLite;
+
+namespace Database.Tests;
+
+public static class Program
 {
-    public class Program
+    public static int Main(
+        string[] commandLineArguments
+    )
     {
-        public static int Main()
-        {
-            return Xunit.ConsoleClient.Program.Main(
-                new[] {
-                    typeof(Program).Assembly.Location
-                }
-              );
-        }
+        return new AutoRun().Execute(commandLineArguments);
     }
 }

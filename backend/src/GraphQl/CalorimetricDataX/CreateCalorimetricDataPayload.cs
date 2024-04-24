@@ -1,20 +1,21 @@
-namespace Database.GraphQl.CalorimetricDataX
-{
-    public sealed class CreateCalorimetricDataPayload
-      : CalorimetricDataPayload<CreateCalorimetricDataError>
-    {
-        public CreateCalorimetricDataPayload(
-            Data.CalorimetricData calorimetricData
-            )
-              : base(calorimetricData)
-        {
-        }
+using Database.Data;
 
-        public CreateCalorimetricDataPayload(
-          CreateCalorimetricDataError error
-        )
+namespace Database.GraphQl.CalorimetricDataX;
+
+public sealed class CreateCalorimetricDataPayload
+    : CalorimetricDataPayload<CreateCalorimetricDataError>
+{
+    public CreateCalorimetricDataPayload(
+        CalorimetricData calorimetricData
+    )
+        : base(calorimetricData)
+    {
+    }
+
+    public CreateCalorimetricDataPayload(
+        CreateCalorimetricDataError error
+    )
         : base(error)
-        {
-        }
+    {
     }
 }

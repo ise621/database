@@ -1,8 +1,7 @@
-namespace Database.GraphQl.CalorimetricDataX
+namespace Database.GraphQl.CalorimetricDataX;
+
+public enum CreateCalorimetricDataErrorCode
 {
-    public enum CreateCalorimetricDataErrorCode
-    {
-        UNKNOWN,
-        UNAUTHORIZED
-    }
+    UNKNOWN,
+    UNAUTHORIZED
 }

@@ -1,19 +1,19 @@
+using Database.Data;
 using Database.GraphQl.DataX;
 using HotChocolate.Data.Filters;
 
-namespace Database.GraphQl.CalorimetricDataX
+namespace Database.GraphQl.CalorimetricDataX;
+
+public sealed class CalorimetricDataFilterType
+    : DataFilterTypeBase<CalorimetricData>
 {
-    public sealed class CalorimetricDataFilterType
-      : DataFilterTypeBase<Data.CalorimetricData>
+    protected override void Configure(
+        IFilterInputTypeDescriptor<CalorimetricData> descriptor
+    )
     {
-        protected override void Configure(
-          IFilterInputTypeDescriptor<Data.CalorimetricData> descriptor
-          )
-        {
-            base.Configure(descriptor);
-            descriptor.Field(x => x.Id);
-            descriptor.Field(x => x.GValues);
-            descriptor.Field(x => x.UValues);
-        }
+        base.Configure(descriptor);
+        descriptor.Field(x => x.Id);
+        descriptor.Field(x => x.GValues);
+        descriptor.Field(x => x.UValues);
     }
 }

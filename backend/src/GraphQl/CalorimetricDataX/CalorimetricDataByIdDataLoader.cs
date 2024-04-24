@@ -1,24 +1,24 @@
-using GreenDonut;
+using Database.Data;
 using Database.GraphQl.Entities;
+using GreenDonut;
 using Microsoft.EntityFrameworkCore;
 
-namespace Database.GraphQl.CalorimetricDataX
+namespace Database.GraphQl.CalorimetricDataX;
+
+public sealed class CalorimetricDataByIdDataLoader
+    : EntityByIdDataLoader<CalorimetricData>
 {
-    public sealed class CalorimetricDataByIdDataLoader
-      : EntityByIdDataLoader<Data.CalorimetricData>
+    public CalorimetricDataByIdDataLoader(
+        IBatchScheduler batchScheduler,
+        DataLoaderOptions options,
+        IDbContextFactory<ApplicationDbContext> dbContextFactory
+    )
+        : base(
+            batchScheduler,
+            options,
+            dbContextFactory,
+            dbContext => dbContext.CalorimetricData
+        )
     {
-        public CalorimetricDataByIdDataLoader(
-            IBatchScheduler batchScheduler,
-            DataLoaderOptions options,
-            IDbContextFactory<Data.ApplicationDbContext> dbContextFactory
-            )
-            : base(
-                batchScheduler,
-                options,
-                dbContextFactory,
-                dbContext => dbContext.CalorimetricData
-                )
-        {
-        }
     }
 }
