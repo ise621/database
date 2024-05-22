@@ -653,6 +653,10 @@ namespace Database.Migrations
             migrationBuilder.DropTable(
                 name: "photovoltaic_data",
                 schema: "database");
+
+            migrationBuilder.AlterDatabase()
+                .OldAnnotation("Npgsql:Enum:public.data_kind", "calorimetric_data,hygrothermal_data,optical_data,photovoltaic_data")
+                .OldAnnotation("Npgsql:PostgresExtension:pgcrypto", ",,");
         }
     }
 }
