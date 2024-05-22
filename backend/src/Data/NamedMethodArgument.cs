@@ -18,7 +18,7 @@ public sealed class NamedMethodArgument
     }
 
     public string Name { get; private set; }
-    public JsonDocument Value { get; }
+    public JsonDocument Value { get; private set; }
 
     public void Dispose()
     {

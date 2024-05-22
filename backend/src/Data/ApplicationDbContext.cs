@@ -30,7 +30,7 @@ public sealed class ApplicationDbContext
     public DbSet<OpticalData> OpticalData { get; private set; } = default!;
     public DbSet<PhotovoltaicData> PhotovoltaicData { get; private set; } = default!;
     public DbSet<User> Users { get; private set; } = default!;
-    public DbSet<DataProtectionKey> DataProtectionKeys { get; } = default!;
+    public DbSet<DataProtectionKey> DataProtectionKeys { get; private set; } = default!;
 
     private static void CreateEnumerations(ModelBuilder builder)
     {

@@ -104,22 +104,22 @@ public sealed class GetHttpsResource
 
     [NotMapped] public IData? Data => CalorimetricData ?? HygrothermalData ?? OpticalData ?? PhotovoltaicData as IData;
 
-    public Guid? CalorimetricDataId { get; }
+    public Guid? CalorimetricDataId { get; private set; }
 
     [InverseProperty(nameof(Database.Data.CalorimetricData.Resources))]
     public CalorimetricData? CalorimetricData { get; set; }
 
-    public Guid? HygrothermalDataId { get; }
+    public Guid? HygrothermalDataId { get; private set; }
 
     [InverseProperty(nameof(Database.Data.HygrothermalData.Resources))]
     public HygrothermalData? HygrothermalData { get; set; }
 
-    public Guid? OpticalDataId { get; }
+    public Guid? OpticalDataId { get; private set; }
 
     [InverseProperty(nameof(Database.Data.OpticalData.Resources))]
     public OpticalData? OpticalData { get; set; }
 
-    public Guid? PhotovoltaicDataId { get; }
+    public Guid? PhotovoltaicDataId { get; private set; }
 
     [InverseProperty(nameof(Database.Data.PhotovoltaicData.Resources))]
     public PhotovoltaicData? PhotovoltaicData { get; set; }

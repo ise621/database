@@ -53,14 +53,14 @@ public abstract class DataX
         CreatedAt = createdAt;
     }
 
-    public string Locale { get; }
-    public Guid ComponentId { get; }
-    public string? Name { get; }
-    public string? Description { get; }
-    public string[] Warnings { get; }
-    public Guid CreatorId { get; }
-    public DateTime CreatedAt { get; }
-    public AppliedMethod AppliedMethod { get; } = default!;
+    public string Locale { get; private set; }
+    public Guid ComponentId { get; private set; }
+    public string? Name { get; private set; }
+    public string? Description { get; private set; }
+    public string[] Warnings { get; private set; }
+    public Guid CreatorId { get; private set; }
+    public DateTime CreatedAt { get; private set; }
+    public AppliedMethod AppliedMethod { get; private set; } = default!;
 
     public ICollection<DataApproval> Approvals { get; } = new List<DataApproval>();
     // public ResponseApproval Approval { get; private set; }

@@ -25,9 +25,9 @@ public sealed class DataApproval
     }
 
     public Guid ApproverId { get; private set; }
-    public DateTime Timestamp { get; }
-    public string Signature { get; }
-    public string KeyFingerprint { get; }
-    public string Query { get; }
-    public string Response { get; }
+    public DateTime Timestamp { get; private set; }
+    public string Signature { get; private set; }
+    public string KeyFingerprint { get; private set; }
+    public string Query { get; private set; }
+    public string Response { get; private set; }
 }
