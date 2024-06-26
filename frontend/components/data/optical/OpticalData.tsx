@@ -61,7 +61,7 @@ export default function OpticalData({ opticalDataId }: OpticalDataProps) {
           </Typography.Link>
         </Descriptions.Item>
         <Descriptions.Item label="Creator">
-          <Link href={paths.metabase.institution(opticalData.creatorId)}>
+          <Link href={paths.metabase.institution(opticalData.creatorId)} legacyBehavior>
             {opticalData.creatorId}
           </Link>
         </Descriptions.Item>

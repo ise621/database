@@ -61,7 +61,9 @@ export default function PhotovoltaicData({ photovoltaicDataId }: PhotovoltaicDat
           </Typography.Link>
         </Descriptions.Item>
         <Descriptions.Item label="Creator">
-          <Link href={paths.metabase.institution(photovoltaicData.creatorId)}>
+          <Link
+            href={paths.metabase.institution(photovoltaicData.creatorId)}
+            legacyBehavior>
             {photovoltaicData.creatorId}
           </Link>
         </Descriptions.Item>

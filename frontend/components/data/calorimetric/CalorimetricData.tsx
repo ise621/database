@@ -61,7 +61,9 @@ export default function CalorimetricData({ calorimetricDataId }: CalorimetricDat
           </Typography.Link>
         </Descriptions.Item>
         <Descriptions.Item label="Creator">
-          <Link href={paths.metabase.institution(calorimetricData.creatorId)}>
+          <Link
+            href={paths.metabase.institution(calorimetricData.creatorId)}
+            legacyBehavior>
             {calorimetricData.creatorId}
           </Link>
         </Descriptions.Item>

@@ -61,7 +61,9 @@ export default function HygrothermalData({ hygrothermalDataId }: HygrothermalDat
           </Typography.Link>
         </Descriptions.Item>
         <Descriptions.Item label="Creator">
-          <Link href={paths.metabase.institution(hygrothermalData.creatorId)}>
+          <Link
+            href={paths.metabase.institution(hygrothermalData.creatorId)}
+            legacyBehavior>
             {hygrothermalData.creatorId}
           </Link>
         </Descriptions.Item>

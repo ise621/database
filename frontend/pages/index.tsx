@@ -149,8 +149,10 @@ function Page() {
         <Image
           src={overviewImage}
           alt="Schematic depiction of how users like architects, planners, or engineers can use the metabase to find products and data in and across databases."
-          style={{ maxWidth: "100%", height: "auto" }}
-        />
+          style={{
+            maxWidth: "100%",
+            height: "auto",
+          }} />
       </div>
     </Layout>
   );

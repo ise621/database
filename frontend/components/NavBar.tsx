@@ -39,7 +39,7 @@ export default function NavBar({ items }: NavBarProps) {
     <Menu mode="horizontal" selectedKeys={[router.pathname]} theme="dark">
       {items.map(({ path, label }) => (
         <Menu.Item key={path}>
-          <Link href={path}>{label}</Link>
+          <Link href={path} legacyBehavior>{label}</Link>
         </Menu.Item>
       ))}
       {currentUser ? (
@@ -50,7 +50,7 @@ export default function NavBar({ items }: NavBarProps) {
         >
           {moderatorItems.map(({ path, label }) => (
             <Menu.Item key={path}>
-              <Link href={path}>{label}</Link>
+              <Link href={path} legacyBehavior>{label}</Link>
             </Menu.Item>
           ))}
           <Menu.Item key={paths.logout}>
