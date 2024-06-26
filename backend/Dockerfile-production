@@ -64,7 +64,7 @@ WORKDIR /app
 
 COPY \
   --from=build \
-  /app/bin/Release/net8.0/publish \
+  /app/src/bin/Release/net8.0/publish \
   ./
 
 RUN \
