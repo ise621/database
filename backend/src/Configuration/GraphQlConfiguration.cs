@@ -12,6 +12,9 @@ using Database.GraphQl.GetHttpsResources;
 using Database.GraphQl.HygrothermalDataX;
 using Database.GraphQl.OpticalDataX;
 using Database.GraphQl.PhotovoltaicDataX;
+using Database.GraphQl.Publications;
+using Database.GraphQl.References;
+using Database.GraphQl.Standards;
 using Database.GraphQl.Users;
 using HotChocolate.Data;
 using HotChocolate.Data.Filters;
@@ -145,12 +148,16 @@ public static class GraphQlConfiguration
             // Object Types
             .AddType<OpenEndedDateTimeRangeType>()
             .AddType<CalorimetricDataType>()
+            .AddType<DataApprovalType>()
             .AddType<DataType>()
             .AddType<GetHttpsResourceType>()
             .AddType<HygrothermalDataType>()
             .AddType<NamedMethodArgumentType>()
             .AddType<OpticalDataType>()
             .AddType<PhotovoltaicDataType>()
+            .AddType<PublicationType>()
+            .AddType<ReferenceType>()
+            .AddType<StandardType>()
             .AddType<UserType>()
             // Data Loaders
             /* .AddDataLoader<GraphQl.Components.ComponentByIdDataLoader>() */
