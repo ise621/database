@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
 namespace Database.Data;
@@ -30,4 +31,7 @@ public sealed class DataApproval
     public string KeyFingerprint { get; private set; }
     public string Query { get; private set; }
     public string Response { get; private set; }
+    public Publication? Publication { get; set; }
+    public Standard? Standard { get; set; }
+    [NotMapped] public IReference? Statement => Standard is not null ? Standard : Publication;
 }
