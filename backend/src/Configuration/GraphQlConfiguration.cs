@@ -290,8 +290,8 @@ public static class FilterConventionDescriptorExtensions
         descriptor.Operation(DefaultFilterOperations.GreaterThanOrEquals).Name("greaterThanOrEqualTo");
         descriptor.Operation(DefaultFilterOperations.NotGreaterThanOrEquals).Name("notGreaterThanOrEqualTo");
         descriptor.Operation(DefaultFilterOperations.LowerThan).Name("lessThan");
-        descriptor.Operation(DefaultFilterOperations.NotLowerThan).Name("lessThan");
-        descriptor.Operation(DefaultFilterOperations.LowerThanOrEquals).Name("notLessThanOrEqualTo");
+        descriptor.Operation(DefaultFilterOperations.NotLowerThan).Name("notLessThan");
+        descriptor.Operation(DefaultFilterOperations.LowerThanOrEquals).Name("lessThanOrEqualTo");
         descriptor.Operation(DefaultFilterOperations.NotLowerThanOrEquals).Name("notLessThanOrEqualTo");
         descriptor.Operation(DefaultFilterOperations.Contains).Name("contains");
         descriptor.Operation(DefaultFilterOperations.NotContains).Name("doesNotContain");
