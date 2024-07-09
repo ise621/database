@@ -29,7 +29,7 @@ public sealed class UserQueries
         return
             await context.Users.AsQueryable()
                 .SingleOrDefaultAsync(
-                    u => u.Subject == claimsPrincipal.GetClaim(ClaimTypes.NameIdentifier),
+                    u => claimsPrincipal.GetClaims(ClaimTypes.NameIdentifier).Contains(u.Subject),
                     cancellationToken
                 ).ConfigureAwait(false);
     }
