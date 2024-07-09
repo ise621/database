@@ -61,13 +61,14 @@ services:
     # user: 1000:1000
     command: [
       "dotnet", "watch",
-      "--project", "./src/Database.csproj",
+      "--non-interactive",
+      "--no-hot-reload", # as of this writing, HotChocolate does not work with hot reload, see https://github.com/ChilliCream/graphql-platform/issues/5803
+      "--project", "/app/src/Database.csproj",
       "--",
       "run",
-      "--no-launch-profile"
+      "--no-launch-profile",
+      "--project", "/app/src/Database.csproj"
       ]
-      # "--no-restore",
-      # ["dotnet", "watch", "run", "--no-restore"]
     healthcheck:
       # https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks?view=aspnetcore-5.0#docker-example
       test: ["CMD-SHELL", "curl --silent --fail --output /dev/null http://backend:8080/health || exit 1"]
