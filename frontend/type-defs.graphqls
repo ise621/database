@@ -1,4 +1,4 @@
-﻿schema {
+schema {
   query: Query
   mutation: Mutation
 }
@@ -623,12 +623,12 @@ input DataApprovalInput {
 input DataApprovalPropositionInput {
   and: [DataApprovalPropositionInput!]
   or: [DataApprovalPropositionInput!]
+  approverId: UuidPropositionInput
   timestamp: DateTimePropositionInput
   signature: StringPropositionInput
   keyFingerprint: StringPropositionInput
   query: StringPropositionInput
   response: StringPropositionInput
-  approverId: UuidPropositionInput
 }
 
 input DataKindPropositionInput {
@@ -663,6 +663,8 @@ input DateTimePropositionInput {
   greaterThanOrEqualTo: DateTime
   notGreaterThanOrEqualTo: DateTime
   lessThan: DateTime
+  notLessThan: DateTime
+  lessThanOrEqualTo: DateTime
   notLessThanOrEqualTo: DateTime
 }
 
@@ -688,6 +690,8 @@ input FloatPropositionInput {
   greaterThanOrEqualTo: Float
   notGreaterThanOrEqualTo: Float
   lessThan: Float
+  notLessThan: Float
+  lessThanOrEqualTo: Float
   notLessThanOrEqualTo: Float
 }
 
@@ -846,6 +850,8 @@ input NullableOfUuidPropositionInput {
   greaterThanOrEqualTo: Uuid
   notGreaterThanOrEqualTo: Uuid
   lessThan: Uuid
+  notLessThan: Uuid
+  lessThanOrEqualTo: Uuid
   notLessThanOrEqualTo: Uuid
 }
 
@@ -978,6 +984,8 @@ input UuidPropositionInput {
   greaterThanOrEqualTo: Uuid
   notGreaterThanOrEqualTo: Uuid
   lessThan: Uuid
+  notLessThan: Uuid
+  lessThanOrEqualTo: Uuid
   notLessThanOrEqualTo: Uuid
 }
 
