@@ -16,6 +16,7 @@ public sealed class GetHttpsResource
         Guid? hygrothermalDataId,
         Guid? opticalDataId,
         Guid? photovoltaicDataId,
+        Guid? geometricDataId,
         Guid? parentId,
         ICollection<FileMetaInformation> archivedFilesMetaInformation,
         ToTreeVertexAppliedConversionMethod? appliedConversionMethod
@@ -33,6 +34,7 @@ public sealed class GetHttpsResource
         HygrothermalDataId = hygrothermalDataId;
         OpticalDataId = opticalDataId;
         PhotovoltaicDataId = photovoltaicDataId;
+        GeometricDataId = geometricDataId;
     }
 
     public GetHttpsResource(
@@ -63,6 +65,7 @@ public sealed class GetHttpsResource
         Guid? hygrothermalDataId,
         Guid? opticalDataId,
         Guid? photovoltaicDataId,
+        Guid? geometricDataId,
         Guid? parentId
     )
         : this(
@@ -76,6 +79,7 @@ public sealed class GetHttpsResource
         HygrothermalDataId = hygrothermalDataId;
         OpticalDataId = opticalDataId;
         PhotovoltaicDataId = photovoltaicDataId;
+        GeometricDataId = geometricDataId;
     }
 
     public GetHttpsResource(
@@ -100,9 +104,9 @@ public sealed class GetHttpsResource
 
     // TODO Make sure that at least one ID is always present. In that case `Guid.Empty` should never be used!
     [NotMapped]
-    public Guid DataId => CalorimetricDataId ?? HygrothermalDataId ?? OpticalDataId ?? PhotovoltaicDataId ?? Guid.Empty;
+    public Guid DataId => CalorimetricDataId ?? HygrothermalDataId ?? OpticalDataId ?? PhotovoltaicDataId ?? CalorimetricDataId ?? Guid.Empty;
 
-    [NotMapped] public IData? Data => CalorimetricData ?? HygrothermalData ?? OpticalData ?? PhotovoltaicData as IData;
+    [NotMapped] public IData? Data => CalorimetricData ?? HygrothermalData ?? OpticalData ?? CalorimetricDataId ?? PhotovoltaicData as IData;
 
     public Guid? CalorimetricDataId { get; private set; }
 
@@ -125,6 +129,9 @@ public sealed class GetHttpsResource
     public PhotovoltaicData? PhotovoltaicData { get; set; }
 
 
+    [InverseProperty(nameof(Database.Data.GeometricData.Resources))]
+    public GeometricData? GeometricData { get; set; }
+    
     public Guid? ParentId { get; private set; }
 
     // TODO Require the conversion method to be given whenever there is a parent. In other words, either both are `null` or both are non-`null`.

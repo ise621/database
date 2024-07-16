@@ -22,7 +22,7 @@ public sealed class GetHttpsResourcesByDataIdDataLoader
             (dbContext, ids) =>
                 dbContext.GetHttpsResources.AsQueryable().Where(x =>
                     ids.Contains(x.CalorimetricDataId ??
-                                 x.HygrothermalDataId ?? x.OpticalDataId ?? x.PhotovoltaicDataId ?? Guid.Empty)
+                                 x.HygrothermalDataId ?? x.OpticalDataId ?? x.PhotovoltaicDataId ?? x.GeometricDataId ?? Guid.Empty)
                 ),
             x => x.DataId
         )

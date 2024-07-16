@@ -23,7 +23,7 @@ public sealed class GetHttpsResourceTreeNonRootVerticesByDataIdDataLoader
                 dbContext.GetHttpsResources.AsQueryable().Where(x =>
                     x.ParentId != null && ids.Contains(x.CalorimetricDataId ??
                                                        x.HygrothermalDataId ?? x.OpticalDataId ??
-                                                       x.PhotovoltaicDataId ?? Guid.Empty)
+                                                       x.PhotovoltaicDataId ?? x.GeometricDataId ?? Guid.Empty)
                 ),
             x => x.DataId
         )

@@ -48,6 +48,7 @@ public sealed class GetHttpsResourceMutations
             input.DataKind == DataKind.HYGROTHERMAL_DATA ? input.DataId : null,
             input.DataKind == DataKind.OPTICAL_DATA ? input.DataId : null,
             input.DataKind == DataKind.PHOTOVOLTAIC_DATA ? input.DataId : null,
+            input.DataKind == DataKind.GEOMETRIC_DATA ? input.DataId : null,
             input.ParentId,
             input.ArchivedFilesMetaInformation.Select(i =>
                 new FileMetaInformation(
