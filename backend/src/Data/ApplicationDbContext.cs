@@ -12,15 +12,21 @@ namespace Database.Data;
 public sealed class ApplicationDbContext
     : DbContext, IDataProtectionKeyContext
 {
+    private const string DefaultSchemaName = "database";
     private readonly string _schemaName;
+
+    internal const string DataKindTypeName = "data_kind";
+    internal const string StandardizerTypeName = "standardizer";
 
     public ApplicationDbContext(
         DbContextOptions<ApplicationDbContext> options
     )
         : base(options)
     {
+        // The schema-name option is set in `Metabase.Startup` by an invocation of
+        // `UseSchemaName` on a `DbContextOptionsBuilder` instance.
         var schemaNameOptions = options.FindExtension<SchemaNameOptionsExtension>();
-        _schemaName = schemaNameOptions is null ? "database" : schemaNameOptions.SchemaName;
+        _schemaName = schemaNameOptions is null ? DefaultSchemaName : schemaNameOptions.SchemaName;
     }
 
     // https://docs.microsoft.com/en-us/ef/core/miscellaneous/nullable-reference-types#dbcontext-and-dbset
@@ -32,13 +38,13 @@ public sealed class ApplicationDbContext
     public DbSet<User> Users { get; private set; } = default!;
     public DbSet<DataProtectionKey> DataProtectionKeys { get; private set; } = default!;
 
-    private static void CreateEnumerations(ModelBuilder builder)
+    private static void CreateEnumerations(ModelBuilder builder, string schemaName)
     {
-        // https://www.npgsql.org/efcore/mapping/enum.html#creating-your-database-enum
-        // Create enumerations in public schema because that is where
-        // `NpgsqlDataSourceBuilder.MapEnum` expects them to be by default.
-        builder.HasPostgresEnum<DataKind>("public");
-        builder.HasPostgresEnum<Standardizer>("public");
+        // https://www.npgsql.org/efcore/mapping/enum.html?tabs=with-datasource#mapping-your-enum
+        // Create enumerations in the same schema used by
+        // `NpgsqlDataSourceBuilder.MapEnum` in `Startup`.
+        builder.HasPostgresEnum<DataKind>(schemaName, DataKindTypeName);
+        builder.HasPostgresEnum<Standardizer>(schemaName, StandardizerTypeName);
     }
 
     private static
@@ -72,7 +78,7 @@ public sealed class ApplicationDbContext
         modelBuilder.HasDefaultSchema(_schemaName);
         modelBuilder.HasPostgresExtension(
             "pgcrypto"); // https://www.npgsql.org/efcore/modeling/generated-properties.html#guiduuid-generation
-        CreateEnumerations(modelBuilder);
+        CreateEnumerations(modelBuilder, _schemaName);
         ConfigureIdentityEntities(modelBuilder);
         ConfigureEntity(
                 modelBuilder.Entity<GetHttpsResource>()
