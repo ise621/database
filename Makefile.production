@@ -135,7 +135,7 @@ postgres_passwords : postgres_password ## Generate PostgreSQL passwords file who
 # We could have used `docker cp` as explained in https://docs.docker.com/engine/reference/commandline/cp/
 backup : DATABASE_CONTAINER_NAME = backup_${NAME}_database
 backup : FILES_CONTAINER_NAME = backup_${NAME}_files
-backup : ## Backup database and related data to directory with absolute path `${BACKUP_DIRECTORY}`, for example, `make --file Makefile.production BACKUP_DIRECTORY=/app/data/backups/$(date +"%Y-%m-%d_%H_%M_%S") backup`
+backup : ## Backup database and related data to directory with absolute path `${BACKUP_DIRECTORY}`, for example, `make --file=Makefile.production BACKUP_DIRECTORY=/app/data/backups/$(date +"%Y-%m-%d_%H_%M_%S") backup`
 	mkdir --parents ${BACKUP_DIRECTORY}
 	-docker container stop ${DATABASE_CONTAINER_NAME}
 	-docker container rm --volumes ${DATABASE_CONTAINER_NAME}
@@ -194,7 +194,7 @@ prune-backups : ## Keep the most recent 7 backups, delete the rest
 
 restore : DATABASE_CONTAINER_NAME = restore_${NAME}_database
 restore : FILES_CONTAINER_NAME = restore_${NAME}_files
-restore : ## Restore database and related data from directory with absolute path `${BACKUP_DIRECTORY}`, for example, `make --file Makefile.production BACKUP_DIRECTORY=/app/data/backups/2021-04-22_15_43_35 restore`
+restore : ## Restore database and related data from directory with absolute path `${BACKUP_DIRECTORY}`, for example, `make --file=Makefile.production BACKUP_DIRECTORY=/app/data/backups/2021-04-22_15_43_35 restore`
 	-docker container stop ${DATABASE_CONTAINER_NAME}
 	-docker container rm --volumes ${DATABASE_CONTAINER_NAME}
 	${docker_compose} run \
@@ -253,7 +253,7 @@ end-maintenance : ## End maintenance
 .PHONY : end-maintenance
 
 deploy : BACKUP_DIRECTORY = $(shell pwd)/backup
-deploy : begin-maintenance store-commit backup fetch-all checkout-target migrate deploy-services run-tests end-maintenance ## Deploy tag, branch, or commit `${TARGET}`, for example, `make --file Makefile.production TARGET=v1.0.0 deploy`
+deploy : begin-maintenance store-commit backup fetch-all checkout-target migrate deploy-services run-tests end-maintenance ## Deploy tag, branch, or commit `${TARGET}`, for example, `make --file=Makefile.production TARGET=v1.0.0 deploy`
 .PHONY : deploy
 
 rollback : TARGET = $(shell cat ./commit)
