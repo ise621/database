@@ -84,23 +84,26 @@ public static class GraphQlConfiguration
                 {
                     // https://github.com/ChilliCream/hotchocolate/blob/main/src/HotChocolate/Core/src/Execution/Options/RequestExecutorOptions.cs
                     /* options.ExecutionTimeout = ...; */
-                    options.IncludeExceptionDetails = environment.IsDevelopment(); // Default is `Debugger.IsAttached`.
+                    options.IncludeExceptionDetails =
+                        environment.IsDevelopment()
+                        || environment.IsEnvironment(Program.TestEnvironment); // Default is `Debugger.IsAttached`.
                     /* options.QueryCacheSize = ...; */
                     /* options.UseComplexityMultipliers = ...; */
                 }
             )
-            // TODO Configure `https://github.com/ChilliCream/hotchocolate/blob/main/src/HotChocolate/Core/src/Validation/Options/ValidationOptions.cs`. But how?
+            // Configure `https://github.com/ChilliCream/hotchocolate/blob/main/src/HotChocolate/Core/src/Validation/Options/ValidationOptions.cs`. But how?
             // Subscriptions
             /* .AddInMemorySubscriptions() */
-            // TODO Persisted queries
+            // Persisted queries
             /* .AddFileSystemQueryStorage("./persisted_queries") */
             /* .UsePersistedQueryPipeline(); */
+            // HotChocolate uses the default authentication scheme,
+            // which we set to `null` in `AuthConfiguration` to force
+            // users to be explicit about what scheme to use when
+            // making it easier to grasp the various authentication
+            // flows.
             .AddHttpRequestInterceptor(async (httpContext, requestExecutor, requestBuilder, cancellationToken) =>
             {
-                // HotChocolate uses the default authentication scheme, which we
-                // set to `null` in `AuthConfiguration` to force users to be
-                // explicit about what scheme to use when making it easier to
-                // grasp the various authentication flows.
                 try
                 {
                     await HttpContextAuthentication.Authenticate(httpContext);
