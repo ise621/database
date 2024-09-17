@@ -8,29 +8,19 @@ public sealed class GeometricData
     : DataX
 {
     public GeometricData(
-        string id,
-        Guid uuid,
-        DateTime timestamp,
         string locale,
-        Guid databaseId,
         Guid componentId,
         string? name,
         string? description,
-        IReadOnlyList<string> warnings,
+        string[] warnings,
         Guid creatorId,
         DateTime createdAt,
         AppliedMethod appliedMethod,
-        IReadOnlyList<GetHttpsResource> resources,
-        GetHttpsResourceTree resourceTree,
-        IReadOnlyList<DataApproval> approvals,
-        ResponseApproval approval,
-        IReadOnlyList<double> thicknesses
+        ICollection<DataApproval> approvals,
+        // ResponseApproval approval,
+        double[] thicknesses
     ) : base (
-        id,
-        uuid,
-        timestamp,
         locale,
-        databaseId,
         componentId,
         name,
         description,
@@ -38,18 +28,38 @@ public sealed class GeometricData
         creatorId,
         createdAt,
         appliedMethod,
-        resources,
-        resourceTree,
-        approvals,
-        approval
+        approvals
+        // approval
     )
     {
         Thicknesses = thicknesses;
 
     }
+    public GeometricData(
+        string locale,
+        Guid componentId,
+        string? name,
+        string? description,
+        string[] warnings,
+        Guid creatorId,
+        DateTime createdAt,
+        // ResponseApproval approval,
+        double[] thicknesses
+    ) : base(
+        locale,
+        componentId,
+        name,
+        description,
+        warnings,
+        creatorId,
+        createdAt
+    )
+    {
+        Thicknesses = thicknesses;
+    }
 
     [InverseProperty(nameof(GetHttpsResource.GeometricData))]
     public override ICollection<GetHttpsResource> Resources { get; } = new List<GetHttpsResource>();
-    public IReadOnlyList<double> Thicknesses { get; private set;}
+    public double[] Thicknesses { get; private set;}
 
 }

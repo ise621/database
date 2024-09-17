@@ -16,7 +16,7 @@ public sealed record CreateGeometricDataInput(
     Guid CreatorId,
     AppliedMethodInput AppliedMethod,
     IReadOnlyList<DataApprovalInput> Approvals,
-    ResponseApproval Approval,
+    // ResponseApproval Approval,
     RootGetHttpsResourceInput RootResource,
     double[] Thicknesses
 );

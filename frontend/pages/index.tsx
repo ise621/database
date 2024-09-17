@@ -46,6 +46,7 @@ function Page() {
           </Typography.Link>
           . You can use this website to search this product data server for{" "}
           <Link href={paths.opticalData}>optical data</Link>,{" "}
+          <Link href={paths.geometricData}>optical data</Link>,{" "}
           <Link href={paths.calorimetricData}>calorimetric data</Link> and{" "}
           <Link href={paths.photovoltaicData}>photovoltaic data</Link>. If you
           would like to search the entire Product Data Network{" "}

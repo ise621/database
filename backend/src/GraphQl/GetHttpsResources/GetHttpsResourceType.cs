@@ -59,6 +59,6 @@ public sealed class GetHttpsResourceType
         descriptor
             .Field(x => x.Data)
             .ResolveWith<GetHttpsResourceResolvers>(t =>
-                t.GetData(default!, default!, default!, default!, default!, default!));
+                t.GetData(default!, default!, default!, default!, default!, default!, default!));
     }
 }

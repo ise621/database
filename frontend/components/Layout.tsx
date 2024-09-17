@@ -35,6 +35,10 @@ const navItems = [
     path: paths.database,
     label: "Database",
   },
+  {
+    path: paths.geometricData,
+    label: "Geometric Data",
+  },
 ];
 
 export type LayoutProps = {

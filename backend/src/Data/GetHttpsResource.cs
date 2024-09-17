@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using Database.Extensions;
+using Database.GraphQl.GeometricDataX;
 
 namespace Database.Data;
 
@@ -104,9 +105,9 @@ public sealed class GetHttpsResource
 
     // TODO Make sure that at least one ID is always present. In that case `Guid.Empty` should never be used!
     [NotMapped]
-    public Guid DataId => CalorimetricDataId ?? HygrothermalDataId ?? OpticalDataId ?? PhotovoltaicDataId ?? CalorimetricDataId ?? Guid.Empty;
+    public Guid DataId => CalorimetricDataId ?? HygrothermalDataId ?? OpticalDataId ?? PhotovoltaicDataId ?? GeometricDataId ?? Guid.Empty;
 
-    [NotMapped] public IData? Data => CalorimetricData ?? HygrothermalData ?? OpticalData ?? CalorimetricDataId ?? PhotovoltaicData as IData;
+    [NotMapped] public IData? Data => CalorimetricData ?? HygrothermalData ?? OpticalData ?? GeometricData ?? PhotovoltaicData as IData;
 
     public Guid? CalorimetricDataId { get; private set; }
 
@@ -128,6 +129,7 @@ public sealed class GetHttpsResource
     [InverseProperty(nameof(Database.Data.PhotovoltaicData.Resources))]
     public PhotovoltaicData? PhotovoltaicData { get; set; }
 
+    public Guid? GeometricDataId { get; private set; }
 
     [InverseProperty(nameof(Database.Data.GeometricData.Resources))]
     public GeometricData? GeometricData { get; set; }

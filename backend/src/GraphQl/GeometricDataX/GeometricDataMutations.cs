@@ -65,7 +65,7 @@ public sealed class GeometricDataMutations
                     a.ApproverId
                 )
             ).ToList(),
-            approval: input.Approval,
+            // approval: input.Approval,
             input.Thicknesses
         );
         var resource = new GetHttpsResource(
