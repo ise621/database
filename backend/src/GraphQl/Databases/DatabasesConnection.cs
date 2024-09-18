@@ -4,16 +4,12 @@ namespace Database.GraphQl.Databases;
 
 public sealed class DatabasesConnection
 {
-    // pageInfo: PageInfo!
-    // totalCount: Int!
-
     public DatabasesConnection(
-        IReadOnlyList<Database>? nodes
+        IReadOnlyList<DatabaseEdge>? edges
     )
     {
-        Nodes = nodes;
+        Edges = edges;
     }
 
-    // edges: [DatabasesEdge!]
-    public IReadOnlyList<Database>? Nodes { get; }
+    public IReadOnlyList<DatabaseEdge>? Edges { get; }
 }

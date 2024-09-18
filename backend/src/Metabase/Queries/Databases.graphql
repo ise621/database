@@ -2,15 +2,17 @@ query Databases(
     $where: DatabaseFilterInput
 ) {
     databases(where: $where) {
-        nodes {
-            uuid
-            name
-            description
-            locator
-            verificationState
-            verificationCode
-            canCurrentUserUpdateNode
-            canCurrentUserVerifyNode
+        edges {
+            node {
+                uuid
+                name
+                description
+                locator
+                verificationState
+                verificationCode
+                canCurrentUserUpdateNode
+                canCurrentUserVerifyNode
+            }
         }
     }
 }

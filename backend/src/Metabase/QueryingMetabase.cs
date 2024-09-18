@@ -161,6 +161,7 @@ public sealed class QueryingMetabase
             await httpResponseMessage.Content
                 .ReadAsStreamAsync(cancellationToken)
                 .ConfigureAwait(false);
+        // For debugging, the following lines of code write the response to standard output.
         // Console.WriteLine(new StreamReader(responseStream).ReadToEnd());
         var deserializedResponse =
             await JsonSerializer.DeserializeAsync<TResponse>(

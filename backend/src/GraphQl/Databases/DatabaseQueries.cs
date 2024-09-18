@@ -64,15 +64,15 @@ public sealed class DatabaseQueries
                         .SetMessage("Response is null.")
                         .Build()
                 );
-            if (response.Data.Databases.Nodes is null)
+            if (response.Data.Databases.Edges is null)
                 throw new QueryException(
                     ErrorBuilder.New()
-                        .SetCode("NULL_NODES")
+                        .SetCode("NULL_EDGES")
                         .SetPath(resolverContext.Path)
                         .SetMessage("The supposed list of databases is null.")
                         .Build()
                 );
-            if (response.Data.Databases.Nodes.Count == 0)
+            if (response.Data.Databases.Edges.Count == 0)
                 throw new QueryException(
                     ErrorBuilder.New()
                         .SetCode("NO_DATABASE")
@@ -80,7 +80,7 @@ public sealed class DatabaseQueries
                         .SetMessage("The list of databases is empty.")
                         .Build()
                 );
-            if (response.Data.Databases.Nodes.Count >= 2)
+            if (response.Data.Databases.Edges.Count >= 2)
                 throw new QueryException(
                     ErrorBuilder.New()
                         .SetCode("AMBIGUOUS_DATABASE")
@@ -88,7 +88,7 @@ public sealed class DatabaseQueries
                         .SetMessage("The list of databases has more than one entry.")
                         .Build()
                 );
-            return response.Data.Databases.Nodes[0];
+            return response.Data.Databases.Edges[0].Node;
         }
         catch (HttpRequestException e)
         {
@@ -116,8 +116,5 @@ public sealed class DatabaseQueries
         }
     }
 
-    private sealed class DatabasesData
-    {
-        public DatabasesConnection Databases { get; } = default!;
-    }
+    private sealed record DatabasesData(DatabasesConnection Databases);
 }
