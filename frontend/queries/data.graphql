@@ -186,3 +186,22 @@ query AllPhotovoltaicData($where: PhotovoltaicDataPropositionInput) {
 # query HasPhotovoltaicData($where: DataPropositionInput!) {
 #   hasPhotovoltaicData(where: $where)
 # }
+
+fragment GeometricDataPartial on GeometricData {
+  ...DataPartial
+  thicknesses
+}
+
+query GeometricData($uuid: Uuid!) {
+  geometricData(id: $uuid) {
+    ...GeometricDataPartial
+  }
+}
+
+query AllGeometricData($where: GeometricDataPropositionInput) {
+  allGeometricData(where: $where) {
+    nodes {
+      ...GeometricDataPartial
+    }
+  }
+}

@@ -5,6 +5,7 @@ using Database.Data;
 using Database.GraphQl.CalorimetricDataX;
 using Database.GraphQl.HygrothermalDataX;
 using Database.GraphQl.OpticalDataX;
+using Database.GraphQl.GeometricDataX;
 using Database.GraphQl.PhotovoltaicDataX;
 using HotChocolate;
 
@@ -18,6 +19,7 @@ public sealed class GetHttpsResourceResolvers
         HygrothermalDataByIdDataLoader hygrothermalDataById,
         OpticalDataByIdDataLoader opticalDataById,
         PhotovoltaicDataByIdDataLoader photovoltaicDataById,
+        GeometricDataByIdDataLoader geometricDataById,
         CancellationToken cancellationToken
     )
     {
@@ -39,6 +41,11 @@ public sealed class GetHttpsResourceResolvers
         if (getHttpsResource.PhotovoltaicDataId is not null)
             return await photovoltaicDataById.LoadAsync(
                 getHttpsResource.PhotovoltaicDataId ?? throw new ArgumentException("Impossible!"),
+                cancellationToken
+            ).ConfigureAwait(false);
+        if (getHttpsResource.GeometricDataId is not null)
+            return await geometricDataById.LoadAsync(
+                getHttpsResource.GeometricDataId ?? throw new ArgumentException("Impossible!"),
                 cancellationToken
             ).ConfigureAwait(false);
         return null;

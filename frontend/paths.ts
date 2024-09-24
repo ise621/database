@@ -22,6 +22,10 @@ export default {
   photovoltaicDatum(uuid: string) {
     return `/data/photovoltaic/${encodeURIComponent(uuid)}`;
   },
+  geometricData: "/data/geometric",
+  geometricDatum(uuid: string) {
+    return `/data/geometric/${encodeURIComponent(uuid)}`;
+  },
   createData: "/data/create",
   uploadFile: "/upload-file",
   login: "/connect/login",

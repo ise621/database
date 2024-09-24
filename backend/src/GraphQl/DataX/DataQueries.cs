@@ -8,6 +8,7 @@ using Database.GraphQl.CalorimetricDataX;
 using Database.GraphQl.HygrothermalDataX;
 using Database.GraphQl.OpticalDataX;
 using Database.GraphQl.PhotovoltaicDataX;
+using Database.GraphQl.GeometricDataX;
 using HotChocolate;
 using HotChocolate.Data;
 using HotChocolate.Types;
@@ -38,7 +39,8 @@ public sealed class DataQueries
         return context.CalorimetricData.AsQueryable<IData>().AsEnumerable()
             .Concat(context.HygrothermalData.AsQueryable<IData>().AsEnumerable())
             .Concat(context.OpticalData.AsQueryable<IData>().AsEnumerable())
-            .Concat(context.PhotovoltaicData.AsQueryable<IData>().AsEnumerable());
+            .Concat(context.PhotovoltaicData.AsQueryable<IData>().AsEnumerable())
+            .Concat(context.GeometricData.AsQueryable<IData>().AsEnumerable());
     }
 
     public async Task<IData?> GetDataAsync(
@@ -49,6 +51,7 @@ public sealed class DataQueries
         HygrothermalDataByIdDataLoader hygrothermalDataById,
         OpticalDataByIdDataLoader opticalDataById,
         PhotovoltaicDataByIdDataLoader photovoltaicDataById,
+        GeometricDataByIdDataLoader geometricDataById,
         CancellationToken cancellationToken
     )
     {
@@ -63,6 +66,10 @@ public sealed class DataQueries
                 cancellationToken
             ).ConfigureAwait(false) ??
             await opticalDataById.LoadAsync(
+                id,
+                cancellationToken
+            ).ConfigureAwait(false) ??
+            await geometricDataById.LoadAsync(
                 id,
                 cancellationToken
             ).ConfigureAwait(false) ??

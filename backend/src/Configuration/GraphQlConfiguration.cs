@@ -15,6 +15,7 @@ using Database.GraphQl.PhotovoltaicDataX;
 using Database.GraphQl.Publications;
 using Database.GraphQl.References;
 using Database.GraphQl.Standards;
+using Database.GraphQl.GeometricDataX;
 using Database.GraphQl.Users;
 using HotChocolate.Data;
 using HotChocolate.Data.Filters;
@@ -136,6 +137,7 @@ public static class GraphQlConfiguration
             .AddType<PhotovoltaicDataQueries>()
             .AddType<UserQueries>()
             .AddType<VerificationCodeQueries>()
+            .AddType<GeometricDataQueries>()
             // Mutation Types
             .AddMutationType(d => d.Name(nameof(Mutation)))
             .AddType<CalorimetricDataMutations>()
@@ -144,6 +146,7 @@ public static class GraphQlConfiguration
             .AddType<HygrothermalDataMutations>()
             .AddType<OpticalDataMutations>()
             .AddType<PhotovoltaicDataMutations>()
+            .AddType<GeometricDataMutations>()
             /* .AddSubscriptionType(d => d.Name(nameof(GraphQl.Subscription))) */
             /*     .AddType<ComponentSubscriptions>() */
             // Object Types
@@ -159,6 +162,7 @@ public static class GraphQlConfiguration
             .AddType<PublicationType>()
             .AddType<ReferenceType>()
             .AddType<StandardType>()
+            .AddType<GeometricDataType>()
             .AddType<UserType>()
             // Data Loaders
             /* .AddDataLoader<GraphQl.Components.ComponentByIdDataLoader>() */
@@ -209,6 +213,7 @@ public partial class CustomFilterConvention : FilterConvention
         descriptor.BindRuntimeType<IData, DataFilterType>();
         descriptor.BindRuntimeType<HygrothermalData, HygrothermalDataFilterType>();
         descriptor.BindRuntimeType<OpticalData, OpticalDataFilterType>();
+        descriptor.BindRuntimeType<GeometricData, GeometricDataFilterType>();
         descriptor.BindRuntimeType<PhotovoltaicData, PhotovoltaicDataFilterType>();
     }
 

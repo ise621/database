@@ -5,6 +5,7 @@ using Database.Data;
 using Database.Enumerations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -13,9 +14,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Database.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240917073732_AddGeometricData")]
+    partial class AddGeometricData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -23,8 +26,8 @@ namespace Database.Migrations
                 .HasAnnotation("ProductVersion", "8.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "database", "data_kind", new[] { "calorimetric_data", "hygrothermal_data", "optical_data", "photovoltaic_data", "geometric_data" });
-            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "database", "standardizer", new[] { "aerc", "agi", "ashrae", "breeam", "bs", "bsi", "cen", "cie", "dgnb", "din", "dvwg", "iec", "ies", "ift", "iso", "jis", "leed", "nfrc", "riba", "ul", "unece", "vdi", "vff", "well" });
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "public", "data_kind", new[] { "calorimetric_data", "hygrothermal_data", "optical_data", "photovoltaic_data", "geometric_data" });
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "public", "standardizer", new[] { "aerc", "agi", "ashrae", "breeam", "bs", "bsi", "cen", "cie", "dgnb", "din", "dvwg", "iec", "ies", "ift", "iso", "jis", "leed", "nfrc", "riba", "ul", "unece", "vdi", "vff", "well" });
             NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "pgcrypto");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
@@ -659,7 +662,7 @@ namespace Database.Migrations
                                                 .HasColumnType("uuid");
 
                                             b3.Property<DataKind>("DataKind")
-                                                .HasColumnType("database.data_kind");
+                                                .HasColumnType("data_kind");
 
                                             b3.Property<DateTime>("DataTimestamp")
                                                 .HasColumnType("timestamp with time zone");
@@ -783,7 +786,7 @@ namespace Database.Migrations
 
                                     b2.Property<Standardizer[]>("Standardizers")
                                         .IsRequired()
-                                        .HasColumnType("database.standardizer[]");
+                                        .HasColumnType("standardizer[]");
 
                                     b2.Property<string>("Title")
                                         .HasColumnType("text");
@@ -1293,7 +1296,7 @@ namespace Database.Migrations
                                                 .HasColumnType("uuid");
 
                                             b3.Property<DataKind>("DataKind")
-                                                .HasColumnType("database.data_kind");
+                                                .HasColumnType("data_kind");
 
                                             b3.Property<DateTime>("DataTimestamp")
                                                 .HasColumnType("timestamp with time zone");
@@ -1417,7 +1420,7 @@ namespace Database.Migrations
 
                                     b2.Property<Standardizer[]>("Standardizers")
                                         .IsRequired()
-                                        .HasColumnType("database.standardizer[]");
+                                        .HasColumnType("standardizer[]");
 
                                     b2.Property<string>("Title")
                                         .HasColumnType("text");
@@ -1579,7 +1582,7 @@ namespace Database.Migrations
                                                 .HasColumnType("uuid");
 
                                             b3.Property<DataKind>("DataKind")
-                                                .HasColumnType("database.data_kind");
+                                                .HasColumnType("data_kind");
 
                                             b3.Property<DateTime>("DataTimestamp")
                                                 .HasColumnType("timestamp with time zone");
@@ -1703,7 +1706,7 @@ namespace Database.Migrations
 
                                     b2.Property<Standardizer[]>("Standardizers")
                                         .IsRequired()
-                                        .HasColumnType("database.standardizer[]");
+                                        .HasColumnType("standardizer[]");
 
                                     b2.Property<string>("Title")
                                         .HasColumnType("text");
@@ -1839,7 +1842,7 @@ namespace Database.Migrations
                                                 .HasColumnType("uuid");
 
                                             b3.Property<DataKind>("DataKind")
-                                                .HasColumnType("database.data_kind");
+                                                .HasColumnType("data_kind");
 
                                             b3.Property<DateTime>("DataTimestamp")
                                                 .HasColumnType("timestamp with time zone");
@@ -1963,7 +1966,7 @@ namespace Database.Migrations
 
                                     b2.Property<Standardizer[]>("Standardizers")
                                         .IsRequired()
-                                        .HasColumnType("database.standardizer[]");
+                                        .HasColumnType("standardizer[]");
 
                                     b2.Property<string>("Title")
                                         .HasColumnType("text");

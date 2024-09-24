@@ -51,8 +51,14 @@ public sealed class GetHttpsResourceType
             .Field(x => x.PhotovoltaicData)
             .Ignore();
         descriptor
+            .Field(x => x.GeometricDataId)
+            .Ignore();
+        descriptor
+            .Field(x => x.GeometricData)
+            .Ignore();
+        descriptor
             .Field(x => x.Data)
             .ResolveWith<GetHttpsResourceResolvers>(t =>
-                t.GetData(default!, default!, default!, default!, default!, default!));
+                t.GetData(default!, default!, default!, default!, default!, default!, default!));
     }
 }

@@ -145,6 +145,18 @@ type CreatePhotovoltaicDataPayload {
   query: Query!
 }
 
+type CreateGeometricDataError {
+  code: CreateGeometricDataErrorCode!
+  message: String!
+  path: [String!]!
+}
+
+type CreateGeometricDataPayload {
+  geometricData: GeometricData
+  errors: [CreateGeometricDataError!]
+  query: Query!
+}
+
 type CrossDatabaseDataReference {
   databaseId: Uuid!
   dataId: Uuid!
@@ -180,6 +192,44 @@ type DataEdge {
   cursor: String!
   "The item at the end of the edge."
   node: Data!
+}
+
+type GeometricData implements Node & Data {
+  appliedMethod: AppliedMethod!
+  approvals: [DataApproval!]!
+  componentId: Uuid!
+  createdAt: DateTime!
+  creatorId: Uuid!
+  description: String
+  id: ID!
+  locale: Locale!
+  name: String
+  resources: [GetHttpsResource!]!
+  resourceTree: GetHttpsResourceTree!
+  timestamp: DateTime!
+  uuid: Uuid!
+  thicknesses: [Float!]!
+  warnings: [String!]!
+}
+
+"A connection to a list of items."
+type GeometricDataConnection {
+  "A list of edges."
+  edges: [GeometricDataEdge!]
+  "A flattened list of the nodes."
+  nodes: [GeometricData!]
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "Identifies the total count of items in the connection."
+  totalCount: Int!
+}
+
+"An edge in a connection."
+type GeometricDataEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: GeometricData!
 }
 
 type Database {
@@ -293,6 +343,7 @@ type Mutation {
   createOpticalData(input: CreateOpticalDataInput!): CreateOpticalDataPayload!
   createPhotovoltaicData(input: CreatePhotovoltaicDataInput!): CreatePhotovoltaicDataPayload!
   updateDatabase(input: UpdateDatabaseInput!): UpdateDatabasePayload!
+  createGeometricData(input: CreateGeometricDataInput!): CreateGeometricDataPayload!
 }
 
 type NamedMethodArgument {
@@ -431,6 +482,7 @@ type Query {
   allHygrothermalData("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int locale: Locale order: [HygrothermalDataSortInput!] timestamp: DateTime where: HygrothermalDataPropositionInput): HygrothermalDataConnection
   allOpticalData("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int locale: Locale order: [OpticalDataSortInput!] timestamp: DateTime where: OpticalDataPropositionInput): OpticalDataConnection
   allPhotovoltaicData("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int locale: Locale order: [PhotovoltaicDataSortInput!] timestamp: DateTime where: PhotovoltaicDataPropositionInput): PhotovoltaicDataConnection
+  allGeometricData("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int locale: Locale order: [GeometricDataSortInput!] timestamp: DateTime where: GeometricDataPropositionInput): GeometricDataConnection
   calorimetricData(id: Uuid! locale: Locale timestamp: DateTime): CalorimetricData
   currentUser: User
   currentUserInfo: UserInfo
@@ -446,6 +498,7 @@ type Query {
   opticalData(id: Uuid! locale: Locale timestamp: DateTime): OpticalData
   photovoltaicData(id: Uuid! locale: Locale timestamp: DateTime): PhotovoltaicData
   verificationCode: String!
+  geometricData(id: Uuid! locale: Locale timestamp: DateTime): GeometricData
 }
 
 "`ISO 52022` is an example of the abbreviation of a standardizer and the main number of the identifier."
@@ -565,6 +618,23 @@ input CielabColorPropositionInput {
   bStar: FloatPropositionInput
 }
 
+input GeometricDataPropositionInput {
+  and: [GeometricDataPropositionInput!]
+  or: [GeometricDataPropositionInput!]
+  locale: StringPropositionInput
+  name: StringPropositionInput
+  description: StringPropositionInput
+  componentId: UuidPropositionInput
+  creatorId: UuidPropositionInput
+  createdAt: DateTimePropositionInput
+  appliedMethod: AppliedMethodPropositionInput
+  approvals: ListFilterInputTypeOfDataApprovalPropositionInput
+  resources: ListGetHttpsResourceFilterTypePropositionInput
+  warnings: StringsPropositionInput
+  id: UuidPropositionInput
+  thicknesses: FloatsPropositionInput
+}
+
 input CreateCalorimetricDataInput {
   accessToken: String!
   appliedMethod: AppliedMethodInput!
@@ -579,6 +649,33 @@ input CreateCalorimetricDataInput {
   rootResource: RootGetHttpsResourceInput!
   uValues: [Float!]!
   warnings: [String!]!
+}
+
+input GeometricDataSortInput {
+  locale: SortEnumType
+  componentId: SortEnumType
+  name: SortEnumType
+  description: SortEnumType
+  creatorId: SortEnumType
+  createdAt: SortEnumType
+  appliedMethod: AppliedMethodSortInput
+  id: SortEnumType
+  version: SortEnumType
+}
+
+input CreateGeometricDataInput {
+  accessToken: String!
+  appliedMethod: AppliedMethodInput!
+  approvals: [DataApprovalInput!]!
+  componentId: Uuid!
+  createdAt: DateTime!
+  creatorId: Uuid!
+  description: String
+  locale: String!
+  name: String
+  rootResource: RootGetHttpsResourceInput!
+  warnings: [String!]!
+  thicknesses: [Float!]!
 }
 
 input CreateGetHttpsResourceInput {
@@ -809,6 +906,8 @@ input GetHttpsResourceSortInput {
   opticalData: OpticalDataSortInput
   photovoltaicDataId: SortEnumType
   photovoltaicData: PhotovoltaicDataSortInput
+  geometricDataId: SortEnumType
+  geometricData: GeometricDataSortInput
   parentId: SortEnumType
   appliedConversionMethod: ToTreeVertexAppliedConversionMethodSortInput
   parent: GetHttpsResourceSortInput
@@ -1226,11 +1325,17 @@ enum CreatePhotovoltaicDataErrorCode {
   UNAUTHORIZED
 }
 
+enum CreateGeometricDataErrorCode {
+  UNKNOWN
+  UNAUTHORIZED
+}
+
 enum DataKind {
   CALORIMETRIC_DATA
   HYGROTHERMAL_DATA
   OPTICAL_DATA
   PHOTOVOLTAIC_DATA
+  GEOMETRIC_DATA
 }
 
 enum DatabaseVerificationState {
