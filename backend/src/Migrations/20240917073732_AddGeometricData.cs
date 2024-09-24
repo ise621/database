@@ -16,7 +16,7 @@ namespace Database.Migrations
         {
             migrationBuilder.AlterDatabase()
                 .Annotation("Npgsql:Enum:database.data_kind", "calorimetric_data,hygrothermal_data,optical_data,photovoltaic_data,geometric_data")
-                .OldAnnotation("Npgsql:Enum:database.data_kind", "calorimetric_data,hygrothermal_data,optical_data,photovoltaic_data")
+                .OldAnnotation("Npgsql:Enum:database.data_kind", "calorimetric_data,hygrothermal_data,optical_data,photovoltaic_data");
 
             migrationBuilder.AddColumn<Guid>(
                 name: "GeometricDataId",
@@ -192,7 +192,7 @@ namespace Database.Migrations
 
             migrationBuilder.AlterDatabase()
                 .Annotation("Npgsql:Enum:database.data_kind", "calorimetric_data,hygrothermal_data,optical_data,photovoltaic_data")
-                .OldAnnotation("Npgsql:Enum:database.data_kind", "calorimetric_data,hygrothermal_data,optical_data,photovoltaic_data,geometric_data")
+                .OldAnnotation("Npgsql:Enum:database.data_kind", "calorimetric_data,hygrothermal_data,optical_data,photovoltaic_data,geometric_data");
         }
     }
 }
