@@ -15,12 +15,8 @@ namespace Database.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterDatabase()
-                .Annotation("Npgsql:Enum:public.data_kind", "calorimetric_data,hygrothermal_data,optical_data,photovoltaic_data,geometric_data")
-                .Annotation("Npgsql:Enum:public.standardizer", "aerc,agi,ashrae,breeam,bs,bsi,cen,cie,dgnb,din,dvwg,iec,ies,ift,iso,jis,leed,nfrc,riba,ul,unece,vdi,vff,well")
-                .Annotation("Npgsql:PostgresExtension:pgcrypto", ",,")
-                .OldAnnotation("Npgsql:Enum:public.data_kind", "calorimetric_data,hygrothermal_data,optical_data,photovoltaic_data")
-                .OldAnnotation("Npgsql:Enum:public.standardizer", "aerc,agi,ashrae,breeam,bs,bsi,cen,cie,dgnb,din,dvwg,iec,ies,ift,iso,jis,leed,nfrc,riba,ul,unece,vdi,vff,well")
-                .OldAnnotation("Npgsql:PostgresExtension:pgcrypto", ",,");
+                .Annotation("Npgsql:Enum:database.data_kind", "calorimetric_data,hygrothermal_data,optical_data,photovoltaic_data,geometric_data")
+                .OldAnnotation("Npgsql:Enum:database.data_kind", "calorimetric_data,hygrothermal_data,optical_data,photovoltaic_data")
 
             migrationBuilder.AddColumn<Guid>(
                 name: "GeometricDataId",
@@ -195,12 +191,8 @@ namespace Database.Migrations
                 table: "get_https_resource");
 
             migrationBuilder.AlterDatabase()
-                .Annotation("Npgsql:Enum:public.data_kind", "calorimetric_data,hygrothermal_data,optical_data,photovoltaic_data")
-                .Annotation("Npgsql:Enum:public.standardizer", "aerc,agi,ashrae,breeam,bs,bsi,cen,cie,dgnb,din,dvwg,iec,ies,ift,iso,jis,leed,nfrc,riba,ul,unece,vdi,vff,well")
-                .Annotation("Npgsql:PostgresExtension:pgcrypto", ",,")
-                .OldAnnotation("Npgsql:Enum:public.data_kind", "calorimetric_data,hygrothermal_data,optical_data,photovoltaic_data,geometric_data")
-                .OldAnnotation("Npgsql:Enum:public.standardizer", "aerc,agi,ashrae,breeam,bs,bsi,cen,cie,dgnb,din,dvwg,iec,ies,ift,iso,jis,leed,nfrc,riba,ul,unece,vdi,vff,well")
-                .OldAnnotation("Npgsql:PostgresExtension:pgcrypto", ",,");
+                .Annotation("Npgsql:Enum:database.data_kind", "calorimetric_data,hygrothermal_data,optical_data,photovoltaic_data")
+                .OldAnnotation("Npgsql:Enum:database.data_kind", "calorimetric_data,hygrothermal_data,optical_data,photovoltaic_data,geometric_data")
         }
     }
 }
