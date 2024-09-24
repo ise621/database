@@ -73,7 +73,7 @@ namespace Database.Migrations
                     Standard_Numeration_Prefix = table.Column<string>(type: "text", nullable: true),
                     Standard_Numeration_MainNumber = table.Column<string>(type: "text", nullable: true),
                     Standard_Numeration_Suffix = table.Column<string>(type: "text", nullable: true),
-                    Standard_Standardizers = table.Column<Standardizer[]>(type: "standardizer[]", nullable: true),
+                    Standard_Standardizers = table.Column<Standardizer[]>(type: "database.standardizer[]", nullable: true),
                     Standard_Locator = table.Column<string>(type: "text", nullable: true),
                     Standard_Title = table.Column<string>(type: "text", nullable: true),
                     Standard_Abstract = table.Column<string>(type: "text", nullable: true),
@@ -125,7 +125,7 @@ namespace Database.Migrations
                     Name = table.Column<string>(type: "text", nullable: false),
                     Value_DataId = table.Column<Guid>(type: "uuid", nullable: false),
                     Value_DataTimestamp = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Value_DataKind = table.Column<DataKind>(type: "data_kind", nullable: false),
+                    Value_DataKind = table.Column<DataKind>(type: "database.data_kind", nullable: false),
                     Value_DatabaseId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>

@@ -39,7 +39,7 @@ CREATE TABLE database."geometric_data_Approvals" (
     "Standard_Numeration_Prefix" text,
     "Standard_Numeration_MainNumber" text,
     "Standard_Numeration_Suffix" text,
-    "Standard_Standardizers" standardizer[],
+    "Standard_Standardizers" database.standardizer[],
     "Standard_Locator" text,
     "Standard_Title" text,
     "Standard_Abstract" text,
@@ -63,7 +63,7 @@ CREATE TABLE database."geometric_data_Sources" (
     "Name" text NOT NULL,
     "Value_DataId" uuid NOT NULL,
     "Value_DataTimestamp" timestamp with time zone NOT NULL,
-    "Value_DataKind" data_kind NOT NULL,
+    "Value_DataKind" database.data_kind NOT NULL,
     "Value_DatabaseId" uuid NOT NULL,
     CONSTRAINT "PK_geometric_data_Sources" PRIMARY KEY ("AppliedMethodGeometricDataId", "Id"),
     CONSTRAINT "FK_geometric_data_Sources_geometric_data_AppliedMethodGeometri~" FOREIGN KEY ("AppliedMethodGeometricDataId") REFERENCES database.geometric_data ("Id") ON DELETE CASCADE
