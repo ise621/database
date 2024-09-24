@@ -23,7 +23,7 @@ namespace Database.Migrations
                 .HasAnnotation("ProductVersion", "8.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "database", "data_kind", new[] { "calorimetric_data", "hygrothermal_data", "optical_data", "photovoltaic_data" });
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "database", "data_kind", new[] { "calorimetric_data", "hygrothermal_data", "optical_data", "photovoltaic_data", "geometric_data" });
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "database", "standardizer", new[] { "aerc", "agi", "ashrae", "breeam", "bs", "bsi", "cen", "cie", "dgnb", "din", "dvwg", "iec", "ies", "ift", "iso", "jis", "leed", "nfrc", "riba", "ul", "unece", "vdi", "vff", "well" });
             NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "pgcrypto");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -77,6 +77,51 @@ namespace Database.Migrations
                     b.ToTable("calorimetric_data", "database");
                 });
 
+            modelBuilder.Entity("Database.Data.GeometricData", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
+                    b.Property<Guid>("ComponentId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("CreatorId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Locale")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<double[]>("Thicknesses")
+                        .IsRequired()
+                        .HasColumnType("double precision[]");
+
+                    b.Property<uint>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
+                    b.Property<string[]>("Warnings")
+                        .IsRequired()
+                        .HasColumnType("text[]");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("geometric_data", "database");
+                });
+
             modelBuilder.Entity("Database.Data.GetHttpsResource", b =>
                 {
                     b.Property<Guid>("Id")
@@ -93,6 +138,9 @@ namespace Database.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<Guid?>("GeometricDataId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("HashValue")
                         .IsRequired()
@@ -119,6 +167,8 @@ namespace Database.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CalorimetricDataId");
+
+                    b.HasIndex("GeometricDataId");
 
                     b.HasIndex("HygrothermalDataId");
 
@@ -789,11 +839,273 @@ namespace Database.Migrations
                     b.Navigation("Approvals");
                 });
 
+            modelBuilder.Entity("Database.Data.GeometricData", b =>
+                {
+                    b.OwnsOne("Database.Data.AppliedMethod", "AppliedMethod", b1 =>
+                        {
+                            b1.Property<Guid>("GeometricDataId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<Guid>("MethodId")
+                                .HasColumnType("uuid");
+
+                            b1.HasKey("GeometricDataId");
+
+                            b1.ToTable("geometric_data", "database");
+
+                            b1.WithOwner()
+                                .HasForeignKey("GeometricDataId");
+
+                            b1.OwnsMany("Database.Data.NamedMethodArgument", "Arguments", b2 =>
+                                {
+                                    b2.Property<Guid>("AppliedMethodGeometricDataId")
+                                        .HasColumnType("uuid");
+
+                                    b2.Property<int>("Id")
+                                        .ValueGeneratedOnAdd()
+                                        .HasColumnType("integer");
+
+                                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b2.Property<int>("Id"));
+
+                                    b2.Property<string>("Name")
+                                        .IsRequired()
+                                        .HasColumnType("text");
+
+                                    b2.Property<JsonDocument>("Value")
+                                        .IsRequired()
+                                        .HasColumnType("jsonb");
+
+                                    b2.HasKey("AppliedMethodGeometricDataId", "Id");
+
+                                    b2.ToTable("geometric_data_Arguments", "database");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("AppliedMethodGeometricDataId");
+                                });
+
+                            b1.OwnsMany("Database.Data.NamedMethodSource", "Sources", b2 =>
+                                {
+                                    b2.Property<Guid>("AppliedMethodGeometricDataId")
+                                        .HasColumnType("uuid");
+
+                                    b2.Property<int>("Id")
+                                        .ValueGeneratedOnAdd()
+                                        .HasColumnType("integer");
+
+                                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b2.Property<int>("Id"));
+
+                                    b2.Property<string>("Name")
+                                        .IsRequired()
+                                        .HasColumnType("text");
+
+                                    b2.HasKey("AppliedMethodGeometricDataId", "Id");
+
+                                    b2.ToTable("geometric_data_Sources", "database");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("AppliedMethodGeometricDataId");
+
+                                    b2.OwnsOne("Database.Data.CrossDatabaseDataReference", "Value", b3 =>
+                                        {
+                                            b3.Property<Guid>("NamedMethodSourceAppliedMethodGeometricDataId")
+                                                .HasColumnType("uuid");
+
+                                            b3.Property<int>("NamedMethodSourceId")
+                                                .HasColumnType("integer");
+
+                                            b3.Property<Guid>("DataId")
+                                                .HasColumnType("uuid");
+
+                                            b3.Property<DataKind>("DataKind")
+                                                .HasColumnType("data_kind");
+
+                                            b3.Property<DateTime>("DataTimestamp")
+                                                .HasColumnType("timestamp with time zone");
+
+                                            b3.Property<Guid>("DatabaseId")
+                                                .HasColumnType("uuid");
+
+                                            b3.HasKey("NamedMethodSourceAppliedMethodGeometricDataId", "NamedMethodSourceId");
+
+                                            b3.ToTable("geometric_data_Sources", "database");
+
+                                            b3.WithOwner()
+                                                .HasForeignKey("NamedMethodSourceAppliedMethodGeometricDataId", "NamedMethodSourceId");
+                                        });
+
+                                    b2.Navigation("Value")
+                                        .IsRequired();
+                                });
+
+                            b1.Navigation("Arguments");
+
+                            b1.Navigation("Sources");
+                        });
+
+                    b.OwnsMany("Database.Data.DataApproval", "Approvals", b1 =>
+                        {
+                            b1.Property<Guid>("GeometricDataId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("integer");
+
+                            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
+
+                            b1.Property<Guid>("ApproverId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("KeyFingerprint")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<string>("Query")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<string>("Response")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<string>("Signature")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<DateTime>("Timestamp")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.HasKey("GeometricDataId", "Id");
+
+                            b1.ToTable("geometric_data_Approvals", "database");
+
+                            b1.WithOwner()
+                                .HasForeignKey("GeometricDataId");
+
+                            b1.OwnsOne("Database.Data.Publication", "Publication", b2 =>
+                                {
+                                    b2.Property<Guid>("DataApprovalGeometricDataId")
+                                        .HasColumnType("uuid");
+
+                                    b2.Property<int>("DataApprovalId")
+                                        .HasColumnType("integer");
+
+                                    b2.Property<string>("Abstract")
+                                        .HasColumnType("text");
+
+                                    b2.Property<string>("ArXiv")
+                                        .HasColumnType("text");
+
+                                    b2.Property<string[]>("Authors")
+                                        .HasColumnType("text[]");
+
+                                    b2.Property<string>("Doi")
+                                        .HasColumnType("text");
+
+                                    b2.Property<string>("Section")
+                                        .HasColumnType("text");
+
+                                    b2.Property<string>("Title")
+                                        .HasColumnType("text");
+
+                                    b2.Property<string>("Urn")
+                                        .HasColumnType("text");
+
+                                    b2.Property<string>("WebAddress")
+                                        .HasColumnType("text");
+
+                                    b2.HasKey("DataApprovalGeometricDataId", "DataApprovalId");
+
+                                    b2.ToTable("geometric_data_Approvals", "database");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("DataApprovalGeometricDataId", "DataApprovalId");
+                                });
+
+                            b1.OwnsOne("Database.Data.Standard", "Standard", b2 =>
+                                {
+                                    b2.Property<Guid>("DataApprovalGeometricDataId")
+                                        .HasColumnType("uuid");
+
+                                    b2.Property<int>("DataApprovalId")
+                                        .HasColumnType("integer");
+
+                                    b2.Property<string>("Abstract")
+                                        .HasColumnType("text");
+
+                                    b2.Property<string>("Locator")
+                                        .HasColumnType("text");
+
+                                    b2.Property<string>("Section")
+                                        .HasColumnType("text");
+
+                                    b2.Property<Standardizer[]>("Standardizers")
+                                        .IsRequired()
+                                        .HasColumnType("standardizer[]");
+
+                                    b2.Property<string>("Title")
+                                        .HasColumnType("text");
+
+                                    b2.Property<int?>("Year")
+                                        .HasColumnType("integer");
+
+                                    b2.HasKey("DataApprovalGeometricDataId", "DataApprovalId");
+
+                                    b2.ToTable("geometric_data_Approvals", "database");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("DataApprovalGeometricDataId", "DataApprovalId");
+
+                                    b2.OwnsOne("Database.Data.Numeration", "Numeration", b3 =>
+                                        {
+                                            b3.Property<Guid>("StandardDataApprovalGeometricDataId")
+                                                .HasColumnType("uuid");
+
+                                            b3.Property<int>("StandardDataApprovalId")
+                                                .HasColumnType("integer");
+
+                                            b3.Property<string>("MainNumber")
+                                                .IsRequired()
+                                                .HasColumnType("text");
+
+                                            b3.Property<string>("Prefix")
+                                                .HasColumnType("text");
+
+                                            b3.Property<string>("Suffix")
+                                                .HasColumnType("text");
+
+                                            b3.HasKey("StandardDataApprovalGeometricDataId", "StandardDataApprovalId");
+
+                                            b3.ToTable("geometric_data_Approvals", "database");
+
+                                            b3.WithOwner()
+                                                .HasForeignKey("StandardDataApprovalGeometricDataId", "StandardDataApprovalId");
+                                        });
+
+                                    b2.Navigation("Numeration")
+                                        .IsRequired();
+                                });
+
+                            b1.Navigation("Publication");
+
+                            b1.Navigation("Standard");
+                        });
+
+                    b.Navigation("AppliedMethod")
+                        .IsRequired();
+
+                    b.Navigation("Approvals");
+                });
+
             modelBuilder.Entity("Database.Data.GetHttpsResource", b =>
                 {
                     b.HasOne("Database.Data.CalorimetricData", "CalorimetricData")
                         .WithMany("Resources")
                         .HasForeignKey("CalorimetricDataId");
+
+                    b.HasOne("Database.Data.GeometricData", "GeometricData")
+                        .WithMany("Resources")
+                        .HasForeignKey("GeometricDataId");
 
                     b.HasOne("Database.Data.HygrothermalData", "HygrothermalData")
                         .WithMany("Resources")
@@ -891,6 +1203,8 @@ namespace Database.Migrations
                     b.Navigation("ArchivedFilesMetaInformation");
 
                     b.Navigation("CalorimetricData");
+
+                    b.Navigation("GeometricData");
 
                     b.Navigation("HygrothermalData");
 
@@ -1730,6 +2044,11 @@ namespace Database.Migrations
                 });
 
             modelBuilder.Entity("Database.Data.CalorimetricData", b =>
+                {
+                    b.Navigation("Resources");
+                });
+
+            modelBuilder.Entity("Database.Data.GeometricData", b =>
                 {
                     b.Navigation("Resources");
                 });
