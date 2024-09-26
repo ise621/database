@@ -3,12 +3,12 @@ using System.IO;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using HotChocolate.AspNetCore;
 using Database.Configuration;
 using Database.Data;
 using Database.Data.Extensions;
 using Database.Enumerations;
 using Database.Services;
-using HotChocolate.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -29,6 +30,7 @@ namespace Database;
 public sealed class Startup
 {
     private const string GraphQlCorsPolicy = "GraphQlCorsPolicy";
+    private const string AntiforgeryHeaderName = "X-XSRF-TOKEN";
     private readonly AppSettings _appSettings;
 
     private readonly IWebHostEnvironment _environment;
@@ -40,7 +42,8 @@ public sealed class Startup
     {
         _environment = environment;
         _appSettings = configuration.Get<AppSettings>() ??
-                       throw new ArgumentException("Failed to get application settings from configuration.");
+                       throw new InvalidOperationException(
+                           "Failed to get application settings from configuration.");
     }
 
     public void ConfigureServices(IServiceCollection services)
@@ -50,12 +53,12 @@ public sealed class Startup
         ConfigureDatabaseServices(services);
         ConfigureMessageSenderServices(services);
         ConfigureRequestResponseServices(services);
-        ConfigureSessionServices(services);
-        services.AddAntiforgery(_ => { _.HeaderName = "X-XSRF-TOKEN"; });
+        ConfigureSessionServices(services, _environment);
+        services.AddAntiforgery(_ => { _.HeaderName = AntiforgeryHeaderName; });
         services
             .AddDataProtection()
             .PersistKeysToDbContext<ApplicationDbContext>();
-        services.AddHttpClient();
+        ConfigureHttpClientServices(services);
         services.AddHttpContextAccessor();
         services
             .AddHealthChecks()
@@ -87,7 +90,34 @@ public sealed class Startup
                         .AllowAnyMethod()
             )
         );
-        services.AddControllersWithViews();
+        services.AddControllersWithViews()
+        .AddRazorOptions(_ =>
+            {
+                // The default location formarts are `/Views/{1}/{0}.cshtml` and `/Views/Shared/{0}.cshtml`.
+                // Add the format that ignores the directory structure, that is,
+                // leave out `/Views` and the controller name `{1}`. For some
+                // reason compiled views land in the root directory. The
+                // debugging output of `make logs` when navigating to
+                // https://local.buildingenvelopedata.org:4041/connect/logout?...
+                // is:
+                // Initializing Razor view compiler with compiled view: '/Authorize.cshtml'.
+                // Initializing Razor view compiler with compiled view: '/Logout.cshtml'.
+                // Initializing Razor view compiler with compiled view: '/Verify.cshtml'.
+                // Initializing Razor view compiler with compiled view: '/Error.cshtml'.
+                // Initializing Razor view compiler with compiled view: '/_Layout.cshtml'.
+                // Initializing Razor view compiler with compiled view: '/_ViewImports.cshtml'.
+                // Initializing Razor view compiler with compiled view: '/_ViewStart.cshtml'.
+                // View lookup cache miss for view 'Logout' in controller 'Authorization'.
+                // Could not find a file for view at path '/Views/Authorization/Logout.cshtml'.
+                // Could not find a file for view at path '/Views/Shared/Logout.cshtml'.
+                // Located compiled view for view at path '/Logout.cshtml'.
+                // Located compiled view for view at path '/_ViewStart.cshtml'.
+                // Executing ViewResult, running view Logout.
+                // The view path '/Logout.cshtml' was found in 5.0269ms.
+                _.ViewLocationFormats.Add("/{0}.cshtml");
+                // TODO I consider the flattened structure a bug. How can we solve this?
+            }
+        );
     }
 
     private void ConfigureMessageSenderServices(IServiceCollection services)
@@ -101,18 +131,40 @@ public sealed class Startup
         );
     }
 
-    private static void ConfigureSessionServices(IServiceCollection services)
+    private static void ConfigureSessionServices(
+            IServiceCollection services,
+            IWebHostEnvironment environment
+            )
     {
         // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/app-state#session-state
         services.AddDistributedMemoryCache();
         services.AddSession(options =>
         {
-            // Set a short timeout for easy testing.
-            options.IdleTimeout = TimeSpan.FromSeconds(10);
+            // Set a short timeout for easy testing in development and a long
+            // one otherwise.
+            options.IdleTimeout =
+                environment.IsDevelopment()
+                ? TimeSpan.FromSeconds(10)
+                : TimeSpan.FromMinutes(30);
             options.Cookie.HttpOnly = true;
             // Make the session cookie essential
             options.Cookie.IsEssential = true;
         });
+    }
+
+    private static void ConfigureDatabaseContext(
+        DbContextOptionsBuilder options,
+        IWebHostEnvironment environment
+        )
+    {
+        if (!environment.IsProduction())
+            options
+                .EnableSensitiveDataLogging()
+                .EnableDetailedErrors();
+        if (environment.IsEnvironment(Program.TestEnvironment))
+            options.ConfigureWarnings(x =>
+                x.Ignore(CoreEventId.ManyServiceProvidersCreatedWarning)
+            );
     }
 
     private void ConfigureDatabaseServices(IServiceCollection services)
@@ -128,22 +180,16 @@ public sealed class Startup
                     .UseNpgsql(dataSourceBuilder.Build() /*, optionsBuilder => optionsBuilder.UseNodaTime() */)
                     .UseSchemaName(_appSettings.Database.SchemaName)
                     .UseOpenIddict();
-                if (!_environment.IsProduction())
-                    options
-                        .EnableSensitiveDataLogging()
-                        .EnableDetailedErrors();
+                ConfigureDatabaseContext(options, _environment);
             }
         );
         // Database context as services are used by `OpenIddict`, see in
         // particular `AuthConfiguration`.
         services.AddDbContext<ApplicationDbContext>(
-            (serviceProvider, options) =>
+            (services, options) =>
             {
-                if (!_environment.IsProduction())
-                    options
-                        .EnableSensitiveDataLogging()
-                        .EnableDetailedErrors();
-                serviceProvider
+                ConfigureDatabaseContext(options, _environment);
+                services
                     .GetRequiredService<IDbContextFactory<ApplicationDbContext>>()
                     .CreateDbContext();
             },
@@ -151,10 +197,15 @@ public sealed class Startup
         );
     }
 
+    private static void ConfigureHttpClientServices(IServiceCollection services)
+    {
+        services.AddHttpClient();
+    }
+
     public void Configure(WebApplication app)
     {
         // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/
-        if (_environment.IsDevelopment() || _environment.IsEnvironment("test"))
+        if (_environment.IsDevelopment() || _environment.IsEnvironment(Program.TestEnvironment))
         {
             app.UseDeveloperExceptionPage();
             // app.UseMigrationsEndPoint();
@@ -248,6 +299,7 @@ public sealed class Startup
                     healthReportEntry.Value.Duration.ToString());
                 jsonWriter.WriteStartArray("tags");
                 foreach (var tag in healthReportEntry.Value.Tags) jsonWriter.WriteStringValue(tag);
+
                 jsonWriter.WriteEndArray();
                 var exception = healthReportEntry.Value.Exception;
                 if (exception is not null)
@@ -255,11 +307,15 @@ public sealed class Startup
                     jsonWriter.WriteStartObject("exception");
                     jsonWriter.WriteString("message", exception.Message);
                     if (exception.StackTrace is not null) jsonWriter.WriteString("stackTrace", exception.StackTrace);
+
                     if (exception.InnerException is not null)
                         jsonWriter.WriteString("innerException", exception.InnerException.ToString());
+
                     if (exception.Source is not null) jsonWriter.WriteString("source", exception.Source);
+
                     if (exception.TargetSite is not null)
                         jsonWriter.WriteString("targetSite", exception.TargetSite.ToString());
+
                     jsonWriter.WriteEndObject();
                 }
 
