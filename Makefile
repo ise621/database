@@ -88,6 +88,7 @@ restart : ## Restart all stopped and running containers
 
 logs : ## Follow logs
 	${docker_compose} logs \
+		--since=24h \
 		--follow
 .PHONY : logs
 
@@ -144,10 +145,9 @@ traceb : ## Trace backend container with identifier `${CONTAINER_ID}`, for examp
 				"
 .PHONY : traceb
 
-shelln : up ## Enter shell in an existing `nginx` container (after starting all containers if necessary)
-	${docker_compose} exec \
-		nginx \
-		bash
+shelln : CONTAINER = nginx
+shelln : COMMAND = bash
+shelln : exec ## Enter shell in an existing `nginx` container (after starting all containers if necessary)
 .PHONY : shelln
 
 psql : ## Enter PostgreSQL interactive terminal in the running `database` container
@@ -158,10 +158,9 @@ psql : ## Enter PostgreSQL interactive terminal in the running `database` contai
 		--dbname xbase_development
 .PHONY : psql
 
-shelld : up ## Enter shell in an existing `database` container (after starting all containers if necessary)
-	${docker_compose} exec \
-		database \
-		bash
+shelld : CONTAINER = database
+shelld : COMMAND = bash
+shelld : exec ## Enter shell in an existing `database` container (after starting all containers if necessary)
 .PHONY : shelld
 
 list : ## List all containers with health status
@@ -170,19 +169,21 @@ list : ## List all containers with health status
 		--all
 .PHONY : list
 
-createdb : ## Create database
+createdb : DBNAME = xbase_development
+createdb : ## Create database with name `${DBNAME}` defaulting to `xbase_development`
 	${docker_compose} exec \
 		database \
 		bash -c " \
-			createdb --username postgres xbase_development ; \
+			createdb --username postgres ${DBNAME} ; \
 		"
 .PHONY : createdb
 
-dropdb : ## Drop database
+dropdb : DBNAME = xbase_development
+dropdb : ## Drop database with name `${DBNAME}` defaulting to `xbase_development`
 	${docker_compose} exec \
 		database \
 		bash -c " \
-			dropdb --username postgres xbase_development ; \
+			dropdb --username postgres ${DBNAME} ; \
 		"
 .PHONY : dropdb
 
