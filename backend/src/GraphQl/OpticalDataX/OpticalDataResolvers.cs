@@ -9,13 +9,13 @@ namespace Database.GraphQl.OpticalDataX;
 
 public sealed class OpticalDataResolvers
 {
-    public Task<GetHttpsResource[]> GetGetHttpsResources(
+    public async Task<GetHttpsResource[]> GetGetHttpsResources(
         [Parent] OpticalData opticalData,
         GetHttpsResourcesByDataIdDataLoader byId,
         CancellationToken cancellationToken
     )
     {
-        return byId.LoadAsync(opticalData.Id, cancellationToken);
+        return await byId.LoadAsync(opticalData.Id, cancellationToken) ?? [];
     }
 
     public GetHttpsResourceTree GetGetHttpsResourceTree(

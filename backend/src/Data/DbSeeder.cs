@@ -26,5 +26,6 @@ public sealed class DbSeeder
         logger.SeedingDatabase();
         // var environment = services.GetRequiredService<IWebHostEnvironment>();
         // var appSettings = services.GetRequiredService<AppSettings>();
+        await Task.FromResult(0);
     }
 }

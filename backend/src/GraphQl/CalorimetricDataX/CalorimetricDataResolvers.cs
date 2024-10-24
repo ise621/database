@@ -9,13 +9,13 @@ namespace Database.GraphQl.CalorimetricDataX;
 
 public sealed class CalorimetricDataResolvers
 {
-    public Task<GetHttpsResource[]> GetGetHttpsResources(
+    public async Task<GetHttpsResource[]> GetGetHttpsResources(
         [Parent] CalorimetricData calorimetricData,
         GetHttpsResourcesByDataIdDataLoader byId,
         CancellationToken cancellationToken
     )
     {
-        return byId.LoadAsync(calorimetricData.Id, cancellationToken);
+        return await byId.LoadAsync(calorimetricData.Id, cancellationToken) ?? [];
     }
 
     public GetHttpsResourceTree GetGetHttpsResourceTree(

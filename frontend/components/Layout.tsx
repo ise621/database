@@ -20,6 +20,10 @@ const navItems = [
     label: "Calorimetric Data",
   },
   {
+    path: paths.geometricData,
+    label: "Geometric Data",
+  },
+  {
     path: paths.hygrothermalData,
     label: "Hygrothermal Data",
   },
@@ -34,10 +38,6 @@ const navItems = [
   {
     path: paths.database,
     label: "Database",
-  },
-  {
-    path: paths.geometricData,
-    label: "Geometric Data",
   },
 ];
 

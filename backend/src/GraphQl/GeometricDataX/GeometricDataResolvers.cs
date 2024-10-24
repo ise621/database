@@ -9,13 +9,13 @@ namespace Database.GraphQl.GeometricDataX;
 
 public sealed class GeometricDataResolvers
 {
-    public Task<GetHttpsResource[]> GetGetHttpsResources(
+    public async Task<GetHttpsResource[]> GetGetHttpsResources(
         [Parent] GeometricData geometricData,
         GetHttpsResourcesByDataIdDataLoader byId,
         CancellationToken cancellationToken
     )
     {
-        return byId.LoadAsync(geometricData.Id, cancellationToken);
+        return await byId.LoadAsync(geometricData.Id, cancellationToken) ?? [];
     }
 
     public GetHttpsResourceTree GetGetHttpsResourceTree(

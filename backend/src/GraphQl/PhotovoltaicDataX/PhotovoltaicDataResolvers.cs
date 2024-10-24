@@ -9,13 +9,13 @@ namespace Database.GraphQl.PhotovoltaicDataX;
 
 public sealed class PhotovoltaicDataResolvers
 {
-    public Task<GetHttpsResource[]> GetGetHttpsResources(
+    public async Task<GetHttpsResource[]> GetGetHttpsResources(
         [Parent] PhotovoltaicData photovoltaicData,
         GetHttpsResourcesByDataIdDataLoader byId,
         CancellationToken cancellationToken
     )
     {
-        return byId.LoadAsync(photovoltaicData.Id, cancellationToken);
+        return await byId.LoadAsync(photovoltaicData.Id, cancellationToken) ?? [];
     }
 
     public GetHttpsResourceTree GetGetHttpsResourceTree(

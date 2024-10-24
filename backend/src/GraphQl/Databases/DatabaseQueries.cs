@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Database.Metabase;
 using GraphQL;
 using HotChocolate;
-using HotChocolate.Execution;
 using HotChocolate.Resolvers;
 using HotChocolate.Types;
 using Microsoft.AspNetCore.Http;
@@ -57,7 +56,7 @@ public sealed class DatabaseQueries
                     cancellationToken
                 ).ConfigureAwait(false);
             if (response is null)
-                throw new QueryException(
+                throw new GraphQLException(
                     ErrorBuilder.New()
                         .SetCode("NULL_RESPONSE")
                         .SetPath(resolverContext.Path)
@@ -65,7 +64,7 @@ public sealed class DatabaseQueries
                         .Build()
                 );
             if (response.Data.Databases.Edges is null)
-                throw new QueryException(
+                throw new GraphQLException(
                     ErrorBuilder.New()
                         .SetCode("NULL_EDGES")
                         .SetPath(resolverContext.Path)
@@ -73,7 +72,7 @@ public sealed class DatabaseQueries
                         .Build()
                 );
             if (response.Data.Databases.Edges.Count == 0)
-                throw new QueryException(
+                throw new GraphQLException(
                     ErrorBuilder.New()
                         .SetCode("NO_DATABASE")
                         .SetPath(resolverContext.Path)
@@ -81,7 +80,7 @@ public sealed class DatabaseQueries
                         .Build()
                 );
             if (response.Data.Databases.Edges.Count >= 2)
-                throw new QueryException(
+                throw new GraphQLException(
                     ErrorBuilder.New()
                         .SetCode("AMBIGUOUS_DATABASE")
                         .SetPath(resolverContext.Path)
@@ -92,7 +91,7 @@ public sealed class DatabaseQueries
         }
         catch (HttpRequestException e)
         {
-            throw new QueryException(
+            throw new GraphQLException(
                 ErrorBuilder.New()
                     .SetCode("METABASE_REQUEST_FAILED")
                     .SetPath(resolverContext.Path)
@@ -103,7 +102,7 @@ public sealed class DatabaseQueries
         }
         catch (JsonException e)
         {
-            throw new QueryException(
+            throw new GraphQLException(
                 ErrorBuilder.New()
                     .SetCode("JSON_DESERIALIZATION_FAILED")
                     .SetPath(resolverContext.Path.ToList().Concat(e.Path?.Split('.') ?? Array.Empty<string>())

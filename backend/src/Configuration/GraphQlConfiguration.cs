@@ -1,4 +1,9 @@
 using System;
+using HotChocolate.Data;
+using HotChocolate.Data.Filters;
+using HotChocolate.Language;
+using HotChocolate.Types;
+using HotChocolate.Types.Pagination;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using Database.Data;
@@ -17,11 +22,6 @@ using Database.GraphQl.References;
 using Database.GraphQl.Standards;
 using Database.GraphQl.GeometricDataX;
 using Database.GraphQl.Users;
-using HotChocolate.Data;
-using HotChocolate.Data.Filters;
-using HotChocolate.Language;
-using HotChocolate.Types;
-using HotChocolate.Types.Pagination;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -61,13 +61,13 @@ public static class GraphQlConfiguration
         services
             .AddGraphQLServer()
             // Services https://chillicream.com/docs/hotchocolate/v13/integrations/entity-framework#registerdbcontext
-            .RegisterDbContext<ApplicationDbContext>(DbContextKind.Pooled)
+            .RegisterDbContextFactory<ApplicationDbContext>()
+            .AddMutationConventions(new MutationConventionOptions { ApplyToAllMutations = false })
             // Extensions
             .AddProjections()
             .AddFiltering<CustomFilterConvention>()
             .AddSorting()
             .AddAuthorization()
-            .AddApolloTracing() // TODO Do we want or need this?
             .AddGlobalObjectIdentification()
             .AddQueryFieldToMutationPayloads()
             .ModifyOptions(options =>
@@ -94,8 +94,8 @@ public static class GraphQlConfiguration
             // Subscriptions
             /* .AddInMemorySubscriptions() */
             // Persisted queries
-            /* .AddFileSystemQueryStorage("./persisted_queries") */
-            /* .UsePersistedQueryPipeline(); */
+            /* .AddFileSystemOperationDocumentStorage("./persisted_operations") */
+            /* .UsePersistedOperationPipeline(); */
             // HotChocolate uses the default authentication scheme,
             // which we set to `null` in `AuthConfiguration` to force
             // users to be explicit about what scheme to use when
@@ -167,14 +167,13 @@ public static class GraphQlConfiguration
             // Data Loaders
             /* .AddDataLoader<GraphQl.Components.ComponentByIdDataLoader>() */
             // Paging
-            .SetPagingOptions(
-                new PagingOptions
+            .ModifyPagingOptions(options =>
                 {
-                    MaxPageSize = int.MaxValue,
-                    DefaultPageSize = int.MaxValue,
-                    IncludeTotalCount = true,
+                    options.MaxPageSize = int.MaxValue;
+                    options.DefaultPageSize = int.MaxValue;
+                    options.IncludeTotalCount = true;
                     // TODO I actually want to infer connection names from fields (which is the default in HotChocolate). However, the current `database.graphql` schema that I hand-wrote still infers connection names from types.
-                    InferConnectionNameFromField = false
+                    options.InferConnectionNameFromField = false;
                 }
             )
             // Stitching
@@ -185,8 +184,8 @@ public static class GraphQlConfiguration
             //     }
             // ")
             // Automatic Peristed Queries
-            .UseAutomaticPersistedQueryPipeline()
-            .AddInMemoryQueryStorage();
+            .UseAutomaticPersistedOperationPipeline()
+            .AddInMemoryOperationDocumentStorage(); // Needed by the automatic persisted operation pipeline
     }
 
     public static class WellKnownSchemaNames

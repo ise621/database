@@ -9,13 +9,13 @@ namespace Database.GraphQl.HygrothermalDataX;
 
 public sealed class HygrothermalDataResolvers
 {
-    public Task<GetHttpsResource[]> GetGetHttpsResources(
+    public async Task<GetHttpsResource[]> GetGetHttpsResources(
         [Parent] HygrothermalData hygrothermalData,
         GetHttpsResourcesByDataIdDataLoader byId,
         CancellationToken cancellationToken
     )
     {
-        return byId.LoadAsync(hygrothermalData.Id, cancellationToken);
+        return await byId.LoadAsync(hygrothermalData.Id, cancellationToken) ?? [];
     }
 
     public GetHttpsResourceTree GetGetHttpsResourceTree(

@@ -215,10 +215,12 @@ public class FileUploadController : Controller
 
         // UTF-7 is insecure and shouldn't be honored. UTF-8 succeeds in 
         // most cases.
+#pragma warning disable SYSLIB0001
         if (!hasMediaTypeHeader || Encoding.UTF7.Equals(
                 mediaType?.Encoding ??
                 throw new ArgumentException("Impossible (because `hasMediaTypeHeader` is `true`)!"))
            )
+#pragma warning restore SYSLIB0001
             return Encoding.UTF8;
 
         return mediaType.Encoding;
