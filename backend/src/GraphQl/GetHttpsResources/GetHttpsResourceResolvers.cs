@@ -53,7 +53,7 @@ public sealed class GetHttpsResourceResolvers
 
     public Uri GetLocator(
         [Parent] GetHttpsResource getHttpsResource,
-        [Service] AppSettings appSettings
+        AppSettings appSettings
     )
     {
         return new Uri($"{appSettings.Host}/api/resources/{getHttpsResource.Id}");

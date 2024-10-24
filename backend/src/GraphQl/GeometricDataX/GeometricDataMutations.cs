@@ -15,7 +15,7 @@ public sealed class GeometricDataMutations
     public async Task<CreateGeometricDataPayload> CreateGeometricDataAsync(
         CreateGeometricDataInput input,
         ApplicationDbContext context,
-        [Service] AppSettings appSettings,
+        AppSettings appSettings,
         CancellationToken cancellationToken
     )
     {

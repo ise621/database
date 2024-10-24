@@ -35,9 +35,9 @@ public sealed class UserQueries
     }
 
     public async Task<UserInfo?> GetCurrentUserInfoAsync(
-        [Service] AppSettings appSettings,
-        [Service] IHttpClientFactory httpClientFactory,
-        [Service] IHttpContextAccessor httpContextAccessor,
+        AppSettings appSettings,
+        IHttpClientFactory httpClientFactory,
+        IHttpContextAccessor httpContextAccessor,
         IResolverContext resolverContext,
         CancellationToken cancellationToken
     )

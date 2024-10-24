@@ -7,7 +7,7 @@ namespace Database.GraphQl;
 public sealed class VerificationCodeQueries
 {
     public string GetVerificationCode(
-        [Service] AppSettings appSettings
+        AppSettings appSettings
     )
     {
         return appSettings.VerificationCode;

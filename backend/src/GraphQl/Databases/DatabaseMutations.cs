@@ -20,9 +20,9 @@ public sealed class DatabaseMutations
 
     public async Task<UpdateDatabasePayload> UpdateDatabaseAsync(
         UpdateDatabaseInput input,
-        [Service] AppSettings appSettings,
-        [Service] IHttpClientFactory httpClientFactory,
-        [Service] IHttpContextAccessor httpContextAccessor,
+        AppSettings appSettings,
+        IHttpClientFactory httpClientFactory,
+        IHttpContextAccessor httpContextAccessor,
         CancellationToken cancellationToken
     )
     {

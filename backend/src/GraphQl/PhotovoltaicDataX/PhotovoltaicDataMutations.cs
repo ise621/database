@@ -19,7 +19,7 @@ public sealed class PhotovoltaicDataMutations
         // ClaimsPrincipal claimsPrincipal,
         // [ScopedService] UserManager<Data.User> userManager,
         ApplicationDbContext context,
-        [Service] AppSettings appSettings,
+        AppSettings appSettings,
         CancellationToken cancellationToken
     )
     {
