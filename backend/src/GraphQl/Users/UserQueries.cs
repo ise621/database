@@ -27,7 +27,7 @@ public sealed class UserQueries
     {
         if (!claimsPrincipal.HasClaim(ClaimTypes.NameIdentifier)) return null;
         return
-            await context.Users.AsQueryable()
+            await context.Users.AsNoTracking()
                 .SingleOrDefaultAsync(
                     u => claimsPrincipal.GetClaims(ClaimTypes.NameIdentifier).Contains(u.Subject),
                     cancellationToken

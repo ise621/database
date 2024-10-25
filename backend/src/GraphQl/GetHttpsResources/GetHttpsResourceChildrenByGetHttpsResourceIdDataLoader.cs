@@ -20,7 +20,7 @@ public sealed class GetHttpsResourceChildrenByGetHttpsResourceIdDataLoader
             options,
             dbContextFactory,
             (dbContext, ids) =>
-                dbContext.GetHttpsResources.AsQueryable().Where(x =>
+                dbContext.GetHttpsResources.AsNoTracking().Where(x =>
                     ids.Contains(x.ParentId ?? Guid.Empty)
                 ),
             x => x.Id

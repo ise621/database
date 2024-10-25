@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Database.Data;
 using GreenDonut;
 using Microsoft.EntityFrameworkCore;
-using Guid = System.Guid;
 
 namespace Database.GraphQl.Entities;
 
@@ -36,7 +35,7 @@ public abstract class EntityByIdDataLoader<TEntity>
     {
         await using var dbContext =
             _dbContextFactory.CreateDbContext();
-        return await _getQueryable(dbContext).AsQueryable()
+        return await _getQueryable(dbContext).AsNoTrackingWithIdentityResolution()
             .Where(entity => keys.Contains(entity.Id))
             .ToDictionaryAsync(
                 entity => entity.Id,

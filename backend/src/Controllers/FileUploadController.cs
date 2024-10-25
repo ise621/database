@@ -95,7 +95,7 @@ public class FileUploadController : Controller
             return BadRequest(ModelState);
         }
 
-        if (!await _context.GetHttpsResources.AsQueryable()
+        if (!await _context.GetHttpsResources.AsNoTracking()
                 .Where(u => u.Id == getHttpsResourceUuid)
                 .AnyAsync(cancellationToken)
                 .ConfigureAwait(false)

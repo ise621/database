@@ -20,7 +20,7 @@ public sealed class GetHttpsResourcesByDataIdDataLoader
             options,
             dbContextFactory,
             (dbContext, ids) =>
-                dbContext.GetHttpsResources.AsQueryable().Where(x =>
+                dbContext.GetHttpsResources.AsNoTracking().Where(x =>
                     ids.Contains(x.CalorimetricDataId ??
                                  x.HygrothermalDataId ?? x.OpticalDataId ?? x.PhotovoltaicDataId ?? x.GeometricDataId ?? Guid.Empty)
                 ),

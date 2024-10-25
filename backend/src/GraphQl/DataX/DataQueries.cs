@@ -12,7 +12,7 @@ using Database.GraphQl.GeometricDataX;
 using HotChocolate;
 using HotChocolate.Data;
 using HotChocolate.Types;
-using Guid = System.Guid;
+using Microsoft.EntityFrameworkCore;
 
 namespace Database.GraphQl.DataX;
 
@@ -30,17 +30,17 @@ public sealed class DataQueries
     )
     {
         // TODO Use `timestamp` and `locale`.
-        // return context.CalorimetricData.AsQueryable<Data.IData>();
+        // return context.CalorimetricData.AsNoTracking<Data.IData>();
         // The union below does sadly not work because the different kinds of data have different include operations.
-        // return context.CalorimetricData.AsQueryable<Data.IData>()
-        //     .Union(context.HygrothermalData.AsQueryable<Data.IData>())
-        //     .Union(context.OpticalData.AsQueryable<Data.IData>())
-        //     .Union(context.PhotovoltaicData.AsQueryable<Data.IData>());
-        return context.CalorimetricData.AsQueryable<IData>().AsEnumerable()
-            .Concat(context.HygrothermalData.AsQueryable<IData>().AsEnumerable())
-            .Concat(context.OpticalData.AsQueryable<IData>().AsEnumerable())
-            .Concat(context.PhotovoltaicData.AsQueryable<IData>().AsEnumerable())
-            .Concat(context.GeometricData.AsQueryable<IData>().AsEnumerable());
+        // return context.CalorimetricData.AsNoTracking<Data.IData>()
+        //     .Union(context.HygrothermalData.AsNoTracking<Data.IData>())
+        //     .Union(context.OpticalData.AsNoTracking<Data.IData>())
+        //     .Union(context.PhotovoltaicData.AsNoTracking<Data.IData>());
+        return context.CalorimetricData.AsNoTracking<IData>().AsEnumerable()
+            .Concat(context.HygrothermalData.AsNoTracking<IData>().AsEnumerable())
+            .Concat(context.OpticalData.AsNoTracking<IData>().AsEnumerable())
+            .Concat(context.PhotovoltaicData.AsNoTracking<IData>().AsEnumerable())
+            .Concat(context.GeometricData.AsNoTracking<IData>().AsEnumerable());
     }
 
     public async Task<IData?> GetDataAsync(
