@@ -1,10 +1,13 @@
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Database.Data;
+using Microsoft.EntityFrameworkCore;
 using HotChocolate.Data;
+using HotChocolate.Data.Sorting;
 using HotChocolate.Types;
-using Guid = System.Guid;
+using Database.Data;
+using Database.GraphQl.Extensions;
 
 namespace Database.GraphQl.GetHttpsResources;
 
@@ -16,10 +19,12 @@ public sealed class GetHttpsResourceQueries
     [UseFiltering]
     [UseSorting]
     public IQueryable<GetHttpsResource> GetGetHttpsResources(
-        ApplicationDbContext context
+        ApplicationDbContext context,
+        ISortingContext sorting
     )
     {
-        return context.GetHttpsResources;
+        sorting.StabilizeOrder<GetHttpsResource>();
+        return context.GetHttpsResources.AsNoTracking();
     }
 
     public Task<GetHttpsResource?> GetGetHttpsResourceAsync(

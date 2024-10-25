@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Database.Data;
 
 namespace Database.Data;
 
-public interface IData
+public interface IData : IEntity
 {
     Guid ComponentId { get; }
     string? Name { get; }

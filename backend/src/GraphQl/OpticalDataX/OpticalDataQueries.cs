@@ -2,11 +2,13 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Database.Data;
+using Microsoft.EntityFrameworkCore;
 using HotChocolate;
 using HotChocolate.Data;
+using HotChocolate.Data.Sorting;
 using HotChocolate.Types;
-using Guid = System.Guid;
+using Database.Data;
+using Database.GraphQl.Extensions;
 
 namespace Database.GraphQl.OpticalDataX;
 
@@ -20,11 +22,13 @@ public sealed class OpticalDataQueries
     public IQueryable<OpticalData> GetAllOpticalData(
         DateTime? timestamp,
         [GraphQLType<LocaleType>] string? locale,
-        ApplicationDbContext context
+        ApplicationDbContext context,
+        ISortingContext sorting
     )
     {
+        sorting.StabilizeOrder<OpticalData>();
         // TODO Use `timestamp` and `locale`.
-        return context.OpticalData;
+        return context.OpticalData.AsNoTracking();
     }
 
     public Task<OpticalData?> GetOpticalDataAsync(

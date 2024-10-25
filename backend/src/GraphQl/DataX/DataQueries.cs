@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using HotChocolate;
+using HotChocolate.Data;
+using HotChocolate.Data.Sorting;
+using HotChocolate.Types;
+using Microsoft.EntityFrameworkCore;
 using Database.Data;
 using Database.GraphQl.CalorimetricDataX;
 using Database.GraphQl.HygrothermalDataX;
 using Database.GraphQl.OpticalDataX;
 using Database.GraphQl.PhotovoltaicDataX;
 using Database.GraphQl.GeometricDataX;
-using HotChocolate;
-using HotChocolate.Data;
-using HotChocolate.Types;
-using Microsoft.EntityFrameworkCore;
+using Database.GraphQl.Extensions;
 
 namespace Database.GraphQl.DataX;
 
@@ -26,9 +28,11 @@ public sealed class DataQueries
     public IEnumerable<IData> GetAllData(
         DateTime? timestamp,
         [GraphQLType<LocaleType>] string? locale,
-        ApplicationDbContext context
+        ApplicationDbContext context,
+        ISortingContext sorting
     )
     {
+        sorting.StabilizeOrder<IData>();
         // TODO Use `timestamp` and `locale`.
         // return context.CalorimetricData.AsNoTracking<Data.IData>();
         // The union below does sadly not work because the different kinds of data have different include operations.
