@@ -67,6 +67,8 @@ export default function CalorimetricData({ calorimetricDataId }: CalorimetricDat
             {calorimetricData.creatorId}
           </Link>
         </Descriptions.Item>
+        <Descriptions.Item label="Description">{calorimetricData.description}</Descriptions.Item>
+        <Descriptions.Item label="CreatedAt">{calorimetricData.createdAt}</Descriptions.Item>
       </Descriptions>
     </PageHeader>
   );

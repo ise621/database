@@ -65,6 +65,14 @@ export default function OpticalData({ opticalDataId }: OpticalDataProps) {
             {opticalData.creatorId}
           </Link>
         </Descriptions.Item>
+        <Descriptions.Item label="Description">{opticalData.description}</Descriptions.Item>
+        <Descriptions.Item label="CreatedAt">{opticalData.createdAt}</Descriptions.Item>
+        <Descriptions.Item label="NearnormalHemisphericalVisibleTransmittances">{opticalData.nearnormalHemisphericalVisibleTransmittances}</Descriptions.Item>
+        <Descriptions.Item label="NearnormalHemisphericalVisibleReflectances">{opticalData.nearnormalHemisphericalVisibleReflectances}</Descriptions.Item>
+        <Descriptions.Item label="NearnormalHemisphericalSolarTransmittances">{opticalData.nearnormalHemisphericalSolarTransmittances}</Descriptions.Item>
+        <Descriptions.Item label="NearnormalHemisphericalSolarReflectances">{opticalData.nearnormalHemisphericalSolarReflectances}</Descriptions.Item>
+        <Descriptions.Item label="InfraredEmittances">{opticalData.infraredEmittances}</Descriptions.Item>
+        <Descriptions.Item label="ColorRenderingIndices">{opticalData.colorRenderingIndices}</Descriptions.Item>
       </Descriptions>
     </PageHeader>
   );

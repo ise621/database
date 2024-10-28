@@ -64,6 +64,9 @@ export default function GeometricData({ geometricDataId }: GeometricDataProps) {
                         {geometricData.creatorId}
                     </Link>
                 </Descriptions.Item>
+                <Descriptions.Item label="Description">{geometricData.description}</Descriptions.Item>
+                <Descriptions.Item label="CreatedAt">{geometricData.createdAt}</Descriptions.Item>
+                <Descriptions.Item label="Thicknesses">{geometricData.Thicknesses}</Descriptions.Item>
             </Descriptions>
         </PageHeader>
     );
