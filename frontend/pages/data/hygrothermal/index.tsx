@@ -152,7 +152,7 @@ function Page() {
           messageApi.error(error.graphQLErrors.map((error) => error.message));
         }
         // TODO Casting to `HygrothermalData` is wrong and error prone!
-        setData((data?.allHygrothermalData?.nodes || []) as HygrothermalData[]);
+        setData((data?.allHygrothermalData?.edges.map((x) => x.node) || []) as HygrothermalData[]);
       } catch (error) {
         // TODO Handle properly.
         console.log("Failed:", error);

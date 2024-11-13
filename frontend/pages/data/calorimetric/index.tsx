@@ -212,7 +212,7 @@ function Page() {
           messageApi.error(error.graphQLErrors.map((error) => error.message));
         }
         // TODO Casting to `CalorimetricData` is wrong and error prone!
-        setData((data?.allCalorimetricData?.nodes || []) as CalorimetricData[]);
+        setData((data?.allCalorimetricData?.edges.map((x) => x.node) || []) as CalorimetricData[]);
       } catch (error) {
         // TODO Handle properly.
         console.log("Failed:", error);

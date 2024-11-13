@@ -169,7 +169,7 @@ function Page() {
                     console.log(error);
                     messageApi.error(error.graphQLErrors.map((error) => error.message));
                 }
-                setData((data?.allGeometricData?.nodes || []) as GeometricData[]);
+                setData((data?.allGeometricData?.edges.map((x) => x.node) || []) as GeometricData[]);
             } catch (error) {
                 console.log("Failed:", error);
             } finally {

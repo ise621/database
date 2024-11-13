@@ -152,7 +152,7 @@ function Page() {
           );
         }
         // TODO Casting to `Data` is wrong and error prone!
-        setData((dataX?.allData?.nodes || []) as Data[]);
+        setData((dataX?.allData?.edges.map((x) => x.node) || []) as Data[]);
       } catch (error) {
         // TODO Handle properly.
         console.log("Failed:", error);

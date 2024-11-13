@@ -152,7 +152,7 @@ function Page() {
           messageApi.error(error.graphQLErrors.map((error) => error.message));
         }
         // TODO Casting to `PhotovoltaicData` is wrong and error prone!
-        setData((data?.allPhotovoltaicData?.nodes || []) as PhotovoltaicData[]);
+        setData((data?.allPhotovoltaicData?.edges.map((x) => x.node) || []) as PhotovoltaicData[]);
       } catch (error) {
         // TODO Handle properly.
         console.log("Failed:", error);
