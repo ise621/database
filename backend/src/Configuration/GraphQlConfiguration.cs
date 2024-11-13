@@ -1,9 +1,9 @@
 using System;
 using HotChocolate.Data;
 using HotChocolate.Data.Filters;
+using HotChocolate.Data.Sorting;
 using HotChocolate.Language;
 using HotChocolate.Types;
-using HotChocolate.Types.Pagination;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using Database.Data;
@@ -66,7 +66,7 @@ public static class GraphQlConfiguration
             // Extensions
             .AddProjections()
             .AddFiltering<CustomFilterConvention>()
-            .AddSorting()
+            .AddSorting<CustomSortConvention>()
             .AddAuthorization()
             .AddGlobalObjectIdentification()
             .AddQueryFieldToMutationPayloads()
@@ -376,5 +376,23 @@ public static class FilterConventionDescriptorExtensions
         //         .Configure<ComparableOperationFilterInputType<T?>>(x => x.Name($"Maybe{name}"));
         // }
         return descriptor;
+    }
+}
+
+// See https://chillicream.com/docs/hotchocolate/fetching-data/sorting/#sort-conventions
+public partial class CustomSortConvention : SortConvention
+{
+    protected override void Configure(ISortConventionDescriptor descriptor)
+    {
+        descriptor.AddDefaults();
+        // Bind custom types
+        descriptor.BindRuntimeType<GetHttpsResource, GetHttpsResourceSortType>();
+        descriptor.BindRuntimeType<NamedMethodArgument, NamedMethodArgumentSortType>();
+        descriptor.BindRuntimeType<CalorimetricData, CalorimetricDataSortType>();
+        descriptor.BindRuntimeType<IData, DataSortType>();
+        descriptor.BindRuntimeType<HygrothermalData, HygrothermalDataSortType>();
+        descriptor.BindRuntimeType<OpticalData, OpticalDataSortType>();
+        descriptor.BindRuntimeType<GeometricData, GeometricDataSortType>();
+        descriptor.BindRuntimeType<PhotovoltaicData, PhotovoltaicDataSortType>();
     }
 }

@@ -1,13 +1,13 @@
 using Database.Data;
-using HotChocolate.Data.Filters;
+using HotChocolate.Data.Sorting;
 
 namespace Database.GraphQl.GetHttpsResources;
 
-public sealed class GetHttpsResourceFilterType
-    : FilterInputType<GetHttpsResource>
+public sealed class GetHttpsResourceSortType
+    : SortInputType<GetHttpsResource>
 {
     protected override void Configure(
-        IFilterInputTypeDescriptor<GetHttpsResource> descriptor
+        ISortInputTypeDescriptor<GetHttpsResource> descriptor
     )
     {
         descriptor.BindFieldsExplicitly();
@@ -16,7 +16,6 @@ public sealed class GetHttpsResourceFilterType
         descriptor.Field(x => x.HashValue);
         descriptor.Field(x => x.DataFormatId);
         descriptor.Field(x => x.AppliedConversionMethod);
-        descriptor.Field(x => x.ArchivedFilesMetaInformation);
         descriptor.Field(x => x.Data);
         descriptor.Field(x => x.Parent);
     }
