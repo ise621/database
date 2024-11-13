@@ -118,6 +118,9 @@ public sealed class Startup
                 // TODO I consider the flattened structure a bug. How can we solve this?
             }
         );
+        services.AddOpenApi(_ => {
+            _.OpenApiVersion = OpenApiSpecVersion.OpenApi3_0;
+        });
     }
 
     private void ConfigureMessageSenderServices(IServiceCollection services)
@@ -246,6 +249,7 @@ public sealed class Startup
         // app.UseResponseCompression(); // Done by Nginx
         // app.UseResponseCaching(); // Done by Nginx
         /* app.UseWebSockets(); */
+        app.MapOpenApi("/openapi/{documentName}.json");
         app.MapGraphQL()
             .WithOptions(
                 // https://chillicream.com/docs/hotchocolate/server/middleware
