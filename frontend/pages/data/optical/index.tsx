@@ -297,7 +297,7 @@ function Page() {
           messageApi.error(error.graphQLErrors.map((error) => error.message));
         }
         // TODO Casting to `OpticalData` is wrong and error prone!
-        setData((data?.allOpticalData?.edges.map((x) => x.node) || []) as OpticalData[]);
+        setData((data?.allOpticalData?.edges?.map((x) => x.node) || []) as OpticalData[]);
       } catch (error) {
         // TODO Handle properly.
         console.log("Failed:", error);
