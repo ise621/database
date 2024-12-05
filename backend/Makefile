@@ -15,20 +15,9 @@ help : ## Print this help
 
 # List of dotnet commands
 # https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/dotnet
-# TODO Shortcuts for `dotnet aspnet-codegenerator`?
 
 # See https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-test
-# Sadly `--list-tests` ignores `--filter` which was reported in 2017 and has
-# not yet been fixed, see https://github.com/dotnet/sdk/issues/8643
-# This makes the following code snippet obsolete
-# ```
-# echo "- - - - - - - - - - - - - - - - - - - - - - - - - " && \
-# echo "Test list for file $${x}" && \
-# echo "- - - - - - - - - - - - - - - - - - - - - - - - - " && \
-# dotnet test \
-# 	--filter "FullyQualifiedName~$${x}" \
-# 	--list-tests
-# ```
+# dotnet test --filter "FullyQualifiedName~${x}" --verbosity minimal
 test : ## Run tests
 	@echo "--------------------------------------------------"
 	@echo "Complete test list"
@@ -38,15 +27,8 @@ test : ## Run tests
 	@echo "--------------------------------------------------"
 	@echo "All test runs"
 	@echo "--------------------------------------------------"
-	for x in $$(find ./test/ -type f -name "*Tests.cs" -exec basename {} '.cs' \;) ; do \
-		echo "- - - - - - - - - - - - - - - - - - - - - - - - - " && \
-		echo "Test runs for file '$${x}'" && \
-		echo "- - - - - - - - - - - - - - - - - - - - - - - - - " && \
-		dotnet test \
-			--filter "FullyQualifiedName~$${x}" \
-			--collect:"XPlat Code Coverage" \
-			--verbosity minimal ; \
-	done
+	dotnet test \
+		--collect:"XPlat Code Coverage"
 .PHONY : test
 
 assets : ## Build assets
@@ -73,6 +55,9 @@ trace : ## Trace the dotnet process `Database`
 			--providers Microsoft-Windows-DotNETRuntime
 .PHONY : trace
 
+# If `graphqurl` were installed, the schema could be introspected with
+# `gq http://backend:8080/graphql/ --introspect`
+# See https://github.com/hasura/graphqurl#export-schema
 update-schema : ## Update GraphQl schema
 	wget \
 		--output-document ./test/Integration/GraphQl/__snapshots__/GraphQlSchemaTests.IsUnchanged.snap \
@@ -88,6 +73,10 @@ analyze : ## Analyze with Roslynator
 inspect : ## Inspect with ReSharper, for example, `make OUTPUT=./inspection.xml inspect`
 	dotnet tool run jb inspectcode --build ./Database.sln -o ${OUTPUT}
 .PHONY : inspect
+
+editorconfig : ## Debug editorconfig
+	editorconfig ./.editorconfig
+.PHONY : editorconfig
 
 play : ## Run tests in `Database.Tests.Play` (semi-alternative to the buggy `dotnet script` REPL)
 	dotnet test --filter "FullyQualifiedName~Database.Tests.Play"
@@ -109,19 +98,20 @@ dos2unix : ## Strip the byte-order mark, also known as, BOM, and remove carriage
 	# find . -type f -exec dos2unix {} \;
 .PHONY : dos2unix
 
-format : ## Format code
-	dotnet tool run jb cleanupcode --profile="Built-in: Reformat Code" ./Database.sln
-.PHONY : format
-
-syntax : ## Apply syntax style
-	dotnet tool run jb cleanupcode --profile="Built-in: Reformat & Apply Syntax Style" ./Database.sln
-.PHONY : syntax
-
+# See https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-format
+# We do not run JetBrains ReSharper cleanupcode because it does wrong things
+# like removing private setters needed by EntityFramework Core. We used to run
+# it as follows: For formatting
+# `dotnet tool run jb cleanupcode --profile="Built-in: Reformat Code" ./Database.sln`
+# For syntax styling
+# `dotnet tool run jb cleanupcode --profile="Built-in: Reformat & Apply Syntax Style" ./Database.sln`
+# For cleanup
+# `dotnet tool run jb cleanupcode ./Database.sln`
 # The profile `Built-in: Full Cleanup` does not update file headers.
 # See https://www.jetbrains.com/help/resharper/Code_Cleanup__Index.html#profiles
-cleanup : ## Clean-up code
-	dotnet tool run jb cleanupcode ./Database.sln
-.PHONY : cleanup
+format : ## Format code
+	dotnet format ./Database.sln
+.PHONY : format
 
 update-packages : ## Update packages
 	for subproject in src test ; do ( \
@@ -170,7 +160,7 @@ diagrams : ## Draw images from textual UML diagrams
 
 # See https://github.com/hasura/graphqurl#export-schema
 schema : ## Fetch GraphQL schema using `hasura/graphqurl`
-	gq http://backend:8080/graphql/ --introspect > schema.graphql
+	gq http://backend:8080/graphql/ --introspect > ./schema.graphql
 .PHONY : schema
 
 add-migration : ## Add migration with name `${NAME}`, for example, `make NAME=InitialCreate add-migration`
