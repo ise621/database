@@ -22,6 +22,10 @@ RUN \
 # As `root` #
 #############
 
+# `editorconfig` can be used to debug ./backend/.editorconfig used for example
+# by `dotnet format` and analyzers run by `dotnet build`. See
+# https://github.com/editorconfig/editorconfig/issues/358
+#
 # `lldb` is needed by dotnet tool `dotnet-sos`, see
 # https://github.com/dotnet/diagnostics#net-core-diagnostics-repo
 # `openssl` is needed to debug SSL certificates
@@ -44,6 +48,7 @@ RUN \
     --no-install-recommends \
     curl \
     dumb-init \
+    editorconfig \
     gawk \
     lldb \
     make \
