@@ -31,7 +31,7 @@
       "rollForward": false
     },
     "dotnet-script": {
-      "version": "1.5.0",
+      "version": "1.6.0",
       "commands": [
         "dotnet-script"
       ],
@@ -80,7 +80,7 @@
       "rollForward": false
     },
     "strawberryshake.tools": {
-      "version": "14.1.0",
+      "version": "14.2.0",
       "commands": [
         "dotnet-graphql"
       ],
