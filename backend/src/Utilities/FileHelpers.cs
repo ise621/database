@@ -78,7 +78,7 @@ public static class FileHelpers
                 formFile.Name[(formFile.Name.IndexOf('.') + 1)..]);
 
         if (property != null)
-            if (property.GetCustomAttribute(typeof(DisplayAttribute)) is
+            if (property.GetCustomAttribute<DisplayAttribute>() is
                 DisplayAttribute displayAttribute)
                 fieldDisplayName = $"{displayAttribute.Name} ";
 
