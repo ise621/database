@@ -1,11 +1,16 @@
 using System.Linq;
+using System.Net.Http;
+using System.Security.Claims;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Database.Authorization;
 using Database.Data;
 using Database.Extensions;
 using HotChocolate;
 using HotChocolate.Types;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 
 namespace Database.GraphQl.CalorimetricDataX;
 
@@ -16,21 +21,28 @@ public sealed class CalorimetricDataMutations
     // [Authorize(Policy = Configuration.AuthConfiguration.WritePolicy)]
     public async Task<CreateCalorimetricDataPayload> CreateCalorimetricDataAsync(
         CreateCalorimetricDataInput input,
-        // ClaimsPrincipal claimsPrincipal,
-        // [ScopedService] UserManager<Data.User> userManager,
         ApplicationDbContext context,
         AppSettings appSettings,
+        IHttpClientFactory httpClientFactory,
+        IHttpContextAccessor httpContextAccessor,
         CancellationToken cancellationToken
     )
     {
-        // if (!await CalorimetricDataAuthorization.IsAuthorizedToCreateCalorimetricDataForInstitution(
-        //      claimsPrincipal,
-        //      input.CreatorId,
-        //      userManager,
-        //      context,
-        //      cancellationToken
-        //      ).ConfigureAwait(false)
-        // )
+        if (!await CalorimetricDataAuthorization.IsAuthorizedToCreateCalorimetricDataForInstitution(
+             input.CreatorId,
+             appSettings,
+             httpClientFactory,
+             httpContextAccessor,
+             cancellationToken
+             ).ConfigureAwait(false)
+        )
+            return new CreateCalorimetricDataPayload(
+                new CreateCalorimetricDataError(
+                    CreateCalorimetricDataErrorCode.UNAUTHORIZED,
+                    $"The current user is not authorized to create calorimetric data for the institution.",
+                    []
+                )
+            );
         if (input.AccessToken != appSettings.AccessToken)
             return new CreateCalorimetricDataPayload(
                 new CreateCalorimetricDataError(
