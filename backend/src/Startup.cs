@@ -24,6 +24,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Npgsql;
 using Serilog;
+using Microsoft.OpenApi;
 
 namespace Database;
 
@@ -155,11 +156,11 @@ public sealed class Startup(
         AppSettings appSettings
         )
     {
-        var dataSourceBuilder = new NpgsqlDataSourceBuilder(_appSettings.Database.ConnectionString);
+        var dataSourceBuilder = new NpgsqlDataSourceBuilder(appSettings.Database.ConnectionString);
         // https://www.npgsql.org/efcore/mapping/enum.html#mapping-your-enum
         // Keep in sync with `ApplicationDbContext.CreateEnumerations`.
-        dataSourceBuilder.MapEnum<DataKind>($"{_appSettings.Database.SchemaName}.{ApplicationDbContext.DataKindTypeName}");
-        dataSourceBuilder.MapEnum<Standardizer>($"{_appSettings.Database.SchemaName}.{ApplicationDbContext.StandardizerTypeName}");
+        dataSourceBuilder.MapEnum<DataKind>($"{appSettings.Database.SchemaName}.{ApplicationDbContext.DataKindTypeName}");
+        dataSourceBuilder.MapEnum<Standardizer>($"{appSettings.Database.SchemaName}.{ApplicationDbContext.StandardizerTypeName}");
         options
             .UseNpgsql(dataSourceBuilder.Build() /*, optionsBuilder => optionsBuilder.UseNodaTime() */)
             .UseSchemaName(appSettings.Database.SchemaName)
