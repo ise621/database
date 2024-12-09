@@ -1,0 +1,12 @@
+query RepresentedInstitutionsByCurrentUser {
+    currentUser {
+        representedInstitutions {
+            edges {
+                node {
+                    id
+                }
+                role
+            }
+        }
+    }
+}

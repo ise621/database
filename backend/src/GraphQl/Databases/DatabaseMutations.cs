@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Database.Metabase;
 using GraphQL;
-using HotChocolate;
 using HotChocolate.Types;
 using Microsoft.AspNetCore.Http;
 
