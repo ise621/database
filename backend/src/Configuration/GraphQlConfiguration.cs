@@ -171,7 +171,7 @@ public static class GraphQlConfiguration
             .ModifyPagingOptions(_ =>
                 {
                     _.MaxPageSize = int.MaxValue - 1;
-                    _.DefaultPageSize = int.MaxValue - 1;
+                    _.DefaultPageSize = 10;
                     _.IncludeTotalCount = true;
                     _.IncludeNodesField = false;
                     // TODO I actually want to infer connection names from fields (which is the default in HotChocolate). However, the current `database.graphql` schema that I hand-wrote still infers connection names from types.
