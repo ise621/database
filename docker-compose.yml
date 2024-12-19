@@ -81,8 +81,8 @@ services:
     volumes:
       - ./backend:/app
       - files:/app/src/files
-      - backend_vscode_server_extensions:/home/me/.vscode-server/extensions
-      - backend_vscode_server_insiders_extensions:/home/me/.vscode-server-insiders/extensions
+      - backend_vscode_server:/home/me/.vscode-server
+      - backend_vscode_server_insiders:/home/me/.vscode-server-insiders
       # The following items make the engine create anonymous volumes for the
       # specified path with the effect that the service does not write
       # temporary files into the corresponding directory on the host file
@@ -189,5 +189,5 @@ volumes:
   data:
   emails:
   files:
-  backend_vscode_server_extensions:
-  backend_vscode_server_insiders_extensions:
+  backend_vscode_server:
+  backend_vscode_server_insiders:
