@@ -182,20 +182,20 @@ public sealed class Startup(
 
     private void ConfigureDatabaseServices(IServiceCollection services)
     {
-        services.AddPooledDbContextFactory<ApplicationDbContext>(options => {});
+        services.AddPooledDbContextFactory<ApplicationDbContext>(options =>
+            ConfigureDatabaseContext(options, _environment, _appSettings)
+        );
         // Database context as services are used by `OpenIddict`, see in
         // particular `AuthConfiguration`.
-        services.AddDbContext<ApplicationDbContext>(
-            (services, options) =>
-                services
-                    .GetRequiredService<IDbContextFactory<ApplicationDbContext>>()
-                    .CreateDbContext(),
-            ServiceLifetime.Transient
-        );
-        services.ConfigureDbContext<ApplicationDbContext>(options =>
+        services.AddDbContext<ApplicationDbContext>(options =>
             ConfigureDatabaseContext(options, _environment, _appSettings),
-            ServiceLifetime.Singleton
+            contextLifetime: ServiceLifetime.Transient,
+            optionsLifetime: ServiceLifetime.Singleton
         );
+        // services.ConfigureDbContext<ApplicationDbContext>(options =>
+        //     ConfigureDatabaseContext(options, _environment, _appSettings),
+        //     optionsLifetime: ServiceLifetime.Singleton
+        // );
     }
 
     private static void ConfigureHttpClientServices(IServiceCollection services)
