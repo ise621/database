@@ -38,7 +38,7 @@ If you have a question for which you don't find the answer in this repository, p
    [GNU Make](https://www.gnu.org/software/make/).
 1. List all GNU Make targets by running `make help`.
 1. Generate and trust a self-signed certificate authority and SSL certificates
-   by running `make ssl`. If you are locally working the the metabase and the
+   by running `make ssl`. If you are locally working on the metabase and the
    database and if you need them to communicate over HTTPS, then instead of
    running `make ssl`, make the `CERTIFICATE_AUTHORITY_*` variable values in
    the `.env` file match the ones from the metabase, copy the certificate
