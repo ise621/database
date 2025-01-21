@@ -40,13 +40,17 @@ public abstract class AuthConfiguration
         string password
     )
     {
-        if (string.IsNullOrEmpty(password)) throw new ArgumentException($"Empty password for certificate {fileName}.");
+        if (string.IsNullOrEmpty(password))
+        {
+            throw new ArgumentException($"Empty password for certificate {fileName}.");
+        }
+
         var stream =
             Assembly.GetExecutingAssembly().GetManifestResourceStream($"Database.{fileName}")
             ?? throw new ArgumentException($"Missing certificate {fileName}.");
         using var buffer = new MemoryStream();
         stream.CopyTo(buffer);
-        return new X509Certificate2(
+        return X509CertificateLoader.LoadPkcs12(
             buffer.ToArray(),
             password,
             X509KeyStorageFlags.EphemeralKeySet
