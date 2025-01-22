@@ -3,12 +3,14 @@ using System.IO;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Net.Http;
 using HotChocolate.AspNetCore;
 using Database.Configuration;
 using Database.Data;
 using Database.Data.Extensions;
 using Database.Enumerations;
 using Database.Services;
+using Database.Metabase;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -53,7 +55,7 @@ public sealed class Startup(
         services
             .AddDataProtection()
             .PersistKeysToDbContext<ApplicationDbContext>();
-        ConfigureHttpClientServices(services);
+        ConfigureHttpClientServices(services, _environment);
         services.AddHttpContextAccessor();
         services
             .AddHealthChecks()
@@ -198,9 +200,19 @@ public sealed class Startup(
         // );
     }
 
-    private static void ConfigureHttpClientServices(IServiceCollection services)
+    private static void ConfigureHttpClientServices(IServiceCollection services, IWebHostEnvironment environment)
     {
         services.AddHttpClient();
+        var metabasesHttpClientBuilder = services.AddHttpClient(QueryingMetabase.MetabaseHttpClient);
+        if (environment.IsDevelopment())
+        {
+            metabasesHttpClientBuilder.ConfigurePrimaryHttpMessageHandler(_ =>
+                new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                }
+            );
+        }
     }
 
     public void Configure(WebApplication app)
