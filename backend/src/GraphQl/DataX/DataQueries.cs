@@ -21,35 +21,33 @@ namespace Database.GraphQl.DataX;
 [ExtendObjectType(nameof(Query))]
 public sealed class DataQueries
 {
-    [UsePaging]
+    [UsePaging] // TODO Paging does not work with this data source.
     // [UseProjection] // We disabled projections because when requesting `id` all results had the same `id` and when also requesting `uuid`, the latter was always the empty UUID `000...`.
-    [UseFiltering] // TODO Filtering does not work with unions.
+    // [UseFiltering] // TODO Filtering does not work with unions.
     [UseSorting]
-    public IEnumerable<IData> GetAllData(
-        DateTime? timestamp,
+    public IAsyncEnumerable<IData> GetAllData(
         [GraphQLType<LocaleType>] string? locale,
         ApplicationDbContext context,
         ISortingContext sorting
     )
     {
         sorting.StabilizeOrder<IData>();
-        // TODO Use `timestamp` and `locale`.
+        // TODO Use `locale`.
         // return context.CalorimetricData.AsNoTracking<Data.IData>();
         // The union below does sadly not work because the different kinds of data have different include operations.
         // return context.CalorimetricData.AsNoTracking<Data.IData>()
         //     .Union(context.HygrothermalData.AsNoTracking<Data.IData>())
         //     .Union(context.OpticalData.AsNoTracking<Data.IData>())
         //     .Union(context.PhotovoltaicData.AsNoTracking<Data.IData>());
-        return context.CalorimetricData.AsNoTracking<IData>().AsEnumerable()
-            .Concat(context.HygrothermalData.AsNoTracking<IData>().AsEnumerable())
-            .Concat(context.OpticalData.AsNoTracking<IData>().AsEnumerable())
-            .Concat(context.PhotovoltaicData.AsNoTracking<IData>().AsEnumerable())
-            .Concat(context.GeometricData.AsNoTracking<IData>().AsEnumerable());
+        return context.CalorimetricData.AsNoTracking<IData>().AsAsyncEnumerable()
+            .Concat(context.GeometricData.AsNoTracking<IData>().AsAsyncEnumerable())
+            .Concat(context.HygrothermalData.AsNoTracking<IData>().AsAsyncEnumerable())
+            .Concat(context.OpticalData.AsNoTracking<IData>().AsAsyncEnumerable())
+            .Concat(context.PhotovoltaicData.AsNoTracking<IData>().AsAsyncEnumerable());
     }
 
     public async Task<IData?> GetDataAsync(
         Guid id,
-        DateTime? timestamp,
         [GraphQLType<LocaleType>] string? locale,
         CalorimetricDataByIdDataLoader calorimetricDataById,
         HygrothermalDataByIdDataLoader hygrothermalDataById,
@@ -59,7 +57,7 @@ public sealed class DataQueries
         CancellationToken cancellationToken
     )
     {
-        // TODO Use `timestamp` and `locale`.
+        // TODO Use `locale`.
         return
             await calorimetricDataById.LoadAsync(
                 id,

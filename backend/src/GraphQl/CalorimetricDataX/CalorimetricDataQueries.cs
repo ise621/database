@@ -20,26 +20,24 @@ public sealed class CalorimetricDataQueries
     [UseFiltering]
     [UseSorting]
     public IQueryable<CalorimetricData> GetAllCalorimetricData(
-        DateTime? timestamp,
         [GraphQLType<LocaleType>] string? locale,
         ApplicationDbContext context,
         ISortingContext sorting
     )
     {
         sorting.StabilizeOrder<CalorimetricData>();
-        // TODO Use `timestamp` and `locale`.
+        // TODO Use `locale`.
         return context.CalorimetricData.AsNoTracking();
     }
 
     public Task<CalorimetricData?> GetCalorimetricDataAsync(
         Guid id,
-        DateTime? timestamp,
         [GraphQLType<LocaleType>] string? locale,
         CalorimetricDataByIdDataLoader byId,
         CancellationToken cancellationToken
     )
     {
-        // TODO Use `timestamp` and `locale`.
+        // TODO Use `locale`.
         return byId.LoadAsync(
             id,
             cancellationToken

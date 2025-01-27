@@ -23,10 +23,6 @@ function Page() {
       form.getFieldValue("getHttpsResourceUuid")
     )}`;
 
-  const constructFileUploadData = (_file: UploadFile<any>) => ({
-    accessToken: form.getFieldValue("accessToken"),
-  });
-
   return (
     <Layout>
       <Row justify="center">
@@ -37,18 +33,6 @@ function Page() {
               file with the content for that resource.
             </Typography.Paragraph>
             <Form {...layout} form={form} name="basic">
-              <Form.Item
-                label="Access Token"
-                name="accessToken"
-                rules={[
-                  {
-                    required: true,
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-
               <Form.Item
                 label="GET HTTPS Resource UUID"
                 name="getHttpsResourceUuid"
@@ -64,7 +48,6 @@ function Page() {
               <Form.Item name="file" label="File">
                 <Upload
                   action={constructFileUploadAction}
-                  data={constructFileUploadData}
                   withCredentials
                   listType="text"
                 >

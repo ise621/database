@@ -110,7 +110,6 @@ services:
       - XBASE_JsonWebToken__SigningCertificatePassword=${JSON_WEB_TOKEN_SIGNING_CERTIFICATE_PASSWORD}
       - XBASE_Email__SmtpHost=${SMTP_HOST}
       - XBASE_Email__SmtpPort=${SMTP_PORT}
-      - XBASE_AccessToken=${ACCESS_TOKEN}
       - XBASE_VerificationCode=${VERIFICATION_CODE}
       # https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-watch#environment-variables
       - DOTNET_USE_POLLING_FILE_WATCHER=true

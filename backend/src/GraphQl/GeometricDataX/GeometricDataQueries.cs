@@ -19,25 +19,24 @@ public sealed class GeometricDataQueries
     [UseFiltering]
     [UseSorting]
     public IQueryable<GeometricData> GetAllGeometricData(
-        DateTime? timestamp,
         [GraphQLType<LocaleType>] string? locale,
         ApplicationDbContext context,
         ISortingContext sorting
     )
     {
         sorting.StabilizeOrder<GeometricData>();
-        // TODO Use `timestamp` and `locale`.
+        // TODO Use `locale`.
         return context.GeometricData.AsNoTracking();
     }
 
     public Task<GeometricData?> GetGeometricDataAsync(
         Guid id,
-        DateTime? timestamp,
         [GraphQLType<LocaleType>] string? locale,
         GeometricDataByIdDataLoader byId,
         CancellationToken cancellationToken
     )
     {
+        // TODO Use `locale`.
         return byId.LoadAsync(
             id,
             cancellationToken

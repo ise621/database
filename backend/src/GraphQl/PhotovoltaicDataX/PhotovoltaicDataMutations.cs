@@ -1,11 +1,16 @@
 using System.Linq;
+using System.Net.Http;
+using System.Security.Claims;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Database.Authorization;
 using Database.Data;
 using Database.Extensions;
 using HotChocolate;
 using HotChocolate.Types;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 
 namespace Database.GraphQl.PhotovoltaicDataX;
 
@@ -16,27 +21,26 @@ public sealed class PhotovoltaicDataMutations
     // [Authorize(Policy = Configuration.AuthConfiguration.WritePolicy)]
     public async Task<CreatePhotovoltaicDataPayload> CreatePhotovoltaicDataAsync(
         CreatePhotovoltaicDataInput input,
-        // ClaimsPrincipal claimsPrincipal,
-        // [ScopedService] UserManager<Data.User> userManager,
         ApplicationDbContext context,
         AppSettings appSettings,
+        IHttpClientFactory httpClientFactory,
+        IHttpContextAccessor httpContextAccessor,
         CancellationToken cancellationToken
     )
     {
-        // if (!await PhotovoltaicDataAuthorization.IsAuthorizedToCreatePhotovoltaicDataForInstitution(
-        //      claimsPrincipal,
-        //      input.CreatorId,
-        //      userManager,
-        //      context,
-        //      cancellationToken
-        //      ).ConfigureAwait(false)
-        // )
-        if (input.AccessToken != appSettings.AccessToken)
+        if (!await PhotovoltaicDataAuthorization.IsAuthorizedToCreatePhotovoltaicDataForInstitution(
+             input.CreatorId,
+             appSettings,
+             httpClientFactory,
+             httpContextAccessor,
+             cancellationToken
+             ).ConfigureAwait(false)
+        )
             return new CreatePhotovoltaicDataPayload(
                 new CreatePhotovoltaicDataError(
                     CreatePhotovoltaicDataErrorCode.UNAUTHORIZED,
-                    $"The access token {input.AccessToken} is invalid.",
-                    new[] { nameof(input), nameof(input.AccessToken).FirstCharToLower() }
+                    $"The current user is not authorized to create photovoltaic data for the institution.",
+                    []
                 )
             );
         var photovoltaicData = new PhotovoltaicData(

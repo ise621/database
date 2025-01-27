@@ -5,7 +5,6 @@ using Database.Enumerations;
 namespace Database.GraphQl.GetHttpsResources;
 
 public sealed record CreateGetHttpsResourceInput(
-    string AccessToken,
     string Description,
     string HashValue,
     Guid DataFormatId,

@@ -6,7 +6,6 @@ using HotChocolate.Types;
 namespace Database.GraphQl.GeometricDataX;
 
 public sealed record CreateGeometricDataInput(
-    string AccessToken,
     [GraphQLType<NonNullType<LocaleType>>] string Locale,
     Guid ComponentId,
     string? Name,

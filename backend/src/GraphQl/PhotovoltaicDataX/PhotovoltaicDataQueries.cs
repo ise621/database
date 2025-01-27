@@ -20,26 +20,24 @@ public sealed class PhotovoltaicDataQueries
     [UseFiltering]
     [UseSorting]
     public IQueryable<PhotovoltaicData> GetAllPhotovoltaicData(
-        DateTime? timestamp,
         [GraphQLType<LocaleType>] string? locale,
         ApplicationDbContext context,
         ISortingContext sorting
     )
     {
         sorting.StabilizeOrder<PhotovoltaicData>();
-        // TODO Use `timestamp` and `locale`.
+        // TODO Use `locale`.
         return context.PhotovoltaicData.AsNoTracking();
     }
 
     public Task<PhotovoltaicData?> GetPhotovoltaicDataAsync(
         Guid id,
-        DateTime? timestamp,
         [GraphQLType<LocaleType>] string? locale,
         PhotovoltaicDataByIdDataLoader byId,
         CancellationToken cancellationToken
     )
     {
-        // TODO Use `timestamp` and `locale`.
+        // TODO Use `locale`.
         return byId.LoadAsync(
             id,
             cancellationToken

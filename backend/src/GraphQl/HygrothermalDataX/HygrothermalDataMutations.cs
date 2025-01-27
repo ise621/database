@@ -1,11 +1,16 @@
 using System.Linq;
+using System.Net.Http;
+using System.Security.Claims;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Database.Authorization;
 using Database.Data;
 using Database.Extensions;
 using HotChocolate;
 using HotChocolate.Types;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 
 namespace Database.GraphQl.HygrothermalDataX;
 
@@ -16,27 +21,26 @@ public sealed class HygrothermalDataMutations
     // [Authorize(Policy = Configuration.AuthConfiguration.WritePolicy)]
     public async Task<CreateHygrothermalDataPayload> CreateHygrothermalDataAsync(
         CreateHygrothermalDataInput input,
-        // ClaimsPrincipal claimsPrincipal,
-        // [ScopedService] UserManager<Data.User> userManager,
         ApplicationDbContext context,
         AppSettings appSettings,
+        IHttpClientFactory httpClientFactory,
+        IHttpContextAccessor httpContextAccessor,
         CancellationToken cancellationToken
     )
     {
-        // if (!await HygrothermalDataAuthorization.IsAuthorizedToCreateHygrothermalDataForInstitution(
-        //      claimsPrincipal,
-        //      input.CreatorId,
-        //      userManager,
-        //      context,
-        //      cancellationToken
-        //      ).ConfigureAwait(false)
-        // )
-        if (input.AccessToken != appSettings.AccessToken)
+        if (!await HygrothermalDataAuthorization.IsAuthorizedToCreateHygrothermalDataForInstitution(
+             input.CreatorId,
+             appSettings,
+             httpClientFactory,
+             httpContextAccessor,
+             cancellationToken
+             ).ConfigureAwait(false)
+        )
             return new CreateHygrothermalDataPayload(
                 new CreateHygrothermalDataError(
                     CreateHygrothermalDataErrorCode.UNAUTHORIZED,
-                    $"The access token {input.AccessToken} is invalid.",
-                    new[] { nameof(input), nameof(input.AccessToken).FirstCharToLower() }
+                    $"The current user is not authorized to create hygrothermal data for the institution.",
+                    []
                 )
             );
         var hygrothermalData = new HygrothermalData(

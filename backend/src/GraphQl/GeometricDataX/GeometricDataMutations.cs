@@ -1,30 +1,46 @@
 using System.Linq;
+using System.Net.Http;
+using System.Security.Claims;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Database.Authorization;
 using Database.Data;
 using Database.Extensions;
 using HotChocolate;
 using HotChocolate.Types;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 
 namespace Database.GraphQl.GeometricDataX;
 
 [ExtendObjectType(nameof(Mutation))]
 public sealed class GeometricDataMutations
 {
+    // [UseUserManager]
+    // [Authorize(Policy = Configuration.AuthConfiguration.WritePolicy)]
     public async Task<CreateGeometricDataPayload> CreateGeometricDataAsync(
         CreateGeometricDataInput input,
         ApplicationDbContext context,
         AppSettings appSettings,
+        IHttpClientFactory httpClientFactory,
+        IHttpContextAccessor httpContextAccessor,
         CancellationToken cancellationToken
     )
     {
-        if (input.AccessToken != appSettings.AccessToken)
+        if (!await GeometricDataAuthorization.IsAuthorizedToCreateGeometricDataForInstitution(
+             input.CreatorId,
+             appSettings,
+             httpClientFactory,
+             httpContextAccessor,
+             cancellationToken
+             ).ConfigureAwait(false)
+        )
             return new CreateGeometricDataPayload(
                 new CreateGeometricDataError(
                     CreateGeometricDataErrorCode.UNAUTHORIZED,
-                    $"The access token {input.AccessToken} is invalid.",
-                    new[] { nameof(input), nameof(input.AccessToken).FirstCharToLower() }
+                    $"The current user is not authorized to create geometric data for the institution.",
+                    []
                 )
             );
         var geometricData = new GeometricData(
