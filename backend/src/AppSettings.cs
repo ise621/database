@@ -10,9 +10,6 @@ public sealed class AppSettings
     public string MetabaseHost { get; set; }
         = "";
 
-    public string AccessToken { get; set; }
-        = "";
-
     public string VerificationCode { get; set; }
         = "";
 

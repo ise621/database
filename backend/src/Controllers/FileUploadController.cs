@@ -106,10 +106,10 @@ public class FileUploadController : Controller
 
         var getHttpsResource = await _context.GetHttpsResources.AsNoTracking()
                 .Include(e => e.CalorimetricData)
+                .Include(e => e.GeometricData)
                 .Include(e => e.HygrothermalData)
                 .Include(e => e.OpticalData)
                 .Include(e => e.PhotovoltaicData)
-                .Include(e => e.GeometricData)
                 .Where(e => e.Id == getHttpsResourceUuid)
                 .SingleOrDefaultAsync(cancellationToken)
                 .ConfigureAwait(false);

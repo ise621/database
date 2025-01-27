@@ -6,7 +6,6 @@ using HotChocolate.Types;
 namespace Database.GraphQl.HygrothermalDataX;
 
 public sealed record CreateHygrothermalDataInput(
-    string AccessToken,
     // TODO Why does specifying the type with an attribute not work here?
     [GraphQLType<NonNullType<LocaleType>>] string Locale,
     Guid ComponentId,

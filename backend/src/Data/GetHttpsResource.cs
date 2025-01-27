@@ -14,10 +14,10 @@ public sealed class GetHttpsResource
         string hashValue,
         Guid dataFormatId,
         Guid? calorimetricDataId,
+        Guid? geometricDataId,
         Guid? hygrothermalDataId,
         Guid? opticalDataId,
         Guid? photovoltaicDataId,
-        Guid? geometricDataId,
         Guid? parentId,
         ICollection<FileMetaInformation> archivedFilesMetaInformation,
         ToTreeVertexAppliedConversionMethod? appliedConversionMethod
@@ -32,10 +32,10 @@ public sealed class GetHttpsResource
         )
     {
         CalorimetricDataId = calorimetricDataId;
+        GeometricDataId = geometricDataId;
         HygrothermalDataId = hygrothermalDataId;
         OpticalDataId = opticalDataId;
         PhotovoltaicDataId = photovoltaicDataId;
-        GeometricDataId = geometricDataId;
     }
 
     public GetHttpsResource(

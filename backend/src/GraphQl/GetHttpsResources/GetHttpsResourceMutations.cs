@@ -1,12 +1,17 @@
+using System;
 using System.Linq;
+using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Database.Data;
+using Database.Authorization;
 using Database.Enumerations;
 using Database.Extensions;
 using HotChocolate;
 using HotChocolate.Types;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace Database.GraphQl.GetHttpsResources;
 
@@ -17,27 +22,45 @@ public sealed class GetHttpsResourceMutations
     // [Authorize(Policy = Configuration.AuthConfiguration.WritePolicy)]
     public async Task<CreateGetHttpsResourcePayload> CreateGetHttpsResourceAsync(
         CreateGetHttpsResourceInput input,
-        // ClaimsPrincipal claimsPrincipal,
-        // [ScopedService] UserManager<Data.User> userManager,
         ApplicationDbContext context,
         AppSettings appSettings,
+        IHttpClientFactory httpClientFactory,
+        IHttpContextAccessor httpContextAccessor,
         CancellationToken cancellationToken
     )
     {
-        // if (!await GetHttpsResourceAuthorization.IsAuthorizedToCreateGetHttpsResourceForInstitution(
-        //      claimsPrincipal,
-        //      input.CreatorId,
-        //      userManager,
-        //      context,
-        //      cancellationToken
-        //      ).ConfigureAwait(false)
-        // )
-        if (input.AccessToken != appSettings.AccessToken)
+        IData? data = input.DataKind switch
+        {
+            DataKind.CALORIMETRIC_DATA => await context.CalorimetricData.AsQueryable().SingleOrDefaultAsync(d => d.Id == input.DataId, cancellationToken).ConfigureAwait(false),
+            DataKind.GEOMETRIC_DATA => await context.GeometricData.AsQueryable().SingleOrDefaultAsync(d => d.Id == input.DataId, cancellationToken).ConfigureAwait(false),
+            DataKind.HYGROTHERMAL_DATA => await context.HygrothermalData.AsQueryable().SingleOrDefaultAsync(d => d.Id == input.DataId, cancellationToken).ConfigureAwait(false),
+            DataKind.OPTICAL_DATA => await context.OpticalData.AsQueryable().SingleOrDefaultAsync(d => d.Id == input.DataId, cancellationToken).ConfigureAwait(false),
+            DataKind.PHOTOVOLTAIC_DATA => await context.PhotovoltaicData.AsQueryable().SingleOrDefaultAsync(d => d.Id == input.DataId, cancellationToken).ConfigureAwait(false),
+            _ => throw new ArgumentException($"The data kind {input.DataKind} is not supported.")
+        };
+        if (data is null)
+        {
+            return new CreateGetHttpsResourcePayload(
+                new CreateGetHttpsResourceError(
+                    CreateGetHttpsResourceErrorCode.UNKNOWN_DATA,
+                    $"There is no data of kind {input.DataKind} with identifier {input.DataId}.",
+                    [nameof(input), nameof(input.DataId).FirstCharToLower()]
+                )
+            );
+        }
+        if (!await GetHttpsResourceAuthorization.IsAuthorizedToCreateGetHttpsResourceForInstitution(
+             data.CreatorId,
+             appSettings,
+             httpClientFactory,
+             httpContextAccessor,
+             cancellationToken
+             ).ConfigureAwait(false)
+        )
             return new CreateGetHttpsResourcePayload(
                 new CreateGetHttpsResourceError(
                     CreateGetHttpsResourceErrorCode.UNAUTHORIZED,
-                    $"The access token {input.AccessToken} is invalid.",
-                    new[] { nameof(input), nameof(input.AccessToken).FirstCharToLower() }
+                    $"The current user is not authorized to create GET HTTPS resource for the institution.",
+                    []
                 )
             );
         var getHttpsResource = new GetHttpsResource(
@@ -45,10 +68,10 @@ public sealed class GetHttpsResourceMutations
             input.HashValue,
             input.DataFormatId,
             input.DataKind == DataKind.CALORIMETRIC_DATA ? input.DataId : null,
+            input.DataKind == DataKind.GEOMETRIC_DATA ? input.DataId : null,
             input.DataKind == DataKind.HYGROTHERMAL_DATA ? input.DataId : null,
             input.DataKind == DataKind.OPTICAL_DATA ? input.DataId : null,
             input.DataKind == DataKind.PHOTOVOLTAIC_DATA ? input.DataId : null,
-            input.DataKind == DataKind.GEOMETRIC_DATA ? input.DataId : null,
             input.ParentId,
             input.ArchivedFilesMetaInformation.Select(i =>
                 new FileMetaInformation(

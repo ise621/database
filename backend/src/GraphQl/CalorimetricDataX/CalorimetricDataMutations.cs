@@ -43,14 +43,6 @@ public sealed class CalorimetricDataMutations
                     []
                 )
             );
-        if (input.AccessToken != appSettings.AccessToken)
-            return new CreateCalorimetricDataPayload(
-                new CreateCalorimetricDataError(
-                    CreateCalorimetricDataErrorCode.UNAUTHORIZED,
-                    $"The access token {input.AccessToken} is invalid.",
-                    new[] { nameof(input), nameof(input.AccessToken).FirstCharToLower() }
-                )
-            );
         var calorimetricData = new CalorimetricData(
             input.Locale,
             input.ComponentId,

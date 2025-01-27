@@ -18,8 +18,8 @@ function Page() {
             </Typography.Paragraph>
             {/* <Form {...layout} form={form} name="basic">
               <Form.Item
-                label="Access Token"
-                name="accessToken"
+                label="..."
+                name="..."
                 rules={[
                   {
                     required: true,

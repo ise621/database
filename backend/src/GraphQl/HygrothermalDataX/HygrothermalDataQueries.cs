@@ -20,26 +20,24 @@ public sealed class HygrothermalDataQueries
     [UseFiltering]
     [UseSorting]
     public IQueryable<HygrothermalData> GetAllHygrothermalData(
-        DateTime? timestamp,
         [GraphQLType<LocaleType>] string? locale,
         ApplicationDbContext context,
         ISortingContext sorting
     )
     {
         sorting.StabilizeOrder<HygrothermalData>();
-        // TODO Use `timestamp` and `locale`.
+        // TODO Use `locale`.
         return context.HygrothermalData.AsNoTracking();
     }
 
     public Task<HygrothermalData?> GetHygrothermalDataAsync(
         Guid id,
-        DateTime? timestamp,
         [GraphQLType<LocaleType>] string? locale,
         HygrothermalDataByIdDataLoader byId,
         CancellationToken cancellationToken
     )
     {
-        // TODO Use `timestamp` and `locale`.
+        // TODO Use `locale`.
         return byId.LoadAsync(
             id,
             cancellationToken

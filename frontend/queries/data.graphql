@@ -80,8 +80,8 @@ query Data($uuid: Uuid!) {
   }
 }
 
-query AllData($where: DataPropositionInput) {
-  allData(where: $where) {
+query AllData {
+  allData {
     edges {
       node {
         ...DataPartial

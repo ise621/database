@@ -43,14 +43,6 @@ public sealed class PhotovoltaicDataMutations
                     []
                 )
             );
-        if (input.AccessToken != appSettings.AccessToken)
-            return new CreatePhotovoltaicDataPayload(
-                new CreatePhotovoltaicDataError(
-                    CreatePhotovoltaicDataErrorCode.UNAUTHORIZED,
-                    $"The access token {input.AccessToken} is invalid.",
-                    new[] { nameof(input), nameof(input.AccessToken).FirstCharToLower() }
-                )
-            );
         var photovoltaicData = new PhotovoltaicData(
             input.Locale,
             input.ComponentId,

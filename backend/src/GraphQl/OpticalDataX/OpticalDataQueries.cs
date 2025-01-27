@@ -20,26 +20,24 @@ public sealed class OpticalDataQueries
     [UseFiltering]
     [UseSorting]
     public IQueryable<OpticalData> GetAllOpticalData(
-        DateTime? timestamp,
         [GraphQLType<LocaleType>] string? locale,
         ApplicationDbContext context,
         ISortingContext sorting
     )
     {
         sorting.StabilizeOrder<OpticalData>();
-        // TODO Use `timestamp` and `locale`.
+        // TODO Use `locale`.
         return context.OpticalData.AsNoTracking();
     }
 
     public Task<OpticalData?> GetOpticalDataAsync(
         Guid id,
-        DateTime? timestamp,
         [GraphQLType<LocaleType>] string? locale,
         OpticalDataByIdDataLoader byId,
         CancellationToken cancellationToken
     )
     {
-        // TODO Use `timestamp` and `locale`.
+        // TODO Use `locale`.
         return byId.LoadAsync(
             id,
             cancellationToken

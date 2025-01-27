@@ -463,27 +463,27 @@ type Publication implements Reference {
 }
 
 type Query {
-  allCalorimetricData("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int locale: Locale order: [CalorimetricDataSortInput!] @cost(weight: "10") timestamp: DateTime where: CalorimetricDataPropositionInput @cost(weight: "10")): CalorimetricDataConnection @listSize(assumedSize: 2147483646, slicingArguments: [ "first", "last" ], sizedFields: [ "edges", "nodes" ]) @cost(weight: "10")
-  allData("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int locale: Locale order: [IDataSortInput!] @cost(weight: "10") timestamp: DateTime where: DataPropositionInput @cost(weight: "10")): DataConnection @listSize(assumedSize: 2147483646, slicingArguments: [ "first", "last" ], sizedFields: [ "edges", "nodes" ]) @cost(weight: "10")
-  allGeometricData("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int locale: Locale order: [GeometricDataSortInput!] @cost(weight: "10") timestamp: DateTime where: GeometricDataPropositionInput @cost(weight: "10")): GeometricDataConnection @listSize(assumedSize: 2147483646, slicingArguments: [ "first", "last" ], sizedFields: [ "edges", "nodes" ]) @cost(weight: "10")
-  allHygrothermalData("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int locale: Locale order: [HygrothermalDataSortInput!] @cost(weight: "10") timestamp: DateTime where: HygrothermalDataPropositionInput @cost(weight: "10")): HygrothermalDataConnection @listSize(assumedSize: 2147483646, slicingArguments: [ "first", "last" ], sizedFields: [ "edges", "nodes" ]) @cost(weight: "10")
-  allOpticalData("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int locale: Locale order: [OpticalDataSortInput!] @cost(weight: "10") timestamp: DateTime where: OpticalDataPropositionInput @cost(weight: "10")): OpticalDataConnection @listSize(assumedSize: 2147483646, slicingArguments: [ "first", "last" ], sizedFields: [ "edges", "nodes" ]) @cost(weight: "10")
-  allPhotovoltaicData("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int locale: Locale order: [PhotovoltaicDataSortInput!] @cost(weight: "10") timestamp: DateTime where: PhotovoltaicDataPropositionInput @cost(weight: "10")): PhotovoltaicDataConnection @listSize(assumedSize: 2147483646, slicingArguments: [ "first", "last" ], sizedFields: [ "edges", "nodes" ]) @cost(weight: "10")
-  calorimetricData(id: Uuid! locale: Locale timestamp: DateTime): CalorimetricData @cost(weight: "10")
+  allCalorimetricData("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int locale: Locale order: [CalorimetricDataSortInput!] @cost(weight: "10") where: CalorimetricDataPropositionInput @cost(weight: "10")): CalorimetricDataConnection @listSize(assumedSize: 2147483646, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 2147483646, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  allData("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int locale: Locale order: [IDataSortInput!] @cost(weight: "10")): DataConnection @listSize(assumedSize: 2147483646, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 2147483646, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  allGeometricData("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int locale: Locale order: [GeometricDataSortInput!] @cost(weight: "10") where: GeometricDataPropositionInput @cost(weight: "10")): GeometricDataConnection @listSize(assumedSize: 2147483646, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 2147483646, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  allHygrothermalData("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int locale: Locale order: [HygrothermalDataSortInput!] @cost(weight: "10") where: HygrothermalDataPropositionInput @cost(weight: "10")): HygrothermalDataConnection @listSize(assumedSize: 2147483646, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 2147483646, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  allOpticalData("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int locale: Locale order: [OpticalDataSortInput!] @cost(weight: "10") where: OpticalDataPropositionInput @cost(weight: "10")): OpticalDataConnection @listSize(assumedSize: 2147483646, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 2147483646, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  allPhotovoltaicData("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int locale: Locale order: [PhotovoltaicDataSortInput!] @cost(weight: "10") where: PhotovoltaicDataPropositionInput @cost(weight: "10")): PhotovoltaicDataConnection @listSize(assumedSize: 2147483646, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 2147483646, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  calorimetricData(id: Uuid! locale: Locale): CalorimetricData @cost(weight: "10")
   currentUser: User @cost(weight: "10")
   currentUserInfo: UserInfo @cost(weight: "10")
-  data(id: Uuid! locale: Locale timestamp: DateTime): Data @cost(weight: "10")
+  data(id: Uuid! locale: Locale): Data @cost(weight: "10")
   database: Database! @cost(weight: "10")
-  geometricData(id: Uuid! locale: Locale timestamp: DateTime): GeometricData @cost(weight: "10")
+  geometricData(id: Uuid! locale: Locale): GeometricData @cost(weight: "10")
   getHttpsResource(id: Uuid!): GetHttpsResource @cost(weight: "10")
-  getHttpsResources("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int order: [GetHttpsResourceSortInput!] @cost(weight: "10") where: GetHttpsResourcePropositionInput @cost(weight: "10")): GetHttpsResourceConnection @listSize(assumedSize: 2147483646, slicingArguments: [ "first", "last" ], sizedFields: [ "edges", "nodes" ]) @cost(weight: "10")
-  hygrothermalData(id: Uuid! locale: Locale timestamp: DateTime): HygrothermalData @cost(weight: "10")
+  getHttpsResources("Returns the elements in the list that come after the specified cursor." after: String "Returns the elements in the list that come before the specified cursor." before: String "Returns the first _n_ elements from the list." first: Int "Returns the last _n_ elements from the list." last: Int order: [GetHttpsResourceSortInput!] @cost(weight: "10") where: GetHttpsResourcePropositionInput @cost(weight: "10")): GetHttpsResourceConnection @listSize(assumedSize: 2147483646, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 2147483646, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  hygrothermalData(id: Uuid! locale: Locale): HygrothermalData @cost(weight: "10")
   "Fetches an object given its ID."
   node("ID of the object." id: ID!): Node @cost(weight: "10")
   "Lookup nodes by a list of IDs."
   nodes("The list of node IDs." ids: [ID!]!): [Node]! @cost(weight: "10")
-  opticalData(id: Uuid! locale: Locale timestamp: DateTime): OpticalData @cost(weight: "10")
-  photovoltaicData(id: Uuid! locale: Locale timestamp: DateTime): PhotovoltaicData @cost(weight: "10")
+  opticalData(id: Uuid! locale: Locale): OpticalData @cost(weight: "10")
+  photovoltaicData(id: Uuid! locale: Locale): PhotovoltaicData @cost(weight: "10")
   verificationCode: String!
 }
 
@@ -604,7 +604,6 @@ input CielabColorPropositionInput {
 }
 
 input CreateCalorimetricDataInput {
-  accessToken: String!
   appliedMethod: AppliedMethodInput!
   approvals: [DataApprovalInput!]!
   componentId: Uuid!
@@ -620,7 +619,6 @@ input CreateCalorimetricDataInput {
 }
 
 input CreateGeometricDataInput {
-  accessToken: String!
   appliedMethod: AppliedMethodInput!
   approvals: [DataApprovalInput!]!
   componentId: Uuid!
@@ -635,7 +633,6 @@ input CreateGeometricDataInput {
 }
 
 input CreateGetHttpsResourceInput {
-  accessToken: String!
   appliedConversionMethod: ToTreeVertexAppliedConversionMethodInput
   archivedFilesMetaInformation: [FileMetaInformationInput!]!
   dataFormatId: Uuid!
@@ -647,7 +644,6 @@ input CreateGetHttpsResourceInput {
 }
 
 input CreateHygrothermalDataInput {
-  accessToken: String!
   appliedMethod: AppliedMethodInput!
   approvals: [DataApprovalInput!]!
   componentId: Uuid!
@@ -667,7 +663,6 @@ input CreateNumerationInput {
 }
 
 input CreateOpticalDataInput {
-  accessToken: String!
   appliedMethod: AppliedMethodInput!
   approvals: [DataApprovalInput!]!
   cielabColors: [CielabColorInput!]!
@@ -688,7 +683,6 @@ input CreateOpticalDataInput {
 }
 
 input CreatePhotovoltaicDataInput {
-  accessToken: String!
   appliedMethod: AppliedMethodInput!
   approvals: [DataApprovalInput!]!
   componentId: Uuid!
@@ -1268,6 +1262,7 @@ enum CreateGeometricDataErrorCode {
 
 enum CreateGetHttpsResourceErrorCode {
   UNKNOWN
+  UNKNOWN_DATA
   UNAUTHORIZED
 }
 
@@ -1288,10 +1283,10 @@ enum CreatePhotovoltaicDataErrorCode {
 
 enum DataKind {
   CALORIMETRIC_DATA
+  GEOMETRIC_DATA
   HYGROTHERMAL_DATA
   OPTICAL_DATA
   PHOTOVOLTAIC_DATA
-  GEOMETRIC_DATA
 }
 
 enum DatabaseVerificationState {
@@ -1349,7 +1344,7 @@ enum UriHostNameType {
 directive @cost("The `weight` argument defines what value to add to the overall cost for every appearance, or possible appearance, of a type, field, argument, etc." weight: String!) on SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | ENUM | INPUT_FIELD_DEFINITION
 
 "The purpose of the `@listSize` directive is to either inform the static analysis about the size of returned lists (if that information is statically available), or to point the analysis to where to find that information."
-directive @listSize("The `assumedSize` argument can be used to statically define the maximum length of a list returned by a field." assumedSize: Int "The `requireOneSlicingArgument` argument can be used to inform the static analysis that it should expect that exactly one of the defined slicing arguments is present in a query. If that is not the case (i.e., if none or multiple slicing arguments are present), the static analysis may throw an error." requireOneSlicingArgument: Boolean! = true "The `sizedFields` argument can be used to define that the value of the `assumedSize` argument or of a slicing argument does not affect the size of a list returned by a field itself, but that of a list returned by one of its sub-fields." sizedFields: [String!] "The `slicingArguments` argument can be used to define which of the field's arguments with numeric type are slicing arguments, so that their value determines the size of the list returned by that field. It may specify a list of multiple slicing arguments." slicingArguments: [String!]) on FIELD_DEFINITION
+directive @listSize("The `assumedSize` argument can be used to statically define the maximum length of a list returned by a field." assumedSize: Int "The `requireOneSlicingArgument` argument can be used to inform the static analysis that it should expect that exactly one of the defined slicing arguments is present in a query. If that is not the case (i.e., if none or multiple slicing arguments are present), the static analysis may throw an error." requireOneSlicingArgument: Boolean! = true "The `sizedFields` argument can be used to define that the value of the `assumedSize` argument or of a slicing argument does not affect the size of a list returned by a field itself, but that of a list returned by one of its sub-fields." sizedFields: [String!] "The `slicingArgumentDefaultValue` argument can be used to define a default value for a slicing argument, which is used if the argument is not present in a query." slicingArgumentDefaultValue: Int "The `slicingArguments` argument can be used to define which of the field's arguments with numeric type are slicing arguments, so that their value determines the size of the list returned by that field. It may specify a list of multiple slicing arguments." slicingArguments: [String!]) on FIELD_DEFINITION
 
 "The `@specifiedBy` directive is used within the type system definition language to provide a URL for specifying the behavior of custom scalar definitions."
 directive @specifiedBy("The specifiedBy URL points to a human-readable specification. This field will only read a result for scalar types." url: String!) on SCALAR
