@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Net.Http;
 using System.Security.Cryptography.X509Certificates;
 using Database.Data;
 using Microsoft.AspNetCore.Hosting;
@@ -32,7 +33,7 @@ public abstract class AuthConfiguration
             appSettings.JsonWebToken.SigningCertificatePassword);
         ConfigureAuthenticationAndAuthorizationServices(services);
         ConfigureTaskScheduling(services, environment);
-        ConfigureOpenIddictServices(services, appSettings, encryptionCertificate, signingCertificate);
+        ConfigureOpenIddictServices(services, environment, appSettings, encryptionCertificate, signingCertificate);
     }
 
     private static X509Certificate2 LoadCertificate(
@@ -40,13 +41,17 @@ public abstract class AuthConfiguration
         string password
     )
     {
-        if (string.IsNullOrEmpty(password)) throw new ArgumentException($"Empty password for certificate {fileName}.");
+        if (string.IsNullOrEmpty(password))
+        {
+            throw new ArgumentException($"Empty password for certificate {fileName}.");
+        }
+
         var stream =
             Assembly.GetExecutingAssembly().GetManifestResourceStream($"Database.{fileName}")
             ?? throw new ArgumentException($"Missing certificate {fileName}.");
         using var buffer = new MemoryStream();
         stream.CopyTo(buffer);
-        return new X509Certificate2(
+        return X509CertificateLoader.LoadPkcs12(
             buffer.ToArray(),
             password,
             X509KeyStorageFlags.EphemeralKeySet
@@ -115,6 +120,7 @@ public abstract class AuthConfiguration
 
     private static void ConfigureOpenIddictServices(
         IServiceCollection services,
+        IWebHostEnvironment environment,
         AppSettings appSettings,
         X509Certificate2 encryptionCertificate,
         X509Certificate2 signingCertificate
@@ -148,7 +154,13 @@ public abstract class AuthConfiguration
                 // Register the ASP.NET Core host.
                 _.UseAspNetCore();
                 // Register the System.Net.Http integration.
-                _.UseSystemNetHttp();
+                _.UseSystemNetHttp()
+                    .ConfigureHttpClientHandler(handler => {
+                        if (environment.IsDevelopment()) {
+                            // https://documentation.openiddict.com/integrations/system-net-http#register-a-custom-httpclienthandler-configuration-delegate
+                            handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+                        }
+                    });
             })
             .AddClient(_ =>
             {
@@ -170,7 +182,13 @@ public abstract class AuthConfiguration
                 // assembly as a more specific user agent, which can be useful when dealing with
                 // providers that use the user agent as a way to throttle requests (e.g Reddit).
                 _.UseSystemNetHttp()
-                    .SetProductInformation(typeof(Startup).Assembly);
+                    .SetProductInformation(typeof(Startup).Assembly)
+                    .ConfigureHttpClientHandler(handler => {
+                        if (environment.IsDevelopment()) {
+                            // https://documentation.openiddict.com/integrations/system-net-http#register-a-custom-httpclienthandler-configuration-delegate
+                            handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+                        }
+                    });
 
                 // Add a client registration matching the client application definition in the server project.
                 _.AddRegistration(

@@ -59,7 +59,7 @@ public sealed class Program
                 await CreateAndSeedDb(scope.ServiceProvider).ConfigureAwait(false);
             }
 
-            application.Run();
+            await application.RunAsync().ConfigureAwait(false);
             return 0;
         }
         catch (Exception ex) when (ex is not HostAbortedException && ex.Source != "Microsoft.EntityFrameworkCore.Design") // see https://github.com/dotnet/efcore/issues/29923
@@ -100,7 +100,10 @@ public sealed class Program
                 rollingInterval: RollingInterval.Day,
                 rollOnFileSizeLimit: true,
                 retainedFileCountLimit: 7);
-        if (environment != "production") configuration.WriteTo.Debug(formatProvider: CultureInfo.InvariantCulture);
+        if (environment != "production")
+        {
+            configuration.WriteTo.Debug(formatProvider: CultureInfo.InvariantCulture);
+        }
     }
 
     private static async Task CreateAndSeedDb(

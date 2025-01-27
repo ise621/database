@@ -14,12 +14,13 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using OpenIddict.Client.AspNetCore;
-using Yoh.Text.Json.NamingPolicies;
 
 namespace Database.Metabase;
 
 public sealed class QueryingMetabase
 {
+    public const string MetabaseHttpClient = "Metabase";
+
     private static readonly JsonSerializerOptions GraphQlSerializerOptions =
         new()
         {
@@ -40,8 +41,7 @@ public sealed class QueryingMetabase
             Converters = { new JsonStringEnumConverter(new ConstantCaseJsonNamingPolicy(), false) },
             NumberHandling = JsonNumberHandling.Strict,
             PropertyNameCaseInsensitive = false,
-            // TODO When we run .NET 8, remove [Yoh.Text.Json.NamingPolicies](https://github.com/YohDeadfall/Yoh.Text.Json.NamingPolicies) and use [.NET's inbuilt snake-case support](https://github.com/dotnet/runtime/pull/69613).
-            PropertyNamingPolicy = JsonNamingPolicies.SnakeCaseLower,
+            PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
             ReadCommentHandling = JsonCommentHandling.Disallow,
             IncludeFields = false,
             IgnoreReadOnlyProperties = false,
@@ -142,7 +142,7 @@ public sealed class QueryingMetabase
     )
         where TResponse : class
     {
-        using var httpClient = httpClientFactory.CreateClient();
+        using var httpClient = httpClientFactory.CreateClient(MetabaseHttpClient);
         var bearerToken = await ExtractBearerToken(httpContextAccessor).ConfigureAwait(false);
         using var httpRequestMessage = new HttpRequestMessage(
             httpMethod,

@@ -3,12 +3,14 @@ using System.IO;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Net.Http;
 using HotChocolate.AspNetCore;
 using Database.Configuration;
 using Database.Data;
 using Database.Data.Extensions;
 using Database.Enumerations;
 using Database.Services;
+using Database.Metabase;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -24,27 +26,22 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Npgsql;
 using Serilog;
+using Microsoft.OpenApi;
 
 namespace Database;
 
-public sealed class Startup
+public sealed class Startup(
+    IWebHostEnvironment environment,
+    IConfiguration configuration
+    )
 {
     private const string GraphQlCorsPolicy = "GraphQlCorsPolicy";
     private const string AntiforgeryHeaderName = "X-XSRF-TOKEN";
-    private readonly AppSettings _appSettings;
-
-    private readonly IWebHostEnvironment _environment;
-
-    public Startup(
-        IWebHostEnvironment environment,
-        IConfiguration configuration
-    )
-    {
-        _environment = environment;
-        _appSettings = configuration.Get<AppSettings>() ??
+    private readonly AppSettings _appSettings = configuration.Get<AppSettings>() ??
                        throw new InvalidOperationException(
                            "Failed to get application settings from configuration.");
-    }
+
+    private readonly IWebHostEnvironment _environment = environment;
 
     public void ConfigureServices(IServiceCollection services)
     {
@@ -58,7 +55,7 @@ public sealed class Startup
         services
             .AddDataProtection()
             .PersistKeysToDbContext<ApplicationDbContext>();
-        ConfigureHttpClientServices(services);
+        ConfigureHttpClientServices(services, _environment);
         services.AddHttpContextAccessor();
         services
             .AddHealthChecks()
@@ -118,6 +115,9 @@ public sealed class Startup
                 // TODO I consider the flattened structure a bug. How can we solve this?
             }
         );
+        services.AddOpenApi(_ => {
+            _.OpenApiVersion = OpenApiSpecVersion.OpenApi3_0;
+        });
     }
 
     private void ConfigureMessageSenderServices(IServiceCollection services)
@@ -154,52 +154,65 @@ public sealed class Startup
 
     private static void ConfigureDatabaseContext(
         DbContextOptionsBuilder options,
-        IWebHostEnvironment environment
+        IWebHostEnvironment environment,
+        AppSettings appSettings
         )
     {
+        var dataSourceBuilder = new NpgsqlDataSourceBuilder(appSettings.Database.ConnectionString);
+        // https://www.npgsql.org/efcore/mapping/enum.html#mapping-your-enum
+        // Keep in sync with `ApplicationDbContext.CreateEnumerations`.
+        dataSourceBuilder.MapEnum<DataKind>($"{appSettings.Database.SchemaName}.{ApplicationDbContext.DataKindTypeName}");
+        dataSourceBuilder.MapEnum<Standardizer>($"{appSettings.Database.SchemaName}.{ApplicationDbContext.StandardizerTypeName}");
+        options
+            .UseNpgsql(dataSourceBuilder.Build() /*, optionsBuilder => optionsBuilder.UseNodaTime() */)
+            .UseSchemaName(appSettings.Database.SchemaName)
+            .UseOpenIddict();
         if (!environment.IsProduction())
+        {
             options
                 .EnableSensitiveDataLogging()
                 .EnableDetailedErrors();
+        }
+
         if (environment.IsEnvironment(Program.TestEnvironment))
+        {
             options.ConfigureWarnings(x =>
                 x.Ignore(CoreEventId.ManyServiceProvidersCreatedWarning)
             );
+        }
     }
 
     private void ConfigureDatabaseServices(IServiceCollection services)
     {
         services.AddPooledDbContextFactory<ApplicationDbContext>(options =>
-            {
-                var dataSourceBuilder = new NpgsqlDataSourceBuilder(_appSettings.Database.ConnectionString);
-                // https://www.npgsql.org/efcore/mapping/enum.html#mapping-your-enum
-                // Keep in sync with `ApplicationDbContext.CreateEnumerations`.
-                dataSourceBuilder.MapEnum<DataKind>($"{_appSettings.Database.SchemaName}.{ApplicationDbContext.DataKindTypeName}");
-                dataSourceBuilder.MapEnum<Standardizer>($"{_appSettings.Database.SchemaName}.{ApplicationDbContext.StandardizerTypeName}");
-                options
-                    .UseNpgsql(dataSourceBuilder.Build() /*, optionsBuilder => optionsBuilder.UseNodaTime() */)
-                    .UseSchemaName(_appSettings.Database.SchemaName)
-                    .UseOpenIddict();
-                ConfigureDatabaseContext(options, _environment);
-            }
+            ConfigureDatabaseContext(options, _environment, _appSettings)
         );
         // Database context as services are used by `OpenIddict`, see in
         // particular `AuthConfiguration`.
-        services.AddDbContext<ApplicationDbContext>(
-            (services, options) =>
-            {
-                ConfigureDatabaseContext(options, _environment);
-                services
-                    .GetRequiredService<IDbContextFactory<ApplicationDbContext>>()
-                    .CreateDbContext();
-            },
-            ServiceLifetime.Transient
+        services.AddDbContext<ApplicationDbContext>(options =>
+            ConfigureDatabaseContext(options, _environment, _appSettings),
+            contextLifetime: ServiceLifetime.Transient,
+            optionsLifetime: ServiceLifetime.Singleton
         );
+        // services.ConfigureDbContext<ApplicationDbContext>(options =>
+        //     ConfigureDatabaseContext(options, _environment, _appSettings),
+        //     optionsLifetime: ServiceLifetime.Singleton
+        // );
     }
 
-    private static void ConfigureHttpClientServices(IServiceCollection services)
+    private static void ConfigureHttpClientServices(IServiceCollection services, IWebHostEnvironment environment)
     {
         services.AddHttpClient();
+        var metabasesHttpClientBuilder = services.AddHttpClient(QueryingMetabase.MetabaseHttpClient);
+        if (environment.IsDevelopment())
+        {
+            metabasesHttpClientBuilder.ConfigurePrimaryHttpMessageHandler(_ =>
+                new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                }
+            );
+        }
     }
 
     public void Configure(WebApplication app)
@@ -246,6 +259,7 @@ public sealed class Startup
         // app.UseResponseCompression(); // Done by Nginx
         // app.UseResponseCaching(); // Done by Nginx
         /* app.UseWebSockets(); */
+        app.MapOpenApi("/openapi/{documentName}.json");
         app.MapGraphQL()
             .WithOptions(
                 // https://chillicream.com/docs/hotchocolate/server/middleware
@@ -273,7 +287,7 @@ public sealed class Startup
             {
                 ResponseWriter = WriteJsonResponse
             }
-        );
+        ).DisableHttpMetrics();
     }
 
     // Inspired by https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks?view=aspnetcore-7.0#customize-output
@@ -298,7 +312,10 @@ public sealed class Startup
                 jsonWriter.WriteString("duration",
                     healthReportEntry.Value.Duration.ToString());
                 jsonWriter.WriteStartArray("tags");
-                foreach (var tag in healthReportEntry.Value.Tags) jsonWriter.WriteStringValue(tag);
+                foreach (var tag in healthReportEntry.Value.Tags)
+                {
+                    jsonWriter.WriteStringValue(tag);
+                }
 
                 jsonWriter.WriteEndArray();
                 var exception = healthReportEntry.Value.Exception;
@@ -306,15 +323,25 @@ public sealed class Startup
                 {
                     jsonWriter.WriteStartObject("exception");
                     jsonWriter.WriteString("message", exception.Message);
-                    if (exception.StackTrace is not null) jsonWriter.WriteString("stackTrace", exception.StackTrace);
+                    if (exception.StackTrace is not null)
+                    {
+                        jsonWriter.WriteString("stackTrace", exception.StackTrace);
+                    }
 
                     if (exception.InnerException is not null)
+                    {
                         jsonWriter.WriteString("innerException", exception.InnerException.ToString());
+                    }
 
-                    if (exception.Source is not null) jsonWriter.WriteString("source", exception.Source);
+                    if (exception.Source is not null)
+                    {
+                        jsonWriter.WriteString("source", exception.Source);
+                    }
 
                     if (exception.TargetSite is not null)
+                    {
                         jsonWriter.WriteString("targetSite", exception.TargetSite.ToString());
+                    }
 
                     jsonWriter.WriteEndObject();
                 }
