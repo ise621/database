@@ -8,6 +8,8 @@ docker_compose = \
 		--file docker-compose.yml \
 		--project-name ${NAME}
 
+database_name = xbase_development
+
 # Taken from https://www.client9.com/self-documenting-makefiles/
 help : ## Print this help
 	@awk -F ':|##' '/^[^\t].+?:.*?##/ {\
@@ -62,7 +64,8 @@ frontend-build-context : ## Show the build context configured by `./frontend/.do
 .PHONY : frontend-build-context
 
 remove : ## Remove stopped containers
-	${docker_compose} rm
+	${docker_compose} rm \
+		--volumes
 .PHONY : remove
 
 remove-data : ## Remove data volumes
@@ -155,7 +158,7 @@ psql : ## Enter PostgreSQL interactive terminal in the running `database` contai
 		database \
 		psql \
 		--username postgres \
-		--dbname xbase_development
+		--dbname ${database_name}
 .PHONY : psql
 
 shelld : CONTAINER = database
@@ -169,7 +172,7 @@ list : ## List all containers with health status
 		--all
 .PHONY : list
 
-createdb : DBNAME = xbase_development
+createdb : DBNAME = ${database_name}
 createdb : ## Create database with name `${DBNAME}` defaulting to `xbase_development`
 	${docker_compose} exec \
 		database \
@@ -178,7 +181,7 @@ createdb : ## Create database with name `${DBNAME}` defaulting to `xbase_develop
 		"
 .PHONY : createdb
 
-dropdb : DBNAME = xbase_development
+dropdb : DBNAME = ${database_name}
 dropdb : ## Drop database with name `${DBNAME}` defaulting to `xbase_development`
 	${docker_compose} exec \
 		database \
@@ -186,6 +189,18 @@ dropdb : ## Drop database with name `${DBNAME}` defaulting to `xbase_development
 			dropdb --username postgres ${DBNAME} ; \
 		"
 .PHONY : dropdb
+
+sql : ## Run the SQL script in the file `${SQL}` in the running `database` service, for example, `make SQL=./my.sql sql`
+	cat ${SQL} \
+	| ${docker_compose} exec \
+		--no-TTY \
+		database \
+		psql \
+			--echo-all \
+			--file=- \
+			--username=postgres \
+			--dbname=${database_name}
+.PHONY : sql
 
 begin-maintenance : ## Begin maintenance
 	cp \
@@ -243,6 +258,7 @@ ssl : ## Generate and trust certificate authority, and generate SSL certificates
 # See also https://gist.github.com/Soarez/9688998
 # OpenSSL Quick Reference: https://www.digicert.com/kb/ssl-support/openssl-quick-reference-guide.htm
 # X509v3 Extensions: See `man x509v3_config` and https://superuser.com/questions/738612/openssl-ca-keyusage-extension/1248085#1248085 and https://access.redhat.com/solutions/28965
+# Which file extensions are meant for which file layout? https://serverfault.com/questions/9708/what-is-a-pem-file-and-how-does-it-differ-from-other-openssl-generated-key-file/9717#9717
 generate-certificate-authority : ## Generate certificate authority ECDSA private key and self-signed certificate
 	mkdir --parents ./ssl/
 		docker run \
