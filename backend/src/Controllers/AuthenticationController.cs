@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading;
@@ -8,8 +9,11 @@ using Database.Data;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
+using OpenIddict.Abstractions;
 using OpenIddict.Client.AspNetCore;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
@@ -17,18 +21,33 @@ namespace Database.Controllers;
 
 // Inspired by https://github.com/openiddict/openiddict-samples/blob/dev/samples/Velusia/Velusia.Client/Controllers/AuthenticationController.cs
 // https://github.com/openiddict/openiddict-samples/blob/855c31f91d6bf5cde735ef3f96fcc3c015b51d79/samples/Velusia/Velusia.Client/Controllers/AuthenticationController.cs
-public class AuthenticationController : Controller
+public sealed class AuthenticationController(
+    AppSettings appSettings,
+    IOptions<IdentityOptions> identityOptions,
+    ApplicationDbContext context
+    ) : Controller
 {
-    private readonly ApplicationDbContext _context;
-    private readonly string _issuer;
+    private readonly IdentityOptions _identityOptions = identityOptions.Value ??
+                           throw new InvalidOperationException("There are no identity options.");
+    private readonly ApplicationDbContext _context = context;
+    private readonly string _issuer = appSettings.MetabaseHost;
+    private bool _disposed;
 
-    public AuthenticationController(
-        AppSettings appSettings,
-        ApplicationDbContext context
-    )
+    protected override void Dispose(bool disposing)
     {
-        _issuer = appSettings.MetabaseHost;
-        _context = context;
+        base.Dispose(disposing);
+        if (!_disposed)
+        {
+            // Dispose of resources held by this instance.
+            _context.Dispose();
+            _disposed = true;
+        }
+    }
+
+    // Disposable types implement a finalizer.
+    ~AuthenticationController()
+    {
+        Dispose(false);
     }
 
     [HttpGet("~/connect/login")]
@@ -61,11 +80,14 @@ public class AuthenticationController : Controller
         // this indicate that the user is already logged out locally (or has not logged in yet).
         var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         if (result is not { Succeeded: true })
+        {
             // Only allow local return URLs to prevent open redirect attacks.
             // https://learn.microsoft.com/en-us/aspnet/core/security/preventing-open-redirects
             return LocalRedirect(SanitizeReturnUrl(returnUrl));
+        }
+
         // Remove the local authentication cookie before triggering a redirection to the remote server.
-        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme).ConfigureAwait(false);
         // Ask the OpenIddict client middleware to redirect the user agent to the identity provider.
         return SignOut(
             new AuthenticationProperties(
@@ -95,6 +117,7 @@ public class AuthenticationController : Controller
     [HttpGet("~/connect/callback/login/{provider}")]
     [HttpPost("~/connect/callback/login/{provider}")]
     [IgnoreAntiforgeryToken]
+    [SuppressMessage("Style", "IDE0060")]
     public async Task<ActionResult> LogInCallback(string provider, CancellationToken cancellationToken)
     {
         // Retrieve the authorization data validated by OpenIddict as part of the callback handling.
@@ -119,49 +142,41 @@ public class AuthenticationController : Controller
         //
         //     Note: this is the approach used here, but the external claims are first filtered to only persist
         //     a few claims like the user identifier. The same approach is used to store the access/refresh tokens.
-        //
+
         // Important: if the remote server doesn't support OpenID Connect and doesn't expose a userinfo endpoint,
-        // result.Principal.Identity will represent an unauthenticated identity and won't contain any claim.
+        // result.Principal.Identity will represent an unauthenticated identity and won't contain any user claim.
         //
         // Such identities cannot be used as-is to build an authentication cookie in ASP.NET Core (as the
         // antiforgery stack requires at least a name claim to bind CSRF cookies to the user's identity) but
         // the access/refresh tokens can be retrieved using result.Properties.GetTokens() to make API calls.
-        if (result.Principal?.Identity is not ClaimsIdentity { IsAuthenticated: true })
-            throw new InvalidOperationException("The external authorization data cannot be used for authentication.");
+        if (result.Principal is not ClaimsPrincipal { Identity.IsAuthenticated: true })
+        {
+            throw new InvalidOperationException(
+                "The external authorization data cannot be used for authentication.");
+        }
+
         // Build an identity based on the external claims and that will be used to create the authentication cookie.
-        //
-        // By default, all claims extracted during the authorization dance are available. The claims collection stored
-        // in the cookie can be filtered out or mapped to different names depending on the claim name or its issuer.
-        //
-        // The claims are fetched from the userinfo endpoint of the
-        // authorization provider.
-        var claims = new List<Claim>(
-            result.Principal.Claims
-                .Select(claim => claim switch
-                {
-                    // https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims
-                    // Map the standard "sub" and custom "id" claims to ClaimTypes.NameIdentifier, which is
-                    // the default claim type used by .NET and is required by the antiforgery components.
-                    { Type: Claims.Subject }
-                        => new Claim(ClaimTypes.NameIdentifier, claim.Value, claim.ValueType, claim.Issuer),
-                    // Map the standard "name" claim to ClaimTypes.Name.
-                    { Type: Claims.Name }
-                        => new Claim(ClaimTypes.Name, claim.Value, claim.ValueType, claim.Issuer),
-                    _ => claim
-                })
-                .Where(claim => claim switch
-                {
-                    // Preserve the basic claims that are necessary for the application to work correctly.
-                    { Type: ClaimTypes.NameIdentifier or ClaimTypes.Name } => true,
-                    // Don't preserve the other claims.
-                    _ => false
-                }));
         var identity = new ClaimsIdentity(
-            claims,
             CookieAuthenticationDefaults.AuthenticationScheme,
             ClaimTypes.Name,
             ClaimTypes.Role
         );
+
+        // By default, OpenIddict will automatically try to map the email/name and name identifier claims from
+        // their standard OpenID Connect or provider-specific equivalent, if available. If needed, additional
+        // claims can be resolved from the external identity and copied to the final authentication cookie. For example
+        // .SetClaim(ClaimTypes.Email, result.Principal.GetClaim(ClaimTypes.Email))
+        // The claims are fetched from the userinfo endpoint of the authorization provider.
+        // We add the claim `IdentityOptions.ClaimsIdentity.UserIdClaimType` to make
+        // `UserManager.GetUserAsync(claimsPrincipal)` return the authenticated user.
+        identity.SetClaim(_identityOptions.ClaimsIdentity.UserIdClaimType, result.Principal.GetClaim(ClaimTypes.NameIdentifier))
+                .SetClaim(ClaimTypes.Name, result.Principal.GetClaim(ClaimTypes.Name))
+                .SetClaim(ClaimTypes.NameIdentifier, result.Principal.GetClaim(ClaimTypes.NameIdentifier));
+
+        // Preserve the registration details to be able to resolve them later.
+        identity.SetClaim(Claims.Private.RegistrationId, result.Principal.GetClaim(Claims.Private.RegistrationId))
+                .SetClaim(Claims.Private.ProviderName, result.Principal.GetClaim(Claims.Private.ProviderName));
+
         AuthenticationProperties properties;
         if (result.Properties is null)
         {
@@ -173,17 +188,12 @@ public class AuthenticationController : Controller
             properties = new AuthenticationProperties(result.Properties.Items);
             // If needed, the tokens returned by the authorization server can be stored in the authentication cookie.
             // To make cookies less heavy, tokens that are not used are filtered out before creating the cookie.
-            properties.StoreTokens(result.Properties.GetTokens().Where(token => token switch
-            {
+            properties.StoreTokens(result.Properties.GetTokens().Where(token => token.Name is
                 // Preserve the access, identity and refresh tokens returned in the token response, if available.
-                {
-                    Name: OpenIddictClientAspNetCoreConstants.Tokens.BackchannelAccessToken or
-                    OpenIddictClientAspNetCoreConstants.Tokens.BackchannelIdentityToken or
-                    OpenIddictClientAspNetCoreConstants.Tokens.RefreshToken
-                } => true,
-                // Ignore the other tokens.
-                _ => false
-            }));
+                OpenIddictClientAspNetCoreConstants.Tokens.BackchannelAccessToken or
+                OpenIddictClientAspNetCoreConstants.Tokens.BackchannelIdentityToken or
+                OpenIddictClientAspNetCoreConstants.Tokens.RefreshToken
+            ));
         }
 
         // Add the user to the database if he/she does not exist.
@@ -226,6 +236,7 @@ public class AuthenticationController : Controller
     [HttpGet("~/connect/callback/logout/{provider}")]
     [HttpPost("~/connect/callback/logout/{provider}")]
     [IgnoreAntiforgeryToken]
+    [SuppressMessage("Style", "IDE0060")]
     public async Task<ActionResult> LogOutCallback(string provider)
     {
         // Retrieve the data stored by OpenIddict in the state token created when the logout was triggered.
