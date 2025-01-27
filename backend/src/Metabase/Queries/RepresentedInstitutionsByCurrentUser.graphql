@@ -3,7 +3,7 @@ query RepresentedInstitutionsByCurrentUser {
         representedInstitutions {
             edges {
                 node {
-                    id
+                    uuid
                 }
                 role
             }

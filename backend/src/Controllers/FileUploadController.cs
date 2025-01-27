@@ -2,10 +2,12 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Database.Data;
+using Database.Authorization;
 using Database.Filters;
 using Database.Utilities;
 using Microsoft.AspNetCore.Http.Features;
@@ -14,6 +16,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
+using Microsoft.AspNetCore.Http;
 
 namespace Database.Controllers;
 
@@ -41,12 +44,14 @@ public class FileUploadController : Controller
 
     private const string _targetDirectoryPath = "./files/";
 
-    // Get the default form options so that we can use them to set the default 
+    // Get the default form options so that we can use them to set the default
     // limits for request body data.
     private static readonly FormOptions _defaultFormOptions = new();
-    private readonly string _accessToken;
-    private readonly ApplicationDbContext _context;
     private readonly ILogger<FileUploadController> _logger;
+    private readonly ApplicationDbContext _context;
+    private readonly AppSettings _appSettings;
+    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     private readonly string[] _permittedExtensions =
         { ".json", ".xml", ".txt", ".csv", ".ifc", ".rad", ".svg", ".pdf", ".png" };
@@ -54,25 +59,29 @@ public class FileUploadController : Controller
     public FileUploadController(
         ILogger<FileUploadController> logger,
         ApplicationDbContext context,
-        AppSettings appSettings
+        AppSettings appSettings,
+        IHttpClientFactory httpClientFactory,
+        IHttpContextAccessor httpContextAccessor
     )
     {
         _logger = logger;
         _context = context;
-        _accessToken = appSettings.AccessToken;
+        _appSettings = appSettings;
+        _httpClientFactory = httpClientFactory;
+        _httpContextAccessor = httpContextAccessor;
         // To save physical files to the temporary files folder, use:
         //_targetDirectoryPath = Path.GetTempPath();
     }
 
     // The following upload methods:
     //
-    // 1. Disable the form value model binding to take control of handling 
+    // 1. Disable the form value model binding to take control of handling
     //    potentially large files.
     //
-    // 2. Typically, antiforgery tokens are sent in request body. Since we 
-    //    don't want to read the request body early, the tokens are sent via 
-    //    headers. The antiforgery token filter first looks for tokens in 
-    //    the request header and then falls back to reading the body.
+    // 2. Typically, antiforgery tokens are sent in request body. Since we
+    //    don't want to read the request body early, the tokens are sent via
+    //    headers. The antiforgery token filter first looks for tokens in the
+    //    request header and then falls back to reading the body.
 
     [HttpPost("~/api/upload-file")]
     [DisableFormValueModelBinding]
@@ -95,16 +104,40 @@ public class FileUploadController : Controller
             return BadRequest(ModelState);
         }
 
-        if (!await _context.GetHttpsResources.AsNoTracking()
-                .Where(u => u.Id == getHttpsResourceUuid)
-                .AnyAsync(cancellationToken)
-                .ConfigureAwait(false)
-           )
+        var getHttpsResource = await _context.GetHttpsResources.AsNoTracking()
+                .Include(e => e.CalorimetricData)
+                .Include(e => e.HygrothermalData)
+                .Include(e => e.OpticalData)
+                .Include(e => e.PhotovoltaicData)
+                .Include(e => e.GeometricData)
+                .Where(e => e.Id == getHttpsResourceUuid)
+                .SingleOrDefaultAsync(cancellationToken)
+                .ConfigureAwait(false);
+        if (getHttpsResource is null)
         {
             ModelState.AddModelError("GetHttpsResourceUuid",
                 $"There is no GET HTTPS resource with UUID {getHttpsResourceUuid:D}.");
             return BadRequest(ModelState);
         }
+        if (getHttpsResource.Data is null)
+        {
+            ModelState.AddModelError("GetHttpsResourceUuid",
+                $"There is no data set associated with the GET HTTPS resource with UUID {getHttpsResourceUuid:D}.");
+            return BadRequest(ModelState);
+        }
+        if (!await FileUploadDataAuthorization.IsAuthorizedToUploadFilesForInstitution(
+             getHttpsResource.Data.CreatorId,
+             _appSettings,
+             _httpClientFactory,
+             _httpContextAccessor,
+             cancellationToken
+             ).ConfigureAwait(false)
+        )
+        {
+            return Unauthorized();
+        }
+
+        Directory.CreateDirectory(_targetDirectoryPath);
 
         var boundary = MultipartRequestHelper.GetBoundary(
             MediaTypeHeaderValue.Parse(Request.ContentType),
@@ -112,39 +145,6 @@ public class FileUploadController : Controller
         var reader = new MultipartReader(boundary, HttpContext.Request.Body);
         var section = await reader.ReadNextSectionAsync(cancellationToken).ConfigureAwait(false);
 
-        if (section is null)
-        {
-            ModelState.AddModelError("AccessToken", "Cannot read access token.");
-            return BadRequest(ModelState);
-        }
-
-        var hasFirstContentDispositionHeader =
-            ContentDispositionHeaderValue.TryParse(
-                section.ContentDisposition, out var firstContentDisposition);
-        if (!hasFirstContentDispositionHeader)
-        {
-            ModelState.AddModelError("AccessToken", "Cannot parse content disposition header value.");
-            return BadRequest(ModelState);
-        }
-
-        if (!firstContentDisposition?.Name.Equals("accessToken") ??
-            throw new ArgumentException("Impossible (because `hasFirstContentDispositionHeader` is `true`)"))
-        {
-            ModelState.AddModelError("AccessToken",
-                $"Access token must come first, got {firstContentDisposition?.Name} instead.");
-            return BadRequest(ModelState);
-        }
-
-        var accessToken = await new StreamReader(section.Body).ReadToEndAsync(cancellationToken).ConfigureAwait(false);
-        if (accessToken != _accessToken)
-        {
-            ModelState.AddModelError("AccessToken", $"The access token {accessToken} is invalid.");
-            return BadRequest(ModelState);
-        }
-
-        Directory.CreateDirectory(_targetDirectoryPath);
-
-        section = await reader.ReadNextSectionAsync(cancellationToken).ConfigureAwait(false);
         while (section != null)
         {
             var hasContentDispositionHeader =
@@ -178,9 +178,8 @@ public class FileUploadController : Controller
                 // scanning the file's contents. In most production
                 // scenarios, an anti-virus/anti-malware scanner API
                 // is used on the file before making the file available
-                // for download or for use by other systems. 
-                // For more information, see the topic that accompanies 
-                // this sample.
+                // for download or for use by other systems. For more
+                // information, see the topic that accompanies this sample.
 
                 var streamedFileContent = await FileHelpers.ProcessStreamedFile(
                     section,
@@ -213,8 +212,8 @@ public class FileUploadController : Controller
         var hasMediaTypeHeader =
             MediaTypeHeaderValue.TryParse(section.ContentType, out var mediaType);
 
-        // UTF-7 is insecure and shouldn't be honored. UTF-8 succeeds in 
-        // most cases.
+        // UTF-7 is insecure and shouldn't be honored. UTF-8 succeeds in most
+        // cases.
 #pragma warning disable SYSLIB0001
         if (!hasMediaTypeHeader || Encoding.UTF7.Equals(
                 mediaType?.Encoding ??

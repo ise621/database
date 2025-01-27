@@ -16,7 +16,7 @@ public sealed class QueryingRepresentedInstitutionsByCurrentUser
         "RepresentedInstitutionsByCurrentUser.graphql"
     };
 
-    private sealed record Institution(Guid Id);
+    private sealed record Institution(Guid Uuid);
     internal enum InstitutionRepresentativeRole
     {
         OWNER,
@@ -51,7 +51,7 @@ public sealed class QueryingRepresentedInstitutionsByCurrentUser
                ?.CurrentUser
                ?.RepresentedInstitutions
                ?.Edges
-               ?.Select(edge => (edge.Node.Id, edge.Role))
+               ?.Select(edge => (edge.Node.Uuid, edge.Role))
                .ToList().AsReadOnly()
                ?? Array.Empty<(Guid Id, InstitutionRepresentativeRole Role)>().AsReadOnly();
     }
