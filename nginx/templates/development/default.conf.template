@@ -121,6 +121,11 @@ server {
     keepalive_timeout 65;
   }
 
+  location /openapi {
+    proxy_pass http://backend;
+    limit_req  zone=one burst=10 nodelay;
+  }
+
   location /health {
     proxy_pass http://backend;
     limit_req  zone=one burst=20 nodelay;

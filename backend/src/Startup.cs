@@ -258,7 +258,7 @@ public sealed class Startup(
         app.UseSession();
         // app.UseResponseCompression(); // Done by Nginx
         // app.UseResponseCaching(); // Done by Nginx
-        /* app.UseWebSockets(); */
+        // app.UseWebSockets();
         app.MapOpenApi("/openapi/{documentName}.json");
         app.MapGraphQL()
             .WithOptions(
