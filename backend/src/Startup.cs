@@ -115,7 +115,7 @@ public sealed class Startup(
                 // TODO I consider the flattened structure a bug. How can we solve this?
             }
         );
-        services.AddOpenApi(_ => {
+        services.AddOpenApi("v1", _ => {
             _.OpenApiVersion = OpenApiSpecVersion.OpenApi3_0;
         });
     }
