@@ -158,13 +158,16 @@ public sealed class Startup(
         AppSettings appSettings
         )
     {
-        var dataSourceBuilder = new NpgsqlDataSourceBuilder(appSettings.Database.ConnectionString);
-        // https://www.npgsql.org/efcore/mapping/enum.html#mapping-your-enum
-        // Keep in sync with `ApplicationDbContext.CreateEnumerations`.
-        dataSourceBuilder.MapEnum<DataKind>($"{appSettings.Database.SchemaName}.{ApplicationDbContext.DataKindTypeName}");
-        dataSourceBuilder.MapEnum<Standardizer>($"{appSettings.Database.SchemaName}.{ApplicationDbContext.StandardizerTypeName}");
+        // https://www.npgsql.org/efcore/mapping/enum.html
         options
-            .UseNpgsql(dataSourceBuilder.Build() /*, optionsBuilder => optionsBuilder.UseNodaTime() */)
+            .UseNpgsql(
+                appSettings.Database.ConnectionString,
+                options => {
+                    options.MapEnum<DataKind>(ApplicationDbContext.DataKindTypeName, appSettings.Database.SchemaName);
+                    options.MapEnum<Standardizer>(ApplicationDbContext.StandardizerTypeName, appSettings.Database.SchemaName);
+                    // options.UseNodaTime();
+                }
+            )
             .UseSchemaName(appSettings.Database.SchemaName)
             .UseOpenIddict();
         if (!environment.IsProduction())
