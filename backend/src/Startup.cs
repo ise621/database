@@ -162,11 +162,11 @@ public sealed class Startup(
         options
             .UseNpgsql(
                 appSettings.Database.ConnectionString,
-                options => {
-                    options.MapEnum<DataKind>(ApplicationDbContext.DataKindTypeName, appSettings.Database.SchemaName);
-                    options.MapEnum<Standardizer>(ApplicationDbContext.StandardizerTypeName, appSettings.Database.SchemaName);
-                    // options.UseNodaTime();
-                }
+                _ => _
+                    .SetPostgresVersion(13, 13)
+                    .MapEnum<DataKind>(ApplicationDbContext.DataKindTypeName, appSettings.Database.SchemaName)
+                    .MapEnum<Standardizer>(ApplicationDbContext.StandardizerTypeName, appSettings.Database.SchemaName)
+                    // .UseNodaTime();
             )
             .UseSchemaName(appSettings.Database.SchemaName)
             .UseOpenIddict();
