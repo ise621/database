@@ -24,9 +24,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Npgsql;
-using Serilog;
 using Microsoft.OpenApi;
+using Serilog;
+using Scalar.AspNetCore;
 
 namespace Database;
 
@@ -265,6 +265,7 @@ public sealed class Startup(
         // app.UseResponseCaching(); // Done by Nginx
         // app.UseWebSockets();
         app.MapOpenApi("/openapi/{documentName}.json");
+        app.MapScalarApiReference(_ => _.Servers = []); // https://github.com/dotnet/aspnetcore/issues/57332#issuecomment-2480939916
         app.MapGraphQL()
             .WithOptions(
                 // https://chillicream.com/docs/hotchocolate/server/middleware
@@ -292,7 +293,9 @@ public sealed class Startup(
             {
                 ResponseWriter = WriteJsonResponse
             }
-        ).DisableHttpMetrics();
+        )
+        .WithName("Health")
+        .DisableHttpMetrics();
     }
 
     // Inspired by https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks?view=aspnetcore-7.0#customize-output
